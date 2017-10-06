@@ -1,24 +1,27 @@
 # An Introduction to JavaScript
+# Javascript'e Giriş
 
-Let's see what's so special about JavaScript, what we can achieve with it and which other technologies play well with it.
+Bakalım Javascript'in özelliği ne, ne yapılır ve hangi teknolojilerle birlikte çalışır.
 
-## What is JavaScript?
+## Javascript  Nedir?
 
-*JavaScript* was initially created to *"make webpages alive"*.
+*JavaScript* aslen *"web sayfalarına canlılık"* getirmek için oluşturulmuştur.
 
-The programs in this language are called *scripts*. They can be written right in the HTML and execute automatically as the page loads.
+Bu dilde yapılan programlara *scripts* denir. Doğrudan HTML içerisine yazılıp sayfa yüklendiğinde doğrudan çalışabilir.
 
-Scripts are provided and executed as a plain text. They don't need a special preparation or a compilation to run.
+Komutlar hergi bir derleme ve hazırlığa ihtiyaç duymadan doğrudan çalışırlar.
 
-In this aspect, JavaScript is very different from another language called [Java](http://en.wikipedia.org/wiki/Java).
+Bu yönden bakınca Javascript diğer dillere nazaran oldukça farklıdır.Bkz: [Java](http://en.wikipedia.org/wiki/Java).
 
-```smart header="Why <u>Java</u>Script?"
-When JavaScript was created, it initially had another name: "LiveScript". But Java language was very popular at that time, so it was decided that positioning a new language as a "younger brother" of Java would help.
 
-But as it evolved, JavaScript became a fully independent language, with its own specification called [ECMAScript](http://en.wikipedia.org/wiki/ECMAScript), and now it has no relation to Java at all.
+```smart header="Neden <u>Java</u>Script?"
+Javascript ilk yazıldığında, başka bir adı vardı: "LiveScript". Fakat Java dili o dönemlerde çok meşur olduğundan dolayı yeni bir dil ve "küçük kardeş" gibi görünmesi açısından Javascript olarak değiştirildi edildi.
+
+Fakat Javascript gelişerek kendince şartnameleri [ECMAScript](http://en.wikipedia.org/wiki/ECMAScript) olan bağımsız bir dil haline geldi. Şu anda Java ile hiç bir ilgisi bulunmamaktadır.
 ```
+Şu anda Javascript sadece web tarayıcıda değil sunucuda veya 
+[the JavaScript engine](https://en.wikipedia.org/wiki/JavaScript_engine) olan her yerde çalışmaktadır.
 
-At present, JavaScript can execute not only in the browser, but also on the server, or actually on any device where there exists a special program called [the JavaScript engine](https://en.wikipedia.org/wiki/JavaScript_engine).
 
 The browser has an embedded engine, sometimes it's also called a "JavaScript virtual machine".
 
