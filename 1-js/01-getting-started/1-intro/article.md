@@ -20,45 +20,44 @@ Javascript ilk yazıldığında, başka bir adı vardı: "LiveScript". Fakat Jav
 Fakat Javascript gelişerek kendince şartnameleri [ECMAScript](http://en.wikipedia.org/wiki/ECMAScript) olan bağımsız bir dil haline geldi. Şu anda Java ile hiç bir ilgisi bulunmamaktadır.
 ```
 Şu anda Javascript sadece web tarayıcıda değil sunucuda veya 
-[the JavaScript engine](https://en.wikipedia.org/wiki/JavaScript_engine) olan her yerde çalışmaktadır.
+[ JavaScript motoru](https://en.wikipedia.org/wiki/JavaScript_engine) olan her yerde çalışmaktadır.
 
+Tarayıcılar bu Javascript motoru gömülü bir şekilde gelirler. Bu ayrıca "Javascript sanal makinesi" olarak da adlandırılır.
 
-The browser has an embedded engine, sometimes it's also called a "JavaScript virtual machine".
+Bu Javascript motorlarından bazıları şunlardır;
 
-Different engines have different "codenames", for example:
+- [V8](https://en.wikipedia.org/wiki/V8_(JavaScript_engine)) --  Chrome ve Opera.
+- [SpiderMonkey](https://en.wikipedia.org/wiki/SpiderMonkey) --  Firefox.
+- Internet Explorer'ın "Trident", "Chakra" kod isimli motorlarının yanında Microsoft Edge için "ChakraCore" adında ayrı bir motoru bulunmaktadır. Safari ise "Nitro","SquirrelFish" gibi kod adlarına sahip Javascript motoru kullanmaktadır.
 
-- [V8](https://en.wikipedia.org/wiki/V8_(JavaScript_engine)) -- in Chrome and Opera.
-- [SpiderMonkey](https://en.wikipedia.org/wiki/SpiderMonkey) -- in Firefox.
-- ...There are other codenames like "Trident", "Chakra" for different versions of IE, "ChakraCore" for Microsoft Edge, "Nitro" and "SquirrelFish" for Safari etc.
+Yukarıdaki terimleri ezberlerseniz iyi olur, çünkü ileride şöyle bir cümle gelebilir  "X özelliği V8 tarafından desteklenmektedir". Bu özelliğin Chrome ve Opera tarafından desteklendiğini anlamanız gerekir.
 
-The terms above are good to remember, because they are used in developer articles on the internet. We'll use them too. For instance, if "a feature X is supported by V8", then it probably works in Chrome and Opera.
+```smart header="Javascript Motoru Nasıl Çalışır?"
 
-```smart header="How engines work?"
+Motorlar çok karmaşık yapılardır. Fakat basit temellere dayanırlar.
 
-Engines are complicated. But the basics are easy.
+1. Eğer bu motor tarayıcıya gömülmüş ise yazılan javascript kodlarını ayrıştırır.
+2. Sonra bu kodları makine diline çevirir.
+3. Makine bu kodları çok hızlı bir şekilde çalıştırır.
 
-1. The engine (embedded if it's a browser) reads ("parses") the script.
-2. Then it converts ("compiles") the script to the machine language.
-3. And then the machine code runs, pretty fast.
-
-The engine applies optimizations on every stage of the process. It even watches the compiled script as it runs, analyzes the data that flows through it and applies optimizations to the machine code based on that knowledge. At the end, scripts are quite fast.
+Motor bu sürecin her bir adımında optimizasyon yapar. Hatta derlenmiş ve çalışır halde bulunan kodlardaki veri yapılarını inceler ve bunları optimize ederek daha hızlı hale getirir. Sonuç olarak yazılan bu kodlar çok hızlı bir şekilde çalışır.
 ```
 
-## What can in-browser JavaScript do?
+## Tarayıcı içerisindeki Javascript neler yapabilir?
 
-The modern JavaScript is a "safe" programming language. It does not provide low-level access to memory or CPU, because it was initially created for browsers which do not require it.
+Modern Javascript "güvenli" bir programlama dilidir. Düşük seviye diller gibi hafıza veya işlemciye doğrudan erişim sağlamaz. Browser için olduğundan dolayı böyle birşeye ihtiyaç duymaz.
 
-The capabilities greatly depend on the environment that runs JavaScript. For instance, [Node.JS](https://wikipedia.org/wiki/Node.js) supports functions that allow JavaScript to read/write arbitrary files, perform network requests etc.
+Javascript'in yapabilecekçeleri büyük bir oranda ortama dayanır. Örneğin [Node.JS](https://wikipedia.org/wiki/Node.js) Javascript fonksiyonları ile dosyaları okuma yazma veya ağ üzerinden talep etme işlemlerini yapabilir.
 
-In-browser JavaScript can do everything related to webpage manipulation, interaction with the user and the webserver.
+Tarayıcı içerisindeki Javascript ise web sayfasında görsel değişikliklere ve kullanıcı ile web sunucu arasındaki etkileşime dair herşeyi yapabilir.
 
-For instance, in-browser JavaScript is able to:
+Örneğin tarayıcı içerisindeki Javascript şunları yapabilir:
 
-- Add new HTML to the page, change the existing content, modify styles.
-- React to user actions, run on mouse clicks, pointer movements, key presses.
-- Send requests over the network to remote servers, download and upload files (so-called [AJAX](https://en.wikipedia.org/wiki/Ajax_(programming)) and [COMET](https://en.wikipedia.org/wiki/Comet_(programming)) technologies).
-- Get and set cookies, ask questions to the visitor, show messages.
-- Remember the data on the client-side ("local storage").
+- Sayfaya yeni HTML kodları ekleme veya öncekileri değiştirme, stilleri değiştirme veya ekleme.
+- Kullanıcının aksiyonlarına karşılık verme. Tıklanma veya farenin hareketine göre işlem yaptırabilme.
+- Ağ üzerinden talep gönderebilme. Dosya yükleme veya indirebilme ( buna [AJAX](https://en.wikipedia.org/wiki/Ajax_(programming)) and [COMET](https://en.wikipedia.org/wiki/Comet_(programming) teknolojileri denir )
+- Tarayıcıdaki cookieleri silme ekleme veya düzeltme işmelerinin yapılması. Mesaj gösterilmesi.
+- Kullanıcı tarafında tutulan verilerin hatırlanması ( "local storage") 
 
 ## What CAN'T in-browser JavaScript do?
 
