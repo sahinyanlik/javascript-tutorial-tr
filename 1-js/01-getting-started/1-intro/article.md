@@ -59,65 +59,62 @@ Tarayıcı içerisindeki Javascript ise web sayfasında görsel değişikliklere
 - Tarayıcıdaki cookieleri silme ekleme veya düzeltme işmelerinin yapılması. Mesaj gösterilmesi.
 - Kullanıcı tarafında tutulan verilerin hatırlanması ( "local storage") 
 
-## What CAN'T in-browser JavaScript do?
+## Tarayıcı içerisinde bulunan Javascript ne yapamaz ? 
 
-JavaScript's abilities in the browser are limited for the sake of the user's safety. The aim is to prevent an evil webpage from accessing private information or harming the user's data.
+Browser içerisinde bulunan Javascript kullanıcı güvenliği dolayısıyla limitlidir. Amaç zararlı web sitelerinin özel bilgilere erişip kullanıcıya zarar vermesini engellemektir.
 
-The examples of such restrictions are:
+Engellemeleri şu şekilde sıralayabiliriz : 
 
-- JavaScript on a webpage may not read/write arbitrary files on the hard disk, copy them or execute programs. It has no direct access to OS system functions.
+- Web sayfasında çalışan Javascript dosyalara erişimi olmayabilir, hard diskinizde bulunan programları kopyalayamaz veya çalıştıramaz. İşletim sistemine doğrudan ulaşımı yoktur.
 
-    Modern browsers allow it to work with files, but the access is limited and only provided if the user does certain actions, like "dropping" a file into a browser window or selecting it via an `<input>` tag.
+    Modern tarayıcılar dosyalarla çalışmanıza izin verebilir. Fakat bu izim oldukça sınırlıdır. Örneğin sadece dosyayı tarayıcıya taşıyıp bırakabilirsiniz veya `<input>` kullanarak dosyayı seçebilirsiniz.
 
-    There are ways to interact with camera/microphone and other devices, but they require a user's explicit permission. So a JavaScript-enabled page may not sneakily enable a web-camera, observe the surroundings and send the information to the [NSA](https://en.wikipedia.org/wiki/National_Security_Agency).
-- Different tabs/windows generally do not know about each other. Sometimes they do, for example when one window uses JavaScript to open the other one. But even in this case, JavaScript from one page may not access the other if they come from different sites (from a different domain, protocol or port).
+    Her zaman kullanıcıyla kamera veya mikrofon vasıyasıyla veya diğer cihazlar vasıtasıyla etkileşime geçebilirsiniz. Fakat kullanıcının kesin iznini almanız gerekir. Dolayısıyla Javascript çalışan web sayfası gizliden sizin web kameranızı izleyemez veya etrafınızdaki şeyler hakkında bilgi alamaz. [NSA](https://en.wikipedia.org/wiki/National_Security_Agency)
 
-    This is called the "Same Origin Policy". To work around that, *both pages* must contain a special JavaScript code that handles data exchange.
-
-    The limitation is again for user's safety. A page from `http://anysite.com` which a user has opened must not be able to access another browser tab with the URL `http://gmail.com` and steal information from there.
-- JavaScript can easily communicate over the net to the server where the current page came from. But its ability to receive data from other sites/domains is crippled. Though possible, it requires explicit agreement (expressed in HTTP headers) from the remote side. Once again, that's safety limitations.
+- Farklı tablar birbiri ile iletişime geçemez ve bilgi alış verişi yapamayabilirler. Bazen yaparlar, örneğin bir tabdan Javascript ile diğer tabı açabilirsiniz. Bu halde bile, bir sayfa diğerinden farklı domain, protokol veya portlarda ise erişemez.
+   
+    Bu olaya "Same Origin Policy" ( Aynı köken politikası ) denir. Bunu çözmek için *her iki sayfa* özel bir javascript kodu ile birbirlerini onaylamalılar. Bu engellemeler yine kullanıcının güvenliği içindir. Kullanıcının açtığı `http://anysite.com` sitesi diğer tabda bulunan `http://gmail.com` sitesinden bilgi çalamamalıdır.
+- Javascript kolayca bulunduğu sayfadan veri alabilir. Fakat başka site veya domainlerden veri almazsı sorunludur. Mümkün olmasına rağmen her iki taraflı onaya muhtaçtır. Tekrardan bunun nedeni de güvenlik limiteri diyeibliriz.
 
 ![](limitations.png)
 
-Such limits do not exist if JavaScript is used outside of the browser, for example on a server. Modern browsers also allow installing plugin/extensions which may get extended permissions.
+Bu limitler tarayıcı dışında kullanıldığında ortadan kalkar. Örneğin sunucular daha geniş yetkilere sahiptirler.
 
-## What makes JavaScript unique?
 
-There are at least *three* great things about JavaScript:
+## Javascript'i eşsiz yapan nedir ?
+
+Javascript'i eşsiz yapan en az 3 neden vardır:
 
 ```compare
-+ Full integration with HTML/CSS.
-+ Simple things done simply.
-+ Supported by all major browsers and enabled by default.
++ HTML/CSS ile tamamen entegre çalışması.
++ Kolay şeylerin kolayca yapılabilmesini sağlar.
++ Tüm önemli tarayıcılarda çalışır ve varsayılan olarak etkindir.
 ```
 
-Combined, these three things exist only in JavaScript and no other browser technology.
+Bu üç özelliği barındıran Javascript haricinde hiç bir tarayıcı teknolojisi yoktur.
 
-That's what makes JavaScript unique. That's why it's the most widespread tool to create browser interfaces.
+Javascriptin eşsiz olmasının nedeni budur. Bundan dolayı yapılan sitelerde en fazla kullanılan teknoloji Javascripttir.
 
-While planning to learn a new technology, it's beneficial to check its perspectives. So let's move on to the modern trends that include new languages and browser abilities.
+Yeni bir teknolojiyi öğrenirken geleceğe dair öngörüsü önemlidir. Öyleyse yeni diller ve tarayıcı yetkinlikleri içeren bu trende ayak uydularmalıyız.
 
+## Javascript'e üstün diller
 
-## Languages "over" JavaScript
+Javascript'in yazımı herkese uymayabilir. Her yiğidin yoğurt yiyişi ayrıdır. 
 
-The syntax of JavaScript does not suit everyone's needs. Different people want different features.
+Bu beklenen birşey aslında, çünkü projeler ve gereksinimler kişiden kişiye göre değişir.
 
-That's to be expected, because projects and requirements are different for everyone.
+Bundan dolayı yakın zamanda bir sürü yeni *transpiled* yani çevirilmiş diller üredi. Bu dillerde yazdıktan sonra çalıştırılmadan Javascript'e çevriliyor. Modern araçlar bu çeviri işini çok hızlı bir şekilde yapmaktadır. Aslında doğrudan siz yazarken bile çevirme işini yapıp bu yeni dosyayı kullanılabilir hale getirirler.
 
-So recently a plethora of new languages appeared, which are *transpiled* (converted) to JavaScript before they run in the browser.
+Bu dillere örnek vermek gerekirse: 
 
-Modern tools make the transpilation very fast and transparent, actually allowing developers to code in another language and autoconverting it "under the hood".
+- [CofeeScript](http://coffeescript.org) Javascript için "şeker yazım" denebilecek bir dildir. Yazılımı daha kısadır ve daha temiz kod yazmaya yardımcı olur.
 
-Examples of such languages:
+- [Typescript](http://www.typescriptlang.org/) statik veri yapıları ile Javascript yazılmasını sağlar. Karmaşık programlar geliştirmeyi kolaylaştırır. Microsoft tarafından geliştirilmiştir.
+- [Dart](https://www.dartlang.org/) kendi başına ayrı bir dildir aslında. Browser üzerinde veya telefon uygulamalarında kendi motoru üzerinden çalışılır. Google tarafından Javascript'in yerine önerilmiş olmasına rağmen bu günlerde Javascript'e çeviri yapılarak kullanılmakta.
 
-- [CoffeeScript](http://coffeescript.org/) is a "syntax sugar" for JavaScript, it introduces shorter syntax, allowing to write more precise and clear code. Usually Ruby devs like it.
-- [TypeScript](http://www.typescriptlang.org/) is concentrated on adding "strict data typing", to simplify development and support of complex systems. It is developed by Microsoft.
-- [Dart](https://www.dartlang.org/) is a standalone language that has its own engine that runs in non-browser environments (like mobile apps). It was initially offered by Google as a replacement for JavaScript, but as of now, browsers require it to be transpiled to JavaScript just like the ones above.
+Aslında daha fazla örnek bulunabilir. Yukarıdaki bilseniz bile ne yaptığınızı tam olarak anlamak için Javascript bilmelisiniz.
 
-There are more. Of course even if we use one of those languages, we should also know JavaScript, to really understand what we're doing.
-
-## Summary
-
-- JavaScript was initially created as a browser-only language, but now it is used in many other environments as well.
-- At this moment, JavaScript has a unique position as the most widely-adopted browser language with full integration with HTML/CSS.
-- There are many languages that get "transpiled" to JavaScript and provide certain features. It is recommended to take a look at them, at least briefly, after mastering JavaScript.
+## Özet
+- Javascript başlangıçta sadece browser için geliştirilmiş bir dildi fakat günümüzde bir çok çevrede çalışabilir durumda.
+- Javascript şu anda HTML/CSS ile entegre olmasından ve geniş uyumluluğundan dolayı benzersizdir.
+- Bir çok Javascripte çevirici dil bulunmaktadır. Javascript'i iyi bir şekilde öğrendikten sonra bu dillere de bir bakıvermenizi öneririm.
