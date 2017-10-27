@@ -1,6 +1,8 @@
-# Hello, world!
+# Merhaba Dünya
 
-The tutorial that you're reading is about core JavaScript, which is platform-independent. Further on, you will learn Node.JS and other platforms that use it.
+Okuyacağınız bu konu Javascript'in özü hakkındadır, platform ile bağlantılı değildir. İleride Node.JS ve diğer platformlarda aynı şekilde kullanabilirsiniz.
+
+Fakat kodlarımızın çalıştırılabilmesi için en azından bir ortam gerekli ve bu kitap tarayıcı üzerinden açılarak size bu ortamı yaratmış oluyor. Tarayıcı özel komutları ( `alert`) daha az tutarak eğer diğer platformlara yönelmek istiyor
 
 But, we need a working environment to run our scripts, and, just because this book is online, the browser is a good choice. We'll keep the amount of browser-specific commands (like `alert`) to a minimum, so that you don't spend time on them if you plan to concentrate on another environment like Node.JS. On the other hand, browser details are explained in detail in the [next part](/ui) of the tutorial.
 
