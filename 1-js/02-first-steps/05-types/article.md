@@ -1,49 +1,50 @@
 # Data types
+# Veri Tipleri
 
-A variable in JavaScript can contain any data. A variable can at one moment be a string and later receive a numeric value:
+Bir javascript değişkeni her türlü veriyi tutabilir. Önce karakter dizisi(String) atanabilir sonra sayısal değer alabilir.
 
 ```js
-// no error
-let message = "hello";
-message = 123456;
+// Hata yok
+let mesaj = "merhaba";
+mesaj = 123456;
 ```
 
-Programming languages that allow such things are called "dynamically typed", meaning that there are data types, but variables are not bound to any of them.
+Bu şekilde olaylara izin veren tipdeki dillere "dinamik tip" dil denir. Veri yapıları olsa bile değişkenler bu yapılara bağlı değildir.
 
-There are seven basic data types in JavaScript. Here we'll study the basics, and in the next chapters we'll talk about each of them in detail.
+JavaScript dilinde yedi farklı veri tipi bulunmaktadır. Şimdilik bu tiplerden bahsedeceğiz gelecek bölümlerde ise daha derinlemesine bu tipleri inceleyeceğiz.
+
 
 [cut]
 
-## A number
+##  Number - Sayı
 
 ```js
-let n = 123;
-n = 12.345;
+let s = 123;
+s = 12.345;
 ```
 
-The *number* type serves both for integer and floating point numbers.
+*sayı* hem integer hem de floating point sayıları için kullanılır. Sayılar `*`, `/`, `+` veya `-` işlemlerine girebilirler.
+Normal sayıların haricinde "özel sayısal değerler" de sayı olarak tanımlanabilir. Bunlar : `Infinity`, `-Infinity` ve `NaN` gibi değerlerdir.
 
-There are many operations for numbers, e.g. multiplication `*`, division `/`, addition `+`, subtraction `-` and so on.
 
-Besides regular numbers, there are so-called "special numeric values" which also belong to that type: `Infinity`, `-Infinity` and `NaN`.
+- `Infinity` matematiksel sonsuzluğu ifade eder.
+- `Infinity` represents the mathematical [Sonsuz](https://tr.wikipedia.org/wiki/Sonsuz) ∞. Diğer tüm sayılardan büyük olan özel bir sayıdır.
 
-- `Infinity` represents the mathematical [Infinity](https://en.wikipedia.org/wiki/Infinity) ∞. It is a special value that's greater than any number.
-
-    We can get it as a result of division by zero:
+    0'a bölünmede sonuç sonsuzu verir:
 
     ```js run
     alert( 1 / 0 ); // Infinity
     ```
 
-    Or just mention it in the code directly:
+    veya doğrudan ekranda gösterebilirsiniz:
 
     ```js run
     alert( Infinity ); // Infinity
     ```
-- `NaN` represents a computational error. It is a result of an incorrect or an undefined mathematical operation, for instance:
+- `NaN` hesaplamalarda bir hata olduğunu gösterir. Hatalı veya tanımsız matematiksel hesapları gösterir, örneğin:
 
     ```js run
-    alert( "not a number" / 2 ); // NaN, such division is erroneous
+    alert( "Sayı Değil ( Not a Number) " / 2 ); // NaN, böyle bir bölme işlemi yapılamaz.
     ```
 
     `NaN` is sticky. Any further operation on `NaN` would give `NaN`:
@@ -52,46 +53,45 @@ Besides regular numbers, there are so-called "special numeric values" which also
     alert( "not a number" / 2 + 5 ); // NaN
     ```
 
-    So, if there's `NaN` somewhere in a mathematical expression, it propagates to the whole result.
+    Öyleyse matematiksel işlemlerin herhangi bir yerinde `NaN` alınıyorsa bu hesabın tamamını etkiler.
 
-```smart header="Mathematical operations are safe"
-Doing maths is safe in JavaScript. We can do anything: divide by zero, treat non-numeric strings as numbers, etc.
+```smart header="Matematiksel hesapların güvenliği"
+JavaScript üzerinden matematik hesapları yapmak güvenlidir. Her işlemi yapabilirsiniz. 0'a bölme normal harf dizesini bir sayıya bölmeye çalışma vs.
 
-The script will never stop with a fatal error ("die"). At worst we'll get `NaN` as the result.
+Kodunuzun tamamı hiç durmadan çalışacaktır. En kötü ihtimalle `NaN` sonucunu alınır.
 ```
+Özel sayısal değerler "number" tipine aittir. Tabiki sayı bizim bildiğimiz tipte sayı değillerdir. 
+<info:number> bölümünde sayısal değerler ile çalışmayı daha derinlemesine göreceksiniz.
 
-Special numeric values formally belong to the "number" type. Of course they are not numbers in a common sense of this word.
 
-We'll see more about working with numbers in the chapter <info:number>.
 
-## A string
+## String - Karakter Dizisi
 
-A string in JavaScript must be quoted.
+JavaScriptte karakter dizileri çift tırnak içerisine alınmalıdır.
 
 ```js
-let str = "Hello";
-let str2 = 'Single quotes are ok too';
-let phrase = `can embed ${str}`;
+let str = "Merhaba";
+let str2 = 'Tek tırnak da çalışır';
+let phrase = `değer gömülebilir ${str}`;
 ```
+JavaScriptte 3 çeşit tırnak içine alma yöntemi vardır.
 
-In JavaScript, there are 3 types of quotes.
+1. Çift tırnak: `"Hello"`.
+2. Tek tırnak: `'Hello'`.
+3. Ters tırnak: <code>&#96;Hello&#96;</code>.
 
-1. Double quotes: `"Hello"`.
-2. Single quotes: `'Hello'`.
-3. Backticks: <code>&#96;Hello&#96;</code>.
+Çift tırnak ile tek tırnak "basit" tırnaklardır. Aralarında bir farklılık yoktur.
 
-Double and single quotes are "simple" quotes. There's no difference between them in JavaScript.
-
-Backticks are "extended functionality" quotes. They allow us to embed variables and expressions into a string by wrapping them in `${…}`, for example:
+Ters tırnak ise "genişletilmiş fonksiyonlu" tırnaktır. Bunu kullanarak karakter dizisi içerisine `${...}` gibi başka bir dizi yerleştirebiliriz. Örneğin:
 
 ```js run
-let name = "John";
+let isim = "Ahmet";
 
-// embed a variable
-alert( `Hello, *!*${name}*/!*!` ); // Hello, John!
+// değişken gömme
+alert( `Hello, *!*${isim}*/!*!` ); // Merhaba Ahmet!
 
-// embed an expression
-alert( `the result is *!*${1 + 2}*/!*` ); // the result is 3
+// ifade gömme
+alert( `sonuç : *!*${1 + 2}*/!*` ); //sonuç :  3
 ```
 
 The expression inside `${…}` is evaluated and the result becomes a part of the string. We can put anything there: a variable like `name` or an arithmetical expression like `1 + 2` or something more complex.
