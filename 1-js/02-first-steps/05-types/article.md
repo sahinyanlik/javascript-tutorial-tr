@@ -93,76 +93,76 @@ alert( `Hello, *!*${isim}*/!*!` ); // Merhaba Ahmet!
 // ifade gömme
 alert( `sonuç : *!*${1 + 2}*/!*` ); //sonuç :  3
 ```
+`${...}` içerisinde yazılan ifade çalıştığında karakter dizisinin bir parçası olur. `${...}` içerisine herşeyi koyabiliriz: değişken ismi `adi` veya matematiksel ifade `1+2` gibi.
 
-The expression inside `${…}` is evaluated and the result becomes a part of the string. We can put anything there: a variable like `name` or an arithmetical expression like `1 + 2` or something more complex.
-
-Please note that this can only be done in backticks. Other quotes do not allow such embedding!
+Lütfen unutmayın ki bunu sadece kesme tırnak "`" ile yapabilirsiniz.
 ```js run
-alert( "the result is ${1 + 2}" ); // the result is ${1 + 2} (double quotes do nothing)
+alert( "sonuç ${1 + 2}" ); // örneğin burada normal çift tırnak kullanıldığından ekrana "sonuç ${1+2}" diye çıktı verir.
+```
+Karakter dizileri konusunu <info:string> bölümünde daha derinlemesine incelenecektir.
+
+```smart header="*Karakter* tipi diye bir tip yoktur."
+Bazı dillerde "character" - Karakter adında sadece bir karakteri tutan veri tipleri mevcuttur. Bu tip Java ve C'de `char` olarak tanımlanır.
+
+Javascriptte böyle bir tip bulunmamaktadır. Tek karakterli değişken de karakter dizisidir.(String). Karakter dizisi bir veya birden fazla karakteri tutar.
+
 ```
 
-We'll cover strings more thoroughly in the chapter <info:string>.
+## Boolean ( doğru/yanlış) tipi
 
-```smart header="There is no *character* type."
-In some languages, there is a special "character" type for a single character. For example, in the C language and in Java it is `char`.
+Boolean tipi `true` ve `false` olmak üzere sadece iki değer tutabilir.
 
-In JavaScript, there is no such type. There's only one type: `string`. A string may consist of only one character or many of them.
-```
+Genelde bu tip veriler doğru - yanlış sorularını tutmak için kullanılır. `true` doğru demek `false` ise yanlış demektir.
 
-## A boolean (logical type)
 
-The boolean type has only two values: `true` and `false`.
-
-This type is commonly used to store yes/no values: `true` means "yes, correct", and `false` means "no, incorrect".
-
-For instance:
+Örneğin:
 
 ```js
-let nameFieldChecked = true; // yes, name field is checked
-let ageFieldChecked = false; // no, age field is not checked
+let isimKontrolu = true; // isimKontrolu yapıldi
+let yasKontrolu = false; // yas kontrolü yapılmadı.
 ```
 
-Boolean values also come as a result of comparisons:
+Ayrıca karşılaştırma sonuçları boolean verir.
+
 
 ```js run
-let isGreater = 4 > 1;
+let buyuk = 4 > 1;
 
-alert( isGreater ); // true (the comparison result is "yes")
+alert( buyuk ); // true (cevap görüldüğü gibi "doğru" çıkacaktır.)
 ```
 
-We'll cover booleans more deeply later in the chapter <info:logical-operators>.
+Boolean ve diğer mantıksal işlemler <info:logical-operators> bölümünde daha derinlemesine incelenecektir.
 
-## The "null" value
+## "null" değeri
 
-The special `null` value does not belong to any type of those described above.
+"null" değeri yukarıda tanımlanan hiçbir tipe dahil değildir.
 
-It forms a separate type of its own, which contains only the `null` value:
+Kendi başına `null` değerini tutar.
+
 
 ```js
-let age = null;
+let yas = null;
 ```
+Javascriptte `null` olmayan objeyi referans göstermez veya başka dillerdeki gibi "null pointer" değildir.
 
-In JavaScript `null` is not a "reference to a non-existing object" or a "null pointer" like in some other languages.
+"olmayan", "boş", "bilinmeyen değer" anlamında bir özel değerdir.
 
-It's just a special value which has the sense of "nothing", "empty" or "value unknown".
+Yukarıdaki `yas` boş veya bilinmeyen bir değerdir.
 
-The code above states that the `age` is unknown or empty for some reason.
+## "undefined" değeri
 
-## The "undefined" value
+Bir diğer özel değer ise `undefined`dır. Kendi başına `null` gibi bir değerdir.
 
-The special value `undefined` stands apart. It makes a type of its own, just like `null`.
+`undefined` anlam olarak "herhangi bir değer atanmamıştır" anlamına gelir.
 
-The meaning of `undefined` is "value is not assigned".
-
-If a variable is declared, but not assigned, then its value is exactly `undefined`:
+Eğer bir değişken tanımlanmış fakat hiç bir değer atanmamışsa tam olarak bu değeri alır.
 
 ```js run
 let x;
 
-alert(x); // shows "undefined"
+alert(x); // "undefined" çıktısı verir.
 ```
-
-Technically, it is possible to assign `undefined` to any variable:
+Teknik olarak `undefined` değerini herhangi bir değişkene atamak mümkündür:
 
 ```js run
 let x = 123;
@@ -172,28 +172,27 @@ x = undefined;
 alert(x); // "undefined"
 ```
 
-...But it's not recommended to do that. Normally, we use `null` to write an "empty" or an "unknown" value into the variable, and `undefined` is only used for checks, to see if the variable is assigned or similar.
+Fakat bu şekilde tanımlanmasa daha iyi olur. Normalde `null` kullanılarak değişkenin boş veya bilinmeyen olduğu tanımlanır, `undefined` değişkene bir değer atanmış mı? Sorusunu kontrol eder.
 
-## Objects and Symbols
+## Objeler ve Semboller
+`Obje` özel bir tiptir.
 
-The `object` type is special.
+Diğer tüm tipler "primitive" yani basit veya ilkel tiplerdir. Bu değişkenler sadece birşey tutabilirler( karakter dizisi veya sayı ). Buna karşılık objeler veri koleksiyonları (collections) veya karmaşık yapılar tutabilirler. <info:object> konusunda Obje daha derinlemesine incelenecektir. 
 
-All other types are called "primitive", because their values can contain only a single thing (be it a string or a number or whatever). In contrast, objects are used to store collections of data and more complex entities. We'll deal with them later in the chapter <info:object> after we know enough about primitives.
+`symbol` objeler için benzersiz tanımlayıcılar oluşturmak için kullanılır. Bu konuyu objeleri öğrendikten sonra öğrenmek daha iyi olacaktır.
 
-The `symbol` type is used to create unique identifiers for objects. We have to mention it here for completeness, but it's better to study them after objects.
+## typeof operatörü [#type-typeof]
+`typeof` argüman tipini bildirir. Farklı tipler için farklı akışlarınız varsa bunu kullanabilirsiniz.
 
-## The typeof operator [#type-typeof]
+İki türlü yazımı vardır:
 
-The `typeof` operator returns the type of the argument. It's useful when we want to process values of different types differently, or just want to make a quick check.
+1. Operatör olarak: `typeof x`.
+2. Fonksiyonel tipte: `typeof(x)`.
 
-It supports two forms of syntax:
+Diğer bir deyişle parantezli de çalışır parantez olmadan da çalışır. Sonuç aynı olacaktır.
 
-1. As an operator: `typeof x`.
-2. Function style: `typeof(x)`.
+`typeof x`'i çalıştırdığınızda bu fonksiyon karakter dizisi(String) dönderir:
 
-In other words, it works both with parentheses or without them. The result is the same.
-
-The call to `typeof x` returns a string with the type name:
 
 ```js
 typeof undefined // "undefined"
@@ -219,29 +218,29 @@ typeof alert // "function"  (3)
 */!*
 ```
 
-The last three lines may need additional explanations:
+Son üç satır diğerlerinden farklıdır. Şu şekilde;
 
-1. `Math` is a built-in object that provides mathematical operations. We will learn it in the chapter <info:number>. Here it serves just as an example of an object.
-2. The result of `typeof null` is `"object"`. That's wrong. It is an officially recognized error in `typeof`, kept for compatibility. Of course, `null` is not an object. It is a special value with a separate type of its own. So, again, that's an error in the language.
-3. The result of `typeof alert` is `"function"`, because `alert` is a function of the language. We'll study functions in the next chapters, and we'll see that there's no special "function" type in the language. Functions belong to the object type. But `typeof` treats them differently. Formally, it's incorrect, but very convenient in practice.
+1. `Math` matematiksal operasyonlar için kullanılacak JavaScript dilinde var olan bir objedir. <info:number> konusunda buna değinilecektir.  Burada sadece objenin örneklenmesi için kullanılmıştır.
+2. `typeof null` sonucu `"object"` dir. Aslında yanlış. Bu `typeof` fonksiyonunun bilinen bir hatasıdır. Eski versiyonlara uygunluk açısından bu şekliyle bırakılmıştır. Yoksa `null` bir obje değildir. Kendine has bir tiptir. Tekrar söylemek gerekirse bu JavaScript dilinin bir hatasıdır.
+3. `typeof alert` fonksiyondur. Çünkü `alert` dilde doğrudan var olan bir fonksiyondur. `Math` ile farklı gördüğünüz gibi. Bir sonraki bölümde fonksiyonlar anlatılacaktır. Fonksiyonlar obje tipine dahildir. Fakat `typeof` bunları farklı yorumlar. Resmi olarak yanlış olsa da pratikte çokça kullanılan bir özelliktir.
 
 
-## Summary
 
-There are 7 basic types in JavaScript.
+## Özet
+Javascript dilinde 7 tane basit tip bulunmaktadır.
 
-- `number` for numbers of any kind: integer or floating-point.
-- `string` for strings. A string may have one or more characters, there's no separate single-character type.
-- `boolean` for `true`/`false`.
-- `null` for unknown values -- a standalone type that has a single value `null`.
-- `undefined` for unassigned values -- a standalone type that has a single value `undefined`.
-- `object` for more complex data structures.
-- `symbol` for unique identifiers.
 
-The `typeof` operator allows us to see which type is stored in the variable.
+- `number` her türlü sayı için ( integer veya floating point)
+- `string` bir veya birden fazla karakter için
+- `boolean` , `true`/`false` yani doğru-yanlış değerleri için.
+- `null` bilinmeyen değerler için.
+- `undefined` değer atanmamış değişkenler için.
+- `object` daha karmaşık veri yapıları için.
+- `symbol` eşsiz tanımlamalar için.
 
-- Two forms: `typeof x` or `typeof(x)`.
-- Returns a string with the name of the type, like `"string"`.
-- For `null` returns `"object"` -- that's an error in the language, it's not an object in fact.
+`typeof` operatörü değişkenin tipini verir.
+- İki türlü kullanılabilir: `typeof x` veya `typeof(x)`
+- Geriye karakter dizisi olarak değişkenin tipini dönderir. Örneğin: `"string"`
+- `null` için `"object"` der. Fakat bu dile ait bir hatadır. Normalde `null` obje değildir.
 
-In the next chapters we'll concentrate on primitive values and once we're familiar with them, then we'll move on to objects.
+Bir sonraki bölümde basit tiplere yoğunlaşılacaktır. Bu tipleri kullanmak alışkanlık haline geldiğinde objelere geçilebilir.
