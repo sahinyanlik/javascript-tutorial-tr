@@ -4,13 +4,13 @@
 
 Kod yazmak hataya meyilli bir iştir. Bu süreç içerisinde muhtemelen hatalar yapacaksınız. Pardon! Kesinlikle hata yapacaksınız, en azından [robot](<https://tr.wikipedia.org/wiki/Bender_(Futurama)>) değilseniz.
 
-Kullanıcı tarayıcıda hataları göremez. Eğer yazdığınız kodda bir yanlışlık varsa, hatalı bir yer göremez ve bunu düzeltemezsiniz.
+Kullanıcı, tarayıcıda meydana hataları göremez. Eğer yazdığınız kodda bir yanlışlık varsa, hatalı kısımları göremez ve bunu düzeltemezsiniz.
 
 Hataları ve diğer kullanışlı bilgileri görebilmek için tarayıcılara entegre edilmiş "Geliştirici Araçları"'nı kullanmalısınız.
 
 Genelde geliştiriciler Chrome veya Firefox'a yoğunlaşmaktadırlar çünkü ikisinin de geliştirme aracı çok iyidir. Diğer tarayıcılar da geliştirme araçları sunarlar, bazen daha farklı özelliklerle bile olsa genelde amaçları Chrome veya Firefox'u yakalamaktır.  Bundan dolayı çoğu kişi "favori" tarayıcıya sahiptir ve eğer tarayıcı tabanlı bir problemle karşılaşırsa diğer tarayıcıyı kontrol eder.
 
-Geliştirici araçları gerçekten güçlüdür ve bir çok özelliği barındırırlar. Öncelikle bu araçların nasıl açılacağını ve hataları nasıl inceleyeceğimizi göreceğiz. Tabi bunlar için JavaScript kodları da çalıştıracağız.
+Geliştirici araçları gerçekten güçlüdür ve bir çok farklı özelliği bünyesinde barındırır. Öncelikle bu araçların nasıl açılacağını ve hataları nasıl inceleyeceğimizi göreceğiz. Tabi bunlar için JavaScript kodları da çalıştıracağız.
 
 [cut]
 
@@ -22,13 +22,13 @@ Bu sayfada bulunan JavaScript kodunda bir hata var. Kullanıcı bunu göremiyor,
 
 `key:F12`'ye veya `key:Cmd+Opt+J`'ye basarak geliştirici araçlarını açabilirsiniz.
 
-Geliştirici araçları konsol paneliyle açılacaktır. Aşağıdaki ekranda ilk hatanızı göreceksiniz: 
+Geliştirici araçları konsol paneliyle açılacaktır. Aşağıdaki ekranda ilk hatanızı göreceksiniz:
 
 ![chrome](chrome.png)
 
 Chrome'un geliştirme aracı versiyona göre değişiklik gösterecektir. Fakat genel hatları itibariyle bu anda gördüğünüze benzeyecektir.
 
-- Konsol panalinde kırmızı renk ile hatayı görebilirsiniz. Bu durumda kodunuz bilinmeyen "lalala" komutunda hata vermiş.
+- Konsol panelinde kırmızı renk ile hatayı görebilirsiniz. Bu durumda kodunuz bilinmeyen "lalala" komutunda hata vermiş.
 
 - Sağ tarafında hatanın hangi satırda olduğunu görebilirsiniz. Bu alan tıklanabilirdir. Şu anda hata `bug.html:12`'de bulunmaktadır.
 
@@ -38,7 +38,7 @@ Başlangıç için hataları görmek yeterli olacaktır. Daha sonra geliştirme 
 
 ## Firefox, Edge ve diğerleri
 
-Çoğu tarayıcı geliştirme aracını `key:F12` tuşu ile açar. 
+Çoğu tarayıcı geliştirme aracını `key:F12` tuşu ile açar.
 
 Görüntü ve kullanım olarak çoğu birbirine benzer. Bir tanesini öğrendiğinizde diğerine geçişiniz oldukça kolay olur.
 

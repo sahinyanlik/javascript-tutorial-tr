@@ -1,33 +1,33 @@
 # Code editors
-# Kod Düzenleyici
+# Kod Düzenleyiciler
 
 Kod düzenleyiciler programcıların evi sayılabilir.
 
-İki farklı düzenleyici bulunmaktadır. Bunlardan ilki IDE(Integrated Development Environment - Tümleşik geliştirme ortamı) ve diğeri hafif düzenleyicilerdir. Genelde çoğu kişi her iki tipten de kendine uygun bir araç seçer. 
+İki farklı düzenleyici bulunmaktadır. Bunlardan ilki IDE(Integrated Development Environment - Tümleşik geliştirme ortamı) ve diğeri hafif düzenleyicilerdir. Genelde çoğu kişi her iki tipten de kendine uygun bir araç seçer.
 
 [cut]
 
 ## TGO ( Tümleşik geliştirme ortamı )
 
-[TGO](https://tr.wikipedia.org/wiki/T%C3%BCmle%C5%9Fik_geli%C5%9Ftirme_ortam%C4%B1)( Tümleşik geliştirme ortamı ) birçok özelliği içerisinde barındıran düzenleyici olarak adlandırılabilir. Genelde "tüm proje" üzerine işlemler yapılabilecek bir "geliştirme ortamıdır". 
+[TGO](https://tr.wikipedia.org/wiki/T%C3%BCmle%C5%9Fik_geli%C5%9Ftirme_ortam%C4%B1)( Tümleşik geliştirme ortamı ) birçok özelliği içerisinde barındıran düzenleyici olarak adlandırılabilir. Genelde "tüm proje" üzerine işlemler yapılabilecek bir "geliştirme ortamıdır".
 
 TGO bir çok dosyayı yükleyebilir ve bu dosyalar arasında geçişleri sağlar, projenin tamamında otomatik tamamlama özelliği sunar. Versiyon kontrol sistemleri ile entegre çalışır ( örneğin [git](https://git-scm.com/)), test ortamı olarak çalıştırılabilir ve diğer "proje-seviyesinde" işlemler yapılabilir.
 
 Eğer henüz TGO seçmediyseniz aşağıdakilere göz atabilirsiniz:
 
-- IntelliJ Düzenleyicileri: [WebStorm](http://www.jetbrains.com/webstorm/) ön yüz geliştirmek için [PHPStorm (PHP)](http://www.jetbrains.com/phpstorm/), [IDEA (Java)](http://www.jetbrains.com/idea/), [RubyMine (Ruby)](http://www.jetbrains.com/ruby/) ve diğerler programlama dilleri için olanları bulunmaktadır.
-- Eğer .NET Geliştiriciyseniz Visual Studio iyi bir seçimdir. Bedava versiyonunu ([Visual Studio Community](https://www.visualstudio.com/vs/community/)) adresinden indirebilirsiniz.
-- Eclipse tabanlı ürünler , Örneğin [Aptana](http://www.aptana.com/) ve Zend Studio.
+- IntelliJ Düzenleyicileri: [WebStorm](http://www.jetbrains.com/webstorm/) ön yüz geliştirmek için [PHPStorm (PHP)](http://www.jetbrains.com/phpstorm/), [IDEA (Java)](http://www.jetbrains.com/idea/), [RubyMine (Ruby)](http://www.jetbrains.com/ruby/) ve diğer programlama dilleri için olanları bulunmaktadır.
+- Eğer .NET Geliştiricisiyseniz Visual Studio iyi bir seçimdir. Bedava versiyonunu ([Visual Studio Community](https://www.visualstudio.com/vs/community/)) adresinden indirebilirsiniz.
+- Eclipse tabanlı ürünler, Örneğin [Aptana](http://www.aptana.com/) ve Zend Studio.
 - [Komodo IDE](http://www.activestate.com/komodo-ide) bedava olan versiyonu sisteminize pek yük olmaz [Komodo Edit](http://www.activestate.com/komodo-edit).
 - [Netbeans](http://netbeans.org/).
 
-Yukarıdaki tüm TGO'lar Windows ve Mac işletim sistemlerinde çalışmaktadır, Visual Studio haricindekiler ise Linux üzerinde çalışabilmektedir.
+Yukarıda bahsedilen tüm TGO'lar Windows ve Mac işletim sistemlerinde çalışmaktadır, Visual Studio haricindekiler ise Linux üzerinde çalışabilmektedir.
 
-Çoğu ücretli olmasına rağmen deneme süresi mevcuttur. Ücretleri nitelikli bir geliştiricinin maaşına göre görmezden gelinebilecek kadar azdır. Bundan dolayı size en uygun olanını seçmelisiniz.
+Çoğu ücretli olmasına rağmen deneme süresi mevcuttur. Bahsedilen TGO'ların nitelikli bir geliştiricinin maaşına kıyasla görmezden gelinebilecek kadar az olduğu söylenebilir. Bundan dolayı size en uygun olanını seçmelisiniz.
 
 ## Hafif düzenleyiciler
 
-"Hafif düzenleyiciler" TGO'lar kadar güçlü olmasada hızlı ve basittirler.
+"Hafif düzenleyiciler" TGO'lar kadar güçlü olmasa da hızlı ve basittirler.
 
 Genelde bir dosyayı hızlıca açıp düzenleme amacıyla kullanılırlar.
 
@@ -49,7 +49,7 @@ Yazarın tercihi projeler için TGO ve küçük değişiklikler için hafif düz
 
 Kullandıklarım:
 
-- JS için [WebStorm](http://www.jetbrains.com/webstorm/) , eğer projece birden fazla dil kullanılacaksa, diğer JetBrain düzenleyicilerini kullanmaktayım  [PHPStorm](http://www.jetbrains.com/phpstorm/) (PHP), [IDEA](http://www.jetbrains.com/idea/) (Java), [RubyMine](http://www.jetbrains.com/ruby/) (Ruby). Diğer diller için düzenleyici bulunmasına rağmen daha önce kullanmadım. 
+- JS için [WebStorm](http://www.jetbrains.com/webstorm/) , eğer projece birden fazla dil kullanılacaksa, diğer JetBrain düzenleyicilerini kullanmaktayım  [PHPStorm](http://www.jetbrains.com/phpstorm/) (PHP), [IDEA](http://www.jetbrains.com/idea/) (Java), [RubyMine](http://www.jetbrains.com/ruby/) (Ruby). Diğer diller için düzenleyici bulunmasına rağmen daha önce kullanmadım.
 - Hafif düzenleyici olarak [Sublime Text](http://www.sublimetext.com) veya [Atom](https://atom.io/) kullanmaktayım.
 
 - Çevirmenin tercihi : Ben projelerim için daha çok Visual Studio Code kullanmaktayım. Çoğu dil yazımını desteklemekte ve Atom'a göre oldukça hızlı.
@@ -61,6 +61,6 @@ Eğer hangisini tercih edeceğinizi bilmiyorsanız yukarıda yazdıklarımı ter
 
 Yukarıda yazan düzenleyicileri ben veya bir çok profesyonel arkadaşım mutlu bir şekilde kullanmaktayız.
 
-Tabi bunlar haricinde nice harika editörler mevcuttur. Lütfen en çok sevdiğinizi seçin.
+Tabi bunlar haricinde nice harika editörler mevcuttur. Lütfen en çok hoşunuza gideni seçin.
 
 Editör seçimi de diğer araç seçimleri gibi kişisel, projeye göre, alışkanlıklara göre, kişisel tercihlere göre farklılık gösterebilir.
