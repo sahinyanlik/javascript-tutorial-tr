@@ -1,56 +1,55 @@
-# Loops: while and for
+# Döngüler: while ve for
 
-We often have a need to perform similar actions many times in a row.
+Çoğu zaman aynı bir sıra ile tekrar yapma ihtiyacı duyulabilirsiniz.
 
-For example, when we need to output goods from a list one after another. Or just run the same code for each number from 1 to 10.
+Örneğin bir listede bulunan ürünlerin sıra ile çıktısını almak. Veya aynı kodu 1-10'a kadar olan sayılar için çalıştırmak.
 
-*Loops* are a way to repeat the same part of code multiple times.
+*Döngü* aynı kod parçacığının birden fazla defa çalıştırılmasına denir.
 
 [cut]
 
-## The "while" loop
+## "while" döngüsü
 
-The `while` loop has the following syntax:
+`while` döngüsü aşağıdaki gibi bir yazıma sahiptir:
 
 ```js
-while (condition) {
-  // code
-  // so-called "loop body"
+while (koşul) {
+  // kod
+  // veya döngünün gövdesi 
 }
 ```
 
-While the `condition` is `true`, the `code` from the loop body is executed.
+`koşul` `doğru` iken(while), `döngü gövdesinde` bulunan kod çalıştırılır.
 
-For instance, the loop below outputs `i` while `i < 3`:
+Örneğin, aşağıdaki kod `i < 3` `iken` çalışır.
 
 ```js run
 let i = 0;
-while (i < 3) { // shows 0, then 1, then 2
+while (i < 3) { // önce 0, sonra 1, sonra 2
   alert( i );
   i++;
 }
 ```
+Döngünün gövdesinde bulunan kodun her çalışmasına *tekerrür(iteration)* denir. Yukarıdaki örnekte gövde 3 defa tekerrür etmiştir.
 
-A single execution of the loop body is called *an iteration*. The loop in the example above makes three iterations.
+Eğer `i++` gibi bir kod olmasaydı, teoride kod sonsuza kadar devam ederdi. Pratikte ise tarayıcınız bu kodun uzun süre çalışmasını engeller, sunucu tabanlı JavaScript yazdığınızda ise bu işlem durdurulur.
 
-If there were no `i++` in the example above, the loop would repeat (in theory) forever. In practice, the browser provides ways to stop such loops, and for server-side JavaScript we can kill the process.
+Sadece karşılaştırma değil, bir ifade veya değişken koşul olabilir. `While` döngüsü tarafından alınan tüm ifadeler boolean'a dönüştürülür.
 
-Any expression or a variable can be a loop condition, not just a comparison. They are evaluated and converted to boolean by `while`.
-
-For instance, the shorter way to write `while (i != 0)` could be `while (i)`:
+Örneğin, `while(i != 0 )` `while(i)`'de olabilir.
 
 ```js run
 let i = 3;
 *!*
-while (i) { // when i becomes 0, the condition becomes falsy, and the loop stops
+while (i) {  // i 0 olduğunda koşul `yanlış` olur ve döngü biter.
 */!*
   alert( i );
   i--;
 }
 ```
 
-````smart header="Brackets are not required for a single-line body"
-If the loop body has a single statement, we can omit the brackets `{…}`:
+````smart header="Tek satır gövde varsa süslü paranteze gerek kalmaz."
+Eğer döngü gövdesi tek satır ise süslü parantezi yazmayabilirsiniz. `{..}`:
 
 ```js run
 let i = 3;
@@ -60,19 +59,18 @@ while (i) alert(i--);
 ```
 ````
 
-## The "do..while" loop
+## "do..while" döngüsü
 
-The condition check can be moved *below* the loop body using the `do..while` syntax:
+`do..while` döngüsü kullanarak koşul kontrolünü *sonda* yapmak mümkündür.
 
 ```js
 do {
-  // loop body
+  // döngü gövdesi
 } while (condition);
 ```
+Döngü önce gövdeyi çalıştırır, sonra koşul kontrolü yapar ve eğer doğruysa tekrar döngü gövdesini çalıştırır.
 
-The loop will first execute the body, then check the condition and, while it's truthy, execute it again and again.
-
-For example:
+Örneğin:
 
 ```js run
 let i = 0;
@@ -81,108 +79,103 @@ do {
   i++;
 } while (i < 3);
 ```
+Bu şekilde döngü yazımı çok nadir olarak kullanılır. Kullanılmasının en önemli amacı **en azından bir defa** ne olursa olsun gövdenin çalıştırılma istenmesidir. Genelde `while(..){}` şekli tercih edilir.
 
-This form of syntax is rarely used except when you want the body of the loop to execute **at least once** regardless of the condition being truthy. Usually, the other form is preferred: `while(…) {…}`.
+## "for" döngüsü
 
-## The "for" loop
+`for` döngüsü en fazla kullanılan döngüdür.
 
-The `for` loop is the most often used one.
-
-It looks like this:
+Aşağıdaki şekilde kullanıma sahiptir:
 
 ```js
-for (begin; condition; step) {
-  // ... loop body ...
+for (başla; koşul; adım) {
+  // ... döngü gövdesi ...
 }
 ```
-
-Let's learn the meaning of these parts by example. The loop below runs `alert(i)` for `i` from `0` up to (but not including) `3`:
+Örnekler üzerinden incenecek olursa. Aşağıdaki döngü `alert(i)` yi `i` `0` dan `3` olana kadar çalıştırır.(3 dahil değil)
 
 ```js run
 for (let i = 0; i < 3; i++) { // shows 0, then 1, then 2
   alert(i);
 }
 ```
+Bölüm bölüm inceleyecek olursak
 
-Let's examine the `for` statement part by part:
+| bölüm  |             |                                                                            |
+|--------|-------------|----------------------------------------------------------------------------|
+| başla  | `i = 0`     | Döngüye girildiğinde çalışır.                                              |
+| koşul  | `i < 3`     | Her tekerrürden önce çalışır, eğer `yanlış` ise döngü durur.               |
+| adım   | `i++`       | Gövdenin tekerrür etmesinden sonra fakat koşuldan önce çalışır             |
+| gövde  | `alert(i)`  | koşul doğru olduğu sürece durmadan çalışır                                 |
 
-| part  |          |                                                                            |
-|-------|----------|----------------------------------------------------------------------------|
-| begin | `i = 0`    | Executes once upon entering the loop.                                      |
-| condition | `i < 3`| Checked before every loop iteration, if fails the loop stops.              |
-| step| `i++`      | Executes after the body on each iteration, but before the condition check. |
-| body | `alert(i)`| Runs again and again while the condition is truthy                         |
+Genel döngü algoritması aşağıdaki gibidir:
 
-
-The general loop algorithm works like this:
 ```
-Run begin
-→ (if condition → run body and run step)
-→ (if condition → run body and run step)
-→ (if condition → run body and run step)
+Çalışmaya başlar
+→ (if koşul → gövdeyi çalıştır ve adımı çalıştır.)
+→ (if koşul → gövdeyi çalıştır ve adımı çalıştır.)
+→ (if koşul → gövdeyi çalıştır ve adımı çalıştır.)
 → ...
 ```
 
-If you are new to loops, then maybe it would help if you go back to the example and reproduce how it runs step-by-step on a piece of paper.
+Eğer döngüleri yeni görüyorsanız, belki geri dönüp bu olanları sırasıyla kağıda yazarak takip ederseniz sizin için daha iyi olacaktır.
 
-Here's what exactly happens in our case:
+Yukarıdaki kodda tam olarak ne oluyor peki:
+
 
 ```js
 // for (let i = 0; i < 3; i++) alert(i)
 
-// run begin
+// Çalışmaya başla
 let i = 0
-// if condition → run body and run step
+// if koşul → gövdeyi çalıştır ve adımı çalıştır
 if (i < 3) { alert(i); i++ }
-// if condition → run body and run step
+// if koşul →  gövdeyi çalıştır ve adımı çalıştır
 if (i < 3) { alert(i); i++ }
-// if condition → run body and run step
+// if koşul →  gövdeyi çalıştır ve adımı çalıştır
 if (i < 3) { alert(i); i++ }
-// ...finish, because now i == 3
+// ...bitir, çünkü şimdi i=3
 ```
 
-````smart header="Inline variable declaration"
-Here the "counter" variable `i` is declared right in the loop. That's called an "inline" variable declaration. Such variables are visible only inside the loop.
+````smart header="Satır arasında değişken tanımlama"
+Sayaç değişkeni olan `i` döngüye girdiğinde oluşturulur. Buna "satır arası" değişken tanımlama denir. Bu değişken sadece döngü içerisinde kullanılabilir.
 
 ```js run
 for (*!*let*/!* i = 0; i < 3; i++) {
   alert(i); // 0, 1, 2
 }
-alert(i); // error, no such variable
+alert(i); // hata! böyle bir değişken bulunamadı.
 ```
-
-Instead of defining a variable, we can use an existing one:
+Değişken tanımlamak yerine var olan da kullanılabilir:
 
 ```js run
 let i = 0;
 
-for (i = 0; i < 3; i++) { // use an existing variable
+for (i = 0; i < 3; i++) { // var olan değişkeni kullan
   alert(i); // 0, 1, 2
 }
 
-alert(i); // 3, visible, because declared outside of the loop
+alert(i); // 3, görünür halde çünkü değişken döngünün dılında tanımlandı.
 ```
 
 ````
 
 
-### Skipping parts
+### Bazı bölümlerin pas geçilmesi
 
-Any part of `for` can be skipped.
+`for` döngüsünün her bölümü pas geçilebilir.
 
-For example, we can omit `begin` if we don't need to do anything at the loop start.
+Örneğin `başlangıç` bölümüne ihtiyaç yoksa pas geçilebilir.
 
-Like here:
-
+Örneğin:
 ```js run
-let i = 0; // we have i already declared and assigned
+let i = 0; // i'yi tanımlanıp 0 değeri atandı
 
-for (; i < 3; i++) { // no need for "begin"
+for (; i < 3; i++) { // "başlangıç"'a ihtiyaç yok
   alert( i ); // 0, 1, 2
 }
 ```
-
-We can also remove the `step` part:
+`basamak` bilgisini silmek de mümkün:
 
 ```js run
 let i = 0;
