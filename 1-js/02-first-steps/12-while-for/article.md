@@ -184,70 +184,69 @@ for (; i < 3;) {
   alert( i++ );
 }
 ```
+Döngü `while(i<3)` ile aynı oldu.
 
-The loop became identical to `while (i < 3)`.
-
-We can actually remove everything, thus creating an infinite loop:
+Aslında herşeyi silebiliriz:
 
 ```js
 for (;;) {
-  // repeats without limits
+  // sonsuz döngü
 }
 ```
 
-Please note that the two `for` semicolons `;` must be present, otherwise it would be a syntax error.
+Dikkat ederseniz `for` döngüsü yazarken noktalı virgüller `;` yazılmalıdır, aksi halde yazım hatası verir.
 
-## Breaking the loop
 
-Normally the loop exits when the condition becomes falsy.
+## Döngüyü kırma
 
-But we can force the exit at any moment. There's a special `break` directive for that.
+Normalde döngüler koşul `yanlış` olduğunda biter.
 
-For example, the loop below asks the user for a series of numbers, but "breaks" when no number is entered:
+Fakat bazı durumlarda bu döngü `kırılabilir` ( break ).
+
+Örneğin, kullanıcıdan bir dizi sayı girmesini istediniz eğer boş bir değer girerse döngüyü kırabilirsiniz.
 
 ```js
-let sum = 0;
+let toplam = 0;
 
 while (true) {
 
-  let value = +prompt("Enter a number", '');
+  let deger = +prompt("Bir sayı giriniz", '');
 
 *!*
-  if (!value) break; // (*)
+  if (!deger) break; // (*)
 */!*
 
-  sum += value;
+  toplam += deger;
 
 }
-alert( 'Sum: ' + sum );
+alert( 'Toplam: ' + toplam );
 ```
 
-The `break` directive is activated in the line `(*)` if the user enters an empty line or cancels the input. It stops the loop immediately, passing the control to the first line after the loop. Namely, `alert`.
+`break` talimatı `(*)` satırında görüldüğü üzere. Eğer kullanıcı boş değer girerse doğrudan döngü durur ve döngüden sonraki ilk satıra atlar. Yani `alert` çalışır. 
 
-The combination "infinite loop + `break` as needed" is great for situations when the condition must be checked not in the beginning/end of the loop, but in the middle, or even in several places of the body.
+"Sonsuz döngü" + `break` birlikte kullanıldığında başlangıçta koşul kontrol edilmese de olur ama döngü gövdesinde veya sonunda kontrol edilmesi gerekir denen döngüler için güzel bir birliktelik oluşturur. Bu döngü içerisinde bir çok defa koşul kullılarak döngü kırılabilir.
 
-## Continue to the next iteration [#continue]
+## Bir sonraki tekerrüre geçme  [#continue]
 
-The `continue` directive is a "lighter version" of `break`. It doesn't stop the whole loop. Instead it stops the current iteration and forces the loop to start a new one (if the condition allows).
+`continue`, `break` in daha hafif versiyonudur. Döngüyü tamamen kırmaz da zorla bir sonraki tekerrüre geçer(tabi koşul sağlanıyorsa)
 
-We can use it if we're done on the current iteration and would like to move on to the next.
+O anda tekrar eden değer ile işimiz bitti ve bir sonraki tekrar geçmek istendiğinde `continue` kullanılır.
 
-The loop above uses `continue` to output only odd values:
 
 ```js run no-beautify
 for (let i = 0; i < 10; i++) {
 
-  // if true, skip the remaining part of the body
+  // Eğer 2'ye bölünebiliyorsa bir sonraki adıma atlar. 
   *!*if (i % 2 == 0) continue;*/!*
 
-  alert(i); // 1, then 3, 5, 7, 9
+  alert(i); // ekranda 1, 3, 5, 7, 9 değerleri gösterilir. 
 }
 ```
+`i` nin çift değerleri için döngü gövdesi durdurulur, sonraki adıma geçilir. Bundan dolayı `alert` sadece tek değerler için çalışır.
 
-For even values of `i` the `continue` directive stops body execution, passing the control to the next iteration of `for` (with the next number). So the `alert` is only called for odd values.
+````smart header="`continue` talimatı döngü sayısının azalmasına yardımcı olur."
 
-````smart header="The directive `continue` helps to decrease nesting level"
-A loop that shows odd values could look like this:
+Tek değerler gösteren döngü aşağıdaki gibi de yazılabilir:
 
 ```js
 for (let i = 0; i < 10; i++) {
@@ -258,17 +257,16 @@ for (let i = 0; i < 10; i++) {
 
 }
 ```
+Teknik açısından birbiri ile aynıdırlar. Her zaman `continue` bloğunun yerine `if` kullanabiliriz.
 
-From a technical point of view it's identical to the example above. Surely, we can just wrap the code in the `if` block instead of `continue`.
+Tabi bunun yan etkisi döngü gövdesi içinde bir tane daha `if` kullanarak okunabilirliği düşürmektir.
 
-But as a side-effect we got one more figure brackets nesting level. If the code inside `if` is longer than a few lines, that may decrease the overall readability.
 ````
 
-````warn header="No `break/continue` to the right side of '?'"
-Please note that syntax constructs that are not expressions cannot be used in `'?'`. In particular, directives `break/continue` are disallowed there.
+````warn header=" 'if' yerine '?' kullanılıyorsa sağ tarafa 'continue/break' yazılmaz."
+`break/continute` talimatları `'?'` ile kullanılamazlar
 
-For example, if we take this code:
-
+Örneğin:
 ```js
 if (i > 5) {
   alert(i);
@@ -276,108 +274,107 @@ if (i > 5) {
   continue;
 }
 ```
-
-...And rewrite it using a question mark:
+Yukarıdaki döngü `?` ile yazılacak olursa:
 
 
 ```js no-beautify
-(i > 5) ? alert(i) : *!*continue*/!*; // continue not allowed here
+(i > 5) ? alert(i) : *!*continue*/!*; // `continue` burada kullanılamaz!!!
 ```
 
-...Then it stops working. The code like this will give a syntax error:
+... sonrasında çalışmayı durdurur. Böyle kodlar yazım hatası verir.
 
+Bu da `'?'` işaretini `if` yerine kullanmamak için ayrı bir neden.
 
-That's just another reason not to use a question mark operator `'?'` instead of `if`.
 ````
 
-## Labels for break/continue
+## break/continue için etiket tanımlanması ( Label )
 
-Sometimes we need to break out from multiple nested loops at once.
 
-For example, in the code below we loop over `i` and `j` prompting for coordinates `(i, j)` from `(0,0)` to `(3,3)`:
-
+Bazen birden fazla döngü içinden tek bir break ile çıkılma ihtiyacı duyulabilir.
+Örneğin aşağıdaki kodda döngü `i` ve `j` kordinatlarını ekranda gösterir:
 ```js run no-beautify
 for (let i = 0; i < 3; i++) {
 
   for (let j = 0; j < 3; j++) {
 
-    let input = prompt(`Value at coords (${i},${j})`, '');
+    let deger = prompt(`Kordinattaki değer (${i},${j})`, '');
 
-    // what if I want to exit from here to Done (below)?
+    // Burada döngüden çıkmak istersem ne yapmalıyım?
 
   }
 }
 
-alert('Done!');
+alert('Bitti!');
 ```
 
-We need a way to stop the process if the user cancels the input.
+Eğer kullanıcı iptale basarsa döngü iptal edilmelidir.
 
-The ordinary `break` after `input` would only break the inner loop. That's not sufficient. Labels come to the rescue.
+Normalde içerideki döngü için `deger`'e değer atadıktan sonra duruma göre içteki döngü kırılabilir. Fakat bu yeterli değildir. Bu gibi durumlarda `Labels` veya `etiket` ile sorun çözülebilir.
 
-A *label* is an identifier with a colon before a loop:
+*etiket* döngüden önce bir kolon ile döngüyü tanımlamak için kullanılır.
+
 ```js
-labelName: for (...) {
+etiketAdi: for (...) {
   ...
 }
 ```
 
-The `break <labelName>` statement in the loop breaks out to the label.
+`break <etiketAdi>` cümlesi bu etiketin olduğu yeri kırar.
 
-Like here:
+Aşağıdaki gibi:
 
 ```js run no-beautify
-*!*outer:*/!* for (let i = 0; i < 3; i++) {
+*!*ust_dongu:*/!* for (let i = 0; i < 3; i++) {
 
   for (let j = 0; j < 3; j++) {
 
-    let input = prompt(`Value at coords (${i},${j})`, '');
+    let giris = prompt(`Kordinattaki değer (${i},${j})`, '');
 
-    // if an empty string or canceled, then break out of both loops
-    if (!input) *!*break outer*/!*; // (*)
+    // Eğer iptal edildi veya boş bir değer girildiyse dışarıdaki döngüyü de kır.
+    if (!input) *!*break ust_dongu*/!*; // (*)
 
-    // do something with the value...
+    // değer ile birşeyler yap.
   }
 }
-alert('Done!');
+alert('Bitti!');
 ```
 
-In the code above `break outer` looks upwards for the label named `outer` and breaks out of that loop.
+Yukarıdaki kodda `break ust_dongu` adımına gelirse üste doğru `ust_dongu` aranır ve bulunduğu yerde kırılır.
 
-So the control goes straight from `(*)` to `alert('Done!')`.
+Böylece kontrol doğrudan `(*)`, `alert('Bitti!')`ye geçer.
 
-We can also move the label onto a separate line:
+Etiketi başka bir satıra geçirmekte mümkündür.
 
 ```js no-beautify
-outer:
+ust_dongu:
 for (let i = 0; i < 3; i++) { ... }
 ```
 
-The `continue` directive can also be used with a label. In this case the execution jumps to the next iteration of the labeled loop.
+`continue` talimatı da etiket ile kullanılabilir. Bu durumda etiketin yazılı olduğu yere atlar.
 
-````warn header="Labels are not a \"goto\""
-Labels do not allow us to jump into an arbitrary place of code.
 
-For example, it is impossible to do this:
+````warn header="Etiketler \"goto\" değildir."
+Etiketler ile kodun herhangi bir yerine atlamak mümkün değildir.
+
+Örneğin aşağıdaki kod çalışmaz.
 ```js
-break label;  // jumps to label? No.
+break etiket;  // etikete atlar değil mi?.
 
-label: for (...)
+etiket: for (...)
 ```
-
-The call to a `break/continue` is only possible from inside the loop, and the label must be somewhere upwards from the directive.
+`break/continue` sadece döngünün içerisinde çalışabilir, ve doğal olarak etiketler de üst tarafa yazılmalıdırlar.
 ````
 
-## Summary
+## Özet
+Bu konuda 3 farklı döngü işlendi:
 
-We covered 3 types of loops:
 
-- `while` -- The condition is checked before each iteration.
-- `do..while` -- The condition is checked after each iteration.
-- `for (;;)` -- The condition is checked before each iteration, additional settings available.
+- `while` -- Her tekerrürden önce koşul kontrol edilir
+- `do..while` -- Koşul tekerrürden sonra kontrol edilir.
+- `for (;;)` -- Her tekerrürden önce koşul kontrol edilir. Farklı seçenekler mevcuttur.
 
-To make an "infinite" loop, usually the `while(true)` construct is used. Such a loop, just like any other, can be stopped with the `break` directive.
+Sonsuz döngü yapmak için genelde `while(true)` kullanılır. Böyle döngüler de diğerleri gibi `break` talimatıyla kırılabilir.
 
-If we don't want to do anything on the current iteration and would like to forward to the next one, the `continue` directive does it.
+Eğer o anki tekerrür ile işimiz bitti ve bir sonrakine geçmek istiyorsanız `continue` kullanmanız lazım.
 
-`Break/continue` support labels before the loop. A label is the only way for `break/continue` to escape the nesting and go to the outer loop.
+`break/continue` ile döngüden önce yazılan `etikete` atlamak veya üst döngüyü kırmak mümkündür.
