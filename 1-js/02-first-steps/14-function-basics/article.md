@@ -233,212 +233,211 @@ function mesajGoster(gonderen, metin) {
 
 ````
 
+## Değer dönderme
 
-## Returning a value
+Fonksiyon çağırıldığı yere değer döndürebilir.
 
-A function can return a value back into the calling code as the result.
-
-The simplest example would be a function that sums two values:
+En basit örnek iki değeri toplayan bir fonksiyon olabilir.
 
 ```js run no-beautify
-function sum(a, b) {
+function toplam(a, b) {
   *!*return*/!* a + b;
 }
 
-let result = sum(1, 2);
-alert( result ); // 3
+let sonuc = toplam(1, 2);
+alert( sonuc ); // 3
 ```
 
-The directive `return` can be in any place of the function. When the execution reaches it, the function stops, and the value is returned to the calling code (assigned to `result` above).
+`return` fonksiyon içerisinde her yerde kullanılabilir. Kod `return` satırına eriştiğinde fonksiyon durur ve değer fonksiyonun çağırıldığı yere geri gönderilir.
 
-There may be many occurrences of `return` in a single function. For instance:
+Bir fonksiyon içerisinde birden fazla `return` fonksiyonu da olabilir.
 
 ```js run
-function checkAge(age) {
-  if (age > 18) {
+function yasKontrolu(yas) {
+  if (yas > 18) {
 *!*
     return true;
 */!*
   } else {
 *!*
-    return confirm('Got a permission from the parents?');
+    return confirm('Ebevenylerinin izni var mı?');
 */!*
   }
 }
 
-let age = prompt('How old are you?', 18);
+let yas = prompt('Kaç yaşındasın?', 18);
 
-if ( checkAge(age) ) {
-  alert( 'Access granted' );
+if ( yasKontrolu(yas) ) {
+  alert( 'İzin verildi' );
 } else {
-  alert( 'Access denied' );
+  alert( 'Reddedildi' );
 }
 ```
+`return` değer döndermek zorunda değildir. Bu fonksiyondan anında çıkmayı sağlar.
 
-It is possible to use `return` without a value. That causes the function to exit immediately.
-
-For example:
+Örneğin:
 
 ```js
-function showMovie(age) {
-  if ( !checkAge(age) ) {
+function filmGoster(age) {
+  if ( !yasKontrolu(yas) ) {
 *!*
     return;
 */!*
   }
 
-  alert( "Showing you the movie" ); // (*)
+  alert( "Filmleri izleyebilirsin" ); // (*)
   // ...
 }
 ```
+Yukarıdaki kodda  eğer `yasKontrolu(yas)` `false` dönderir ise  `filmGoster` fonksiyonu `alert`e erişemeyecektir.
 
-In the code above, if `checkAge(age)` returns `false`, then `showMovie` won't proceed to the `alert`.
+````smart header="boş veya birşey döndermeyen fonksiyon `undefined` dönderir"
+Eğer bir fonksiyon değer döndermiyor ise bu fonksiyon `undefined` dönderiyor ile aynı anlama gelir.
 
-````smart header="A function with an empty `return` or without it returns `undefined`"
-If a function does not return a value, it is the same as if it returns `undefined`:
 
 ```js run
-function doNothing() { /* empty */ }
+function biseyYapma() { /* boş */ }
 
-alert( doNothing() === undefined ); // true
+alert( biseyYapma() === undefined ); // true
 ```
 
-An empty `return` is also the same as `return undefined`:
+Boş dönderen `return`, `return undefined` ile aynıdır.
 
 ```js run
-function doNothing() {
+function biseyYapma() {
   return;
 }
 
-alert( doNothing() === undefined ); // true
+alert( biseyYapma() === undefined ); // true
 ```
 ````
 
-````warn header="Never add a newline between `return` and the value"
-For a long expression in `return`, it might be tempting to put it on a separate line, like this:
+````warn header="`return` ve `değer` arasına hiç bir zaman satır eklemeyin"
+
+Uzun `return` ifadelerinde, yeni bir satırda yazmak size kullanışlı gelebilir, örneğin aşağıdaki gibi:
 
 ```js
 return
- (some + long + expression + or + whatever * f(a) + f(b))
+ (bazı + uzun + ifade + veya + baska + birsey  * f(a) + f(b))
 ```
-That doesn't work, because JavaScript assumes a semicolon after `return`. That'll work the same as:
+Bu çalışmaz, çünkü JavaScript `return` kelimesinden sonra `;` varsayara ve `undefined` döner. Bu aşağoıdaki ifade ile aynıdır:
 
 ```js
 return*!*;*/!*
- (some + long + expression + or + whatever * f(a) + f(b))
+  (bazı + uzun + ifade + veya + baska + birsey  * f(a) + f(b))
 ```
-So, it effectively becomes an empty return. We should put the value on the same line instead.
+Bundan dolayı, tam olarak boş return olur. Geri döndereceğimiz değer ile return aynı satırda olmalıdır.
+
 ````
 
-## Naming a function [#function-naming]
+## Fonksiyonu isimlendirme [#fonksiyon-isimlendirme]
 
-Functions are actions. So their name is usually a verb. It should briefly, but as accurately as possible describe what the function does. So that a person who reads the code gets the right clue.
+Fonksiyonlar eylemdir. Bundan dolayı isimleri yüklem olmalıdır. Net olmalı ve fonksiyonun ne işe yaradığını ifade edebilmelidir. Böylece kim ki kodu okur, ne yazıldığınına dair bir fikri olur.
 
-It is a widespread practice to start a function with a verbal prefix which vaguely describes the action. There must be an agreement within the team on the meaning of the prefixes.
+Genel itibari ile eylemi tanımlayan önek kullanmak iyi bir yöntemdir. Bu önekler ile ilgili birlikte kod yazdığınız kişiler ile uyum içerisinde olmalısınız. 
 
-For instance, functions that start with `"show"` usually show something.
+Örneğin `"show"` fonksiyonu her zaman birşeyleri `gösterir`.
 
-Function starting with...
+Fonksiyonlar şöyle başlayabilir.
 
-- `"get…"` -- return a value,
-- `"calc…"` -- calculate something,
-- `"create…"` -- create something,
-- `"check…"` -- check something and return a boolean, etc.
+- `"get…"` -- değer dönderir,
+- `"calc…"` -- birşeyler hesaplar,
+- `"create…"` -- birşeyler yaratır,
+- `"check…"` -- birşeyleri kontrol eder ve boolean dönderir.
 
-Examples of such names:
+Böyle isimlere örnek:
+
+Not: ingilizce de bu daha kolay önce eylemi yazıyorlar. Türkçe de fiil genelde sonda olduğundan dolayı sıkıntı yaşanmaktadır. Fonksiyonlarınızı adlandırırken ingilizce adlandırırsanız okunması daha kolay olacaktır.
 
 ```js no-beautify
-mesajGoster(..)     // shows a message
-getAge(..)          // returns the age (gets it somehow)
-calcSum(..)         // calculates a sum and returns the result
-createForm(..)      // creates a form (and usually returns it)
-checkPermission(..) // checks a permission, returns true/false
+sendMessage(..)     // mesaj gösterir
+getAge(..)          // yaşı dönderir
+calcSum(..)         // toplamı hesaplar ve geri dönderir.
+createForm(..)      // form oluşturur ve genelde geri dönderir.
+checkPermission(..) // izni kontor eder. true/false
+```
+Önek ile fonksiyonlar bir anlamda ipucu verir ve ne tür değerler dönmesi gerektiğini anlatır.
+
+```smart header="Bir fonksiyon -- bir eylem"
+Bir fonksiyon sadece isminin tanımladığı işi yapmalı.
+
+İki birbirinden farklı eylem çoğu zaman iki fonksiyon ile yazılmalıdır, birlikte çağılsalar bile ( bu durumda 3. bir fonksiyon bunları çağırmalıdır )
+
+Bu kurallar şu şekilde bozulabilir:
+
+- `getAge` -- Eğer bu fonksiyon içeride `alert` ile yaş gösteriyor ise yanlış olur. Bu fonksiyonun sadece yaşı alıp döndermesi gerekmekte.
+- `createForm` -- Eğer dökümanı değiştiriyorsa veya forma birşey ekliyorsa yanlış olur. ( Sadece formu yaratmalı ve geri dönmelidir )
+- `checkPermission` -- Eğer `izin verildi/reddedildi` gibi mesajları bu fonksiyon gösterirse yanlış olur. Sadece kontrol etmeli ve geri dönmelidir.
+
+Bu örnekler genel olarak öneklerin nasıl tahmin edilmesi gerektiğini gösterir. Bunların ne anlama geleceği siz ve takımınıza kalmıştır. Belki sizin kodunuz için farklı bir şekilde davranması gayet doğal olabilir. Fakat yine de öneklere ait bir anlamlandırmanız olmalıdır. Ön ek ne yapabilir ne yapamaz vs. Tüm aynı önekli fonksiyonlar sizin koyduğunuz kurala uymalı ve tüm takım bu kuralları biliyor olmalıdır.
 ```
 
-With prefixes in place, a glance at a function name gives an understanding what kind of work it does and what kind of value it returns.
+```smart header="Aşırı derecede kısa fonksiyon isimleri"
 
-```smart header="One function -- one action"
-A function should do exactly what is suggested by its name, no more.
+Çokça kullanılan fonksiyonlar genelde aşırı derece kısa isimlere sahip olurlar. 
 
-Two independent actions usually deserve two functions, even if they are usually called together (in that case we can make a 3rd function that calls those two).
+Örneğin, [jQuery](http://jquery.com) kütüphanesi `$` fonksiyonu ile tanımlanır.  [LoDash](http://lodash.com/) kütüphanesi de keza kendine has fonksiyon `_` kullanır.
 
-A few examples of breaking this rule:
-
-- `getAge` -- would be bad if it shows an `alert` with the age (should only get).
-- `createForm` -- would be bad if it modifies the document, adding a form to it (should only create it and return).
-- `checkPermission` -- would be bad if displays the `access granted/denied` message (should only perform the check and return the result).
-
-These examples assume common meanings of prefixes. What they mean for you is determined by you and your team. Maybe it's pretty normal for your code to behave differently. But you should have a firm understanding of what a prefix means, what a prefixed function can and cannot do. All same-prefixed functions should obey the rules. And the team should share the knowledge.
+Bunlar istisnadır. Genel olarak fonksiyon isimleri kısa ve açıklayıcı olmalıdır.
 ```
 
-```smart header="Ultrashort function names"
-Functions that are used *very often* sometimes have ultrashort names.
+## Fonksiyonlar == Yorumlar
 
-For example, [jQuery](http://jquery.com) framework defines a function `$`, [LoDash](http://lodash.com/) library has it's core function named `_`.
+Fonksiyonlar kısa olmalı ve sadece birşeyi yapmalıdırlar. Eğer uzun ise bu durumda ayırıp yeni bir fonksiyon yapmanız daha iyi olabilir. Bazen bu kuralı takip etmek zor olabilir. Fakat kesinlikle iyi birşeydir.
 
-These are exceptions. Generally functions names should be concise, but descriptive.
-```
+Farklı fonksiyon daha kolay bir şekilde çalışması kontrol edilebilir. Varlığı harika bir yorumdur.
 
-## Functions == Comments
+Örneğin, aşağıdaki iki `asalGoster(n)` fonksiyonunu karşılaştırın. [Asal Sayı](https://tr.wikipedia.org/wiki/Asal_say%C4%B1)
 
-Functions should be short and do exactly one thing. If that thing is big, maybe it's worth it to split the function into a few smaller functions. Sometimes following this rule may not be that easy, but it's definitely a good thing.
-
-A separate function is not only easier to test and debug -- its very existence is a great comment!
-
-For instance, compare the two functions `showPrimes(n)` below. Each one outputs [prime numbers](https://en.wikipedia.org/wiki/Prime_number) up to `n`.
-
-The first variant uses a label:
+İlk tanım label kullanıyor:
 
 ```js
-function showPrimes(n) {
-  nextPrime: for (let i = 2; i < n; i++) {
+function asalGoster(n) {
+  sonrakiAsal: for (let i = 2; i < n; i++) {
 
     for (let j = 2; j < i; j++) {
-      if (i % j == 0) continue nextPrime;
+      if (i % j == 0) continue sonrakiAsal;
     }
 
-    alert( i ); // a prime
+    alert( i ); // asal sayı
   }
 }
 ```
-
-The second variant uses an additional function `isPrime(n)` to test for primality:
+İkinci tip ise `asalMi(n)` adında ikinci bir fonksiyon ile asal olup olmama durumunu kontrol ediyor.
 
 ```js
-function showPrimes(n) {
+function asalGoster(n) {
 
   for (let i = 2; i < n; i++) {
-    *!*if (!isPrime(i)) continue;*/!*
+    *!*if (!asalMi(i)) continue;*/!*
 
-    alert(i);  // a prime
+    alert(i);  // asal sayı
   }
 }
 
-function isPrime(n) {
+function asalMi(n) {
   for (let i = 2; i < n; i++) {
     if ( n % i == 0) return false;
   }
   return true;
 }
 ```
+İkinci örnek anlaşılması daha kolay değil mi? `asalMi` gibi fonksiyon isimleri yerine bazıları buna *kendi kendini açıklayan* demektedir.
 
-The second variant is easier to understand isn't it? Instead of the code piece we see a name of the action (`isPrime`). Sometimes people refer to such code as *self-describing*.
+Fonksiyonlar eğer tekrar kullanmayacağımızı bilsek bile oluşturulabilir. Kodu daha okunabilir yaparlar.
 
-So, functions can be created even if we don't intend to reuse them. They structure the code and make it readable.
+## Özet
 
-## Summary
-
-A function declaration looks like this:
-
+Bir fonksiyonun tanımı aşağıdaki gibidir.
 ```js
-function name(parameters, delimited, by, comma) {
+function fonksiyon ismi(parametreler, virgül , ile, ayrilirlar) {
   /* code */
 }
 ```
 
-- Values passed to a function as parameters are copied to its local variables.
-- A function may access outer variables. But it works only from inside out. The code outside of the function doesn't see its local variables.
-- A function can return a value. If it doesn't then its result is `undefined`.
+- Fonksiyona paslanan parametreler yerel değişken olarak fonksiyon içerisinde kopyalanırlar.
+- Fonksiyon dışarıdaki değişkene erişebilir. Fakat içeride yaratılmış bir değişken dışarıda kullanılamaz.
+- Fonksiyon değer dönderebilir. Eğer döndermezse `undefined`olarak tanımlanır.
 
 To make the code clean and easy to understand, it's recommended to use mainly local variables and parameters in the function, not outer variables.
 
