@@ -1,235 +1,231 @@
-# Functions
+# Fonksiyonlar
 
-Quite often we need to perform a similar action in many places of the script.
+Çoğu zaman kod yazarken belirli bölümleri tekrarlama ihtiyacı duyulur.
 
-For example, we need to show a nice-looking message when a visitor logs in, logs out and maybe somewhere else.
+Örneğin kullanıcı hesabına giriş yaptığında veya çıktığında güzel görünümlü bir mesaj göstermek istenebilir.
 
-Functions are the main "building blocks" of the program. They allow the code to be called many times without repetition.
+Fonksiyonlar programın "yapı taşıdır". Bir çok defa bu fonksiyonlar çağırılarak tekrardan bu kodları yazmaktan kurtulunur.
 
 [cut]
 
-We've already seen examples of built-in functions, like `alert(message)`, `prompt(message, default)` and `confirm(question)`. But we can create functions of our own as well.
+Aslında var olan `alert(mesaj)`, `prompt(mesaj,varsayilan)` ve `confirm(soru)` gibi fonksiyonları gördük. Fakat artık bunları yazmanın zamanı geldi.
 
-## Function Declaration
+## Fonksiyon Tanımlama
 
-To create a function we can use a *function declaration*.
+Fonksiyon tanımlamak için *function tanım* kullanılır.
 
-It looks like this:
-
+Aşağıdaki gibi görünür:
 ```js
-function showMessage() {
-  alert( 'Hello everyone!' );
+function mesajGoster() {
+  alert( 'Merhaba millet!' );
 }
 ```
 
-The `function` keyword goes first, then goes the *name of the function*, then a list of *parameters* in the brackets (empty in the example above) and finally the code of the function, also named "the function body".
+`function` kelimesi önce yazılır, ardından *fonksiyonun adı* ve sonra parametlerin yazılacağı parantez açılır ve ihtiyaç duyulan parametreler yazılır, sonrasında ise kapatılıp süslü parantez ile *fonksiyon gövdesi*ne başlanır.
 
 ![](function_basics.png)
 
-Our new function can be called by its name: `showMessage()`.
+Yeni fonksyion ismiyle şu şekilde çağırılır: `mesaGoster()`.
 
-For instance:
+Örneğin:
 
 ```js run
-function showMessage() {
-  alert( 'Hello everyone!' );
+function mesajGoster() {
+  alert( 'Merhaba millet' );
 }
 
 *!*
-showMessage();
-showMessage();
+mesajGoster();
+mesajGoster();
 */!*
 ```
 
-The call `showMessage()` executes the code of the function. Here we will see the message two times.
+`mesajGoster()` fonksiyonu kodu çalıştırır. Bu kod sonrasında `Merhaba millet` uyarsını iki defa göreceksiniz.
 
-This example clearly demonstrates one of the main purposes of functions: to evade code duplication.
+Bu örnek açıkça fonksiyonların ana amacını gösteriyor: Kod tekrarından kaçınma.
 
-If we ever need to change the message or the way it is shown, it's enough to modify the code in one place: the function which outputs it.
+Eğer mesajı değiştirmek istersek bir yerde değiştirdiğimizde bu fonksiyonu kullanan her yerde değişiklik olacaktır.
 
-## Local variables
+## Yerel değişkenler
 
-A variable declared inside a function is only visible inside that function.
+Fonksiyon içinde tanımlanan değişkene sadece o fonksiyon içerisinde erişilebilir.
 
-For example:
+Örneğin:
 
 ```js run
-function showMessage() {
+function mesajGoster() {
 *!*
-  let message = "Hello, I'm JavaScript!"; // local variable
+  let mesaj = "Merhaba! Ben Javascript"; // Yerel Değişken
 */!*
 
-  alert( message );
+  alert( mesaj );
 }
 
-showMessage(); // Hello, I'm JavaScript!
+mesajGoster(); // Merhaba! Ben Javascript
 
-alert( message ); // <-- Error! The variable is local to the function
+alert( mesaj ); // <-- Hata! Bu değişken `mesajGoster` fonksiyonuna aittir.
 ```
 
-## Outer variables
+## Dış Değişkenler
 
-A function can access an outer variable as well, for example:
+Fonksiyon, kendi dışında oluşturulmuş değişkenlere erişebilir. Örneğin:
 
 ```js run no-beautify
-let *!*userName*/!* = 'John';
+let *!*kullaniciAdi*/!* = 'Adem';
 
-function showMessage() {
-  let message = 'Hello, ' + *!*userName*/!*;
+function mesajGoster() {
+  let mesaj = 'Hello, ' + *!*kullaniciAdi*/!*;
+  alert(mesaj);
+}
+
+mesajGoster(); // Merhaba, Adem
+```
+
+Fonksiyon dışarıda bulunan değişkenlere tam kontrol sağlar. Hatta modifiye edebilir.
+
+Örneğin:
+
+```js run
+let *!*kullaniciAdi*/!* = 'Adem';
+
+function mesajGoster() {
+  *!*kullaniciAdi*/!* = "Yusuf"; // (1) dışarıda bulunan değişkenin değeri değişti.
+
+  let mesaj = 'Merhaba, ' + *!*userName*/!*;
+  alert(mesaj);
+}
+
+alert( mesaj ); // Fonksiyon çağırılmadan  *!*Adem*/!* 
+
+mesajGoster();
+
+alert( kullaniciAdi ); // fonksiyon çağırıldıktan sonra *!*Yusuf*/!*, 
+```
+
+Dışarıda bulunan değişkenler eğer yerel değişken yoksa kullanılırlar. Bazen eğer `let` ile değişken oluşturulmazsa karışıklık olabilir.
+
+Eğer aynı isim ile fonksiyon içerisinde bir değişken oluşturulmuş ise, fonksiyon içerisindeki değişkenin değeri düzenlenebilir.  Örneğin aşağıda yerel bir değişken dıştaki değişken ile aynı isimdedir. Dolayısıyla yerel değişken düzenlenecektir. Dıştaki değişken bundan etkilenmeyecektir.
+
+```js run
+let kullaniciAdi = 'Adem';
+
+function mesajGoster() {
+*!*
+  let kullaniciAdi = "Yusuf"; // yerel değişken tanımla
+*/!*
+
+  let mesaj = 'Merhaba, ' + kullaniciAdi; // *!*Yusuf*/!*
   alert(message);
 }
 
-showMessage(); // Hello, John
+// buradaki fonksiyon kendi değişkenini yaratacak ve onu kullanacak.
+mesajGoster();
+
+alert( userName ); // *!*Adem*/!*, değişmedi!!!, fonksiyon dışarıda bulunan değişkene erişmedi.
 ```
 
-The function has full access to the outer variable. It can modify it as well.
+```smart header="Evrensel(Global) Değişkenler"
 
-For instance:
+Fonksiyonların dışına yazılan her değişken, yukarıda bulunan `kullaniciAdi` gibi, *evrensel* veya  *global* değişken olarak adlandırılırlar.
+
+Global değişkenlere her fonksiyon içerisinden erişilebilir.(Yerel değişkenler tarafından aynı isimle bir değişken tanımlanmamışsa)
+
+Genelde fonksiyonlar yapacakları işe ait tüm değişkenleri tanımlarlara, global değişkenler ise sadece proje seviyesinde bilgi tutarlar, çünkü proje seviyesinde bilgilerin projenin her yerinden erişilebilir olması oldukça önemlidir. Modern kodda az veya hiç global değer olmaz. Çoğu fonksiyona ait değişkenlerdir.
+
+```
+
+## Parametreler
+Paramterelere isteğe bağlı olarak veri paslanabilir. Bunlara *fonksiyon argümanları* da denir.
+
+Aşağıdaki fonksiyon iki tane parametreye sahiptir. `denBeri` ve `metin`
 
 ```js run
-let *!*userName*/!* = 'John';
-
-function showMessage() {
-  *!*userName*/!* = "Bob"; // (1) changed the outer variable
-
-  let message = 'Hello, ' + *!*userName*/!*;
-  alert(message);
-}
-
-alert( userName ); // *!*John*/!* before the function call
-
-showMessage();
-
-alert( userName ); // *!*Bob*/!*, the value was modified by the function
-```
-
-The outer variable is only used if there's no local one. So an occasional modification may happen if we forget `let`.
-
-If a same-named variable is declared inside the function then it *shadows* the outer one. For instance, in the code below the function uses the local `userName`. The outer one is ignored:
-
-```js run
-let userName = 'John';
-
-function showMessage() {
-*!*
-  let userName = "Bob"; // declare a local variable
-*/!*
-
-  let message = 'Hello, ' + userName; // *!*Bob*/!*
-  alert(message);
-}
-
-// the function will create and use it's own userName
-showMessage();
-
-alert( userName ); // *!*John*/!*, unchanged, the function did not access the outer variable
-```
-
-```smart header="Global variables"
-Variables declared outside of any function, such as the outer `userName` in the code above, are called *global*.
-
-Global variables are visible from any function (unless shadowed by locals).
-
-Usually, a function declares all variables specific to its task, and global variables only store project-level data, so important that it really must be seen from anywhere. Modern code has few or no globals. Most variables reside in their functions.
-```
-
-## Parameters
-
-We can pass arbitrary data to functions using parameters (also called *function arguments*) .
-
-In the example below, the function has two parameters: `from` and `text`.
-
-```js run
-function showMessage(*!*from, text*/!*) { // arguments: from, text
-  alert(from + ': ' + text);
+function mesajGoster(*!*gonderen, metin*/!*) { // argümanlar: gonderen, metin
+  alert(gonderen + ': ' + metin);
 }
 
 *!*
-showMessage('Ann', 'Hello!'); // Ann: Hello! (*)
-showMessage('Ann', "What's up?"); // Ann: What's up? (**)
+mesajGoster('Ahmet', 'Merhaba!'); // Ahmet: Merhaba! (*)
+mesajGoster('Mehmet', "Naber?"); // Mehmet: Naber? (**)
 */!*
 ```
 
-When the function is called in lines `(*)` and `(**)`, the given values are copied to local variables `from` and `text`. Then the function uses them.
+Eğer fonksiyonlar `(*)` ve `(**)` deki gibi yazılırsa doğrudan fonksiyonda `gonderen` ve `metin` yerel değişkenlerine atanırlar. Sonrasında fonksiyon bunları kullanabilir.
 
-Here's one more example: we have a variable `from` and pass it to the function. Please note: the function changes `from`, but the change is not seen outside, because a function always gets a copy of the value:
+Aşağıda `gonderen` değişkeni fonksiyona paslanmakta. Dikkat ederseniz fonksiyon içerisinde `from` değişse bile bu dışarıda bulunan değişkeni etkilememekte. Çünkü fonksiyon bu değişkenin her zaman kopyasını kullanır:
 
 
 ```js run
-function showMessage(from, text) {
+function mesajGoster(gonderen,metin) {
 
 *!*
-  from = '*' + from + '*'; // make "from" look nicer
+  gonderen = '*' + gonderen + '*'; // "gonderen" biraz daha güzel hale getirildi.
 */!*
 
-  alert( from + ': ' + text );
+  alert( gonderen + ': ' + metin );
 }
 
-let from = "Ann";
+let gonderen = "Mahmut";
 
-showMessage(from, "Hello"); // *Ann*: Hello
+mesajGoster(gonderen, "Merhaba"); // *Mahmut*: Merhaba
 
-// the value of "from" is the same, the function modified a local copy
-alert( from ); // Ann
+// "from" değişkeninin değeri sadece fonksiyon içerisinde değişti. Çünkü bu değişken paslandığında fonksiyon yerel bir kopyası üzerinde çalışır
+alert( gonderen ); // Mahmut
 ```
 
-## Default values
+## Varsayılan Değerler
 
-If a parameter is not provided, then its value becomes `undefined`.
+Eğer fonksiyon argümanına bir değer gönderilmemişse fonksiyon içerisinde bu değişken `undefined` olur.
 
-For instance, the aforementioned function `showMessage(from, text)` can be called with a single argument:
+Örneğin `mesajGoster(gonderen,metin)` fonksiyonu tek argüman ile de çağırılabilir.
 
 ```js
-showMessage("Ann");
+mesajGoster("Mahmut");
 ```
+Bu bir hata değildir. Fonksiyon eğer bu şekilde çağırılırsa, yani `metin` yoksa, `metin == undefined` varsayılır. Yukarıdaki fonksiyon çağırıldığında sonuç "Mahmut: undefined" olacaktır.
 
-That's not an error. Such a call would output `"Ann: undefined"`. There's no `text`, so it's assumed that `text === undefined`.
-
-If we want to use a "default" `text` in this case, then we can specify it after `=`:
+Eğer "varsayılan" olarak `metin` değeri atamak istiyorsanız, `=` işareti ile tanımlamanız gerekmekte.
 
 ```js run
-function showMessage(from, *!*text = "no text given"*/!*) {
-  alert( from + ": " + text );
+function mesajGoster(gonderen, *!*metin = "metin gönderilmedi"*/!*) {
+  alert(gonderen + ": " + metin );
 }
 
-showMessage("Ann"); // Ann: no text given
+mesajGoster("Mahmut"); // Mahmut: metin gönderilmedi
 ```
+Eğer `metin` değeri paslanmazsa, `"metin gönderilmedi"` çıktısı alınır.
 
-Now if the `text` parameter is not passed, it will get the value `"no text given"`
-
-Here `"no text given"` is a string, but it can be a more complex expression, which is only evaluated and assigned if the parameter is missing. So, this is also possible:
+`"metin gönderilmedi"` şu anda karakter dizisidir. Fakat daha karmaşık yapılar olabilir. Sadece parametre gönderilmez ise bu değer atanır. Aşağıdaki kullanım da pekala doğrudur.
 
 ```js run
-function showMessage(from, text = anotherFunction()) {
-  // anotherFunction() only executed if no text given
-  // its result becomes the value of text
+function mesajGoster(gonderen, metin = digerFonksiyon()) {
+  // eğer metin gönderilmez ise digerFonksiyon çalışır ve sonucu "metin" değişkenine atanır.
 }
 ```
 
 
-````smart header="Default parameters old-style"
-Old editions of JavaScript did not support default parameters. So there are alternative ways to support them, that you can find mostly in the old scripts.
+````smart header="Eski tip varsayılan parametreler"
+Eski tip JavaScript varsayılan parametreleri desteklememekteydi. Bundan dolayı farklı yöntemler geliştirdi. Eğer eskiden yazılmış kodları okursanız bu kodlara rastlayabilirsiniz.
 
-For instance, an explicit check for being `undefined`:
-
+Örneğin doğrudan  `undefined` kontrolü:
 ```js
-function showMessage(from, text) {
+function mesajGoster(gonderen, metin) {
 *!*
-  if (text === undefined) {
-    text = 'no text given';
+  if (metin === undefined) {
+    text = 'metin gönderilmedi';
   }
 */!*
 
-  alert( from + ": " + text );
+  alert( gonderen + ": " + metin );
 }
 ```
+...Veya `||` operatörü:
 
-...Or the `||` operator:
 
 ```js
-function showMessage(from, text) {
-  // if text is falsy then text gets the "default" value
-  text = text || 'no text given';
+function mesajGoster(gonderen, metin) {
+  // eğer metin yanlış değer ise( bu durumda undefined yanlış değerdir hatırlarsanız ) 'metin gönderilmedi' ata.
+  text = text || 'metin gönderilmedi';
   ...
 }
 ```
@@ -352,7 +348,7 @@ Function starting with...
 Examples of such names:
 
 ```js no-beautify
-showMessage(..)     // shows a message
+mesajGoster(..)     // shows a message
 getAge(..)          // returns the age (gets it somehow)
 calcSum(..)         // calculates a sum and returns the result
 createForm(..)      // creates a form (and usually returns it)
