@@ -1,310 +1,311 @@
-# Function expressions and arrows
+# Fonksiyon ifadeleri ve oklar.
 
-In JavaScript, a function is not a "magical language structure", but a special kind of value.
-
+JavaScript'te fonksiyonlar "büyülü dil yapısı" değil sadece özel bir tip değerdir.
 [cut]
 
-The syntax that we used before is called a *Function Declaration*:
+Daha önceden *fonksiyon tanımlama* için aşağıdaki form kullanılmıştı.
 
 ```js
-function sayHi() {
-  alert( "Hello" );
+function selamVer() {
+  alert( "Merhaba" );
 }
 ```
 
-There is another syntax for creating a function that is called a *Function Expression*.
+Diğer bir şekilde de fonksiyon tanımlanabilir. Bu da *fonksiyon ifadesi* olarak adlandırılır.
 
-It looks like this:
+Aşağıdaki gibi görünür:
+
 
 ```js
-let sayHi = function() {
-  alert( "Hello" );
+let selamVer = function() {
+  alert( "Merhaba" );
 };
 ```
 
-Here, the function is created and assigned to the variable explicitly, like any other value. No matter how the function is defined, it's just a value stored in the variable `sayHi`.
+Burada fonksiyon yaratıldı ve doğrudan değişkene atandı, tıpkı diğer dillerde olduğu gibi. Fonksiyonun nasıl tanımlandığına bakmaksızın, bu fonksiyon sadece `selamVer` içinde saklanan bir değerdir.
 
+Yukarıdaki kod örneklerinin anlamları aynıdır: "bir fonksiyon yarat ve bunu `selamVer` değişkenine ata"
 
-The meaning of these code samples is the same: "create a function and put it into the variable `sayHi`".
-
-We can even print out that value using `alert`:
+Hatta yazdığımız fonksiyonu `alert` ile ekrana basmak da mümkündür.
 
 ```js run
-function sayHi() {
-  alert( "Hello" );
+function selamVer() {
+  alert( "Merhaba" );
 }
 
 *!*
-alert( sayHi ); // shows the function code
+alert( selamVer ); // fonksiyonun kodunu gösterir.
 */!*
 ```
 
-Please note that the last line does not run the function, because there are no parentheses after `sayHi`. There are programming languages where any mention of a function name causes its execution, but JavaScript is not like that.
+Dikkat ederseniz son kodda `()` bulunmamaktadır. Bundan dolayı `selamVer` fonksiyonu çalışmayacaktır. Bazı dillerde ne zaman fonksiyonun ismini verseniz çalışır fakat JavaScript'te çalışabilmesi için `()` kullanmanız gerekmektedir.
 
-In JavaScript, a function is a value, so we can deal with it as a value. The code above shows its string representation, which is the source code.
+JavaScript'te fonksiyonlar değer olduğundan dolayı bunlarla uğraşılabilir. Yukarıdaki kod ekrana kaynak kodunu basar.
 
-It is a special value of course, in the sense that we can call it like `sayHi()`.
+Tabiki `selamVer()` diye çağırılabildiğinden dolayı özel bir değerdir.
 
-But it's still a value. So we can work with it like with other kinds of values.
+Fakat yine de değerdir. Bundan dolayı diğer değerlerle uğraşıldığı gibi bununla da aynı şekilde çalışılabilir.
 
-We can copy a function to another variable:
+Örneğin bir fonksiyon başka bir değişkene kopyalanabilir.
+
 
 ```js run no-beautify
-function sayHi() {   // (1) create
-  alert( "Hello" );
+function selamVer() {   // (1) oluştur
+  alert( "Merhaba" );
 }
 
-let func = sayHi;    // (2) copy
+let func = selamVer;    // (2) kopyala
 
-func(); // Hello     // (3) run the copy (it works)!
-sayHi(); // Hello    //     this still works too (why wouldn't it)
+func(); // Merhaba     // (3) kopyası!
+selamVer(); // Merhaba    //    kendisi.
 ```
 
-Here's what happens above in detail:
+Detayına bakılacak olursa:
 
-1. The Function Declaration `(1)` creates the function and puts it into the variable named `sayHi`.
-2. Line `(2)` copies it into the variable `func`.
+1.`(1)` fonksiyon tanımlanır ve `selamVer` değişkenine atanır.
+2. `(2)` bunu `func` değişkenine kopyalar.
 
-    Please note again: there are no parentheses after `sayHi`. If there were, then `func = sayHi()` would write  *the result of the call* `sayHi()` into `func`, not *the function* `sayHi` itself.
-3. Now the function can be called as both `sayHi()` and `func()`.
+    Tekrardan hatırlatmak gerekirse: `selamVer` etrafında parantez bulunmamaktadır. Eğer parantez ile yazılacak olsaydı `func = selamVer()`, `selamVer()` fonksiyonunun çıktısı `func` değişkenine atanırdı fonksiyon değil.
 
-Note that we could also have used a Function Expression to declare `sayHi`, in the first line:
+3. Fonksiyon bundan sonra `selamVer()` ve `func()` şeklinde çağırılabilir.
+ 
+Ayrıca ilk satır için *fonksiyon ifadesi* de kullanılabilirdi:
 
 ```js
-let sayHi = function() { ... };
+let selamVer = function() { ... };
 
-let func = sayHi;
+let func = selamVer;
 // ...
 ```
 
-Everything would work the same. Even more obvious what's going on, right?
+Herşey aynı olduğu gibi çalışırdı. Hatta neyin ne olduğu daha açık değil mi?
 
 
-````smart header="Why there's a semicolon at the end?"
-There might be a question, why does Function Expression have a semicolon `;` at the end, and Function Declaration does not:
+````smart header="Neden sonunda noktalı virgül var"
+
+Aklınıza bir soru takılabilir. Neden *fonksiyon ifadesi*nin sonunda `;` bulunmakta fakat *fonksiyon tanımla*da kullanılmıyor:
 
 ```js
-function sayHi() {
+function selamVer() {
   // ...
 }
 
-let sayHi = function() {
+let selamVer = function() {
   // ...
 }*!*;*/!*
 ```
 
-The answer is simple:
-- There's no need for `;` at the end of code blocks and syntax structures that use them like `if { ... }`, `for {  }`, `function f { }` etc.
-- A Function Expression is used inside the statement: `let sayHi = ...;`, as a value. It's not a code block. The semicolon `;` is recommended at the end of statements, no matter what is the value. So the semicolon here is not related to the Function Expression itself in any way, it just terminates the statement.
+
+Cevap basit:
+- Kod bloklarının sonunda `;` e gerek yoktur. Örneğin `if{ ...}`, `for{ ... }`, `for { }`, `function f{}` vs.
+- Fonksiyon ifadesi bir ifade içinde kullanıldığından `let selamVer = ....;` bir değerdir. Kod bloğu değildir. Cümle sonlarında değer ne olursa olsun `;` kullanılması önerilir. Bundan dolayı `;` *fonksiyon ifadesi* ile alaklı değildir. Sadece tanımlamanın sonunu göstermek içindir. Tıpkı diğer tanımlamalarda olduğu gibi.
 ````
 
-## Callback functions
+## Geriçağrım Fonksiyonları
 
-Let's look at more examples of passing functions as values and using function expressions.
+Fonksiyonların değer olarak paslanması ve fonksiyon ifadelerini biraz daha incelenmesi yerinde olur.
 
-We'll write a function `ask(question, yes, no)` with three parameters:
+`sor(soru,evet,hayir)` adında 3 parametre alan bir fonksiyon yazılacak olursa:
 
-`question`
-: Text of the question
+`soru`
+: Soru cümlesi
 
-`yes`
-: Function to run if the answer is "Yes"
+`evet`
+: Eğer doğru ise çalışacak fonksiyon
 
-`no`
-: Function to run if the answer is "No"
+`hayir`
+: Eğer cevap yanlış ise yapılacak fonksiyon
 
-The function should ask the `question` and, depending on the user's answer, call `yes()` or `no()`:
+Fonksiyon `soru` sormalı, bu sorunun cevabına göre `evet()` veya `hayir()` fonksiyonları çağırılacaktır.
+
 
 ```js run
 *!*
-function ask(question, yes, no) {
-  if (confirm(question)) yes()
+function sor(soru, evet, hayir) {
+  if (confirm(soru)) yes()
   else no();
 }
 */!*
 
-function showOk() {
-  alert( "You agreed." );
+function tamamGoster() {
+  alert( "Kabul ettiniz" );
 }
 
-function showCancel() {
-  alert( "You canceled the execution." );
+function iptalGoster() {
+  alert( "Çalışmasını durdurdunuz" );
 }
-
-// usage: functions showOk, showCancel are passed as arguments to ask
-ask("Do you agree?", showOk, showCancel);
+// kullanım: tamamGoster, iptalGoster fonksiyona parametre olarak gönderilmiştir.
+sor("Kabul ediyor musunuz?", tamamGoster, iptalGoster);
 ```
 
-Before we explore how we can write it in a much shorter way, let's note that in the browser (and on the server-side in some cases) such functions are quite popular. The major difference between a real-life implementation and the example above is that real-life functions use more complex ways to interact with the user than a simple `confirm`. In the browser, such a function usually draws a nice-looking question window. But that's another story.
+Daha kısa yolunu yazmadan önce söylemek gerekir ki bu tür fonksiyonlar oldukça sıkça kullanılmaktadır. Gerçek hayattaki örnekleri ile yukarıdaki arasında fark ise gerçek hayatta basit bir `confirm` yerine daha karmaşık olaylar için kullanılıyor olmalarıdır. 
 
-**The arguments of `ask` are called *callback functions* or just *callbacks*.**
+**`sor` fonksiyonunun argümanları *callbacks* veya *geri çağrım fonksiyonları* olarak adlandırılırlar.
 
-The idea is that we pass a function and expect it to be "called back" later if necessary. In our case, `showOk` becomes the callback for the "yes" answer, and `showCancel` for the "no" answer.
+Fikir fonksiyonu bizim baştan paslayıp ana fonksiyon içerieinde daha sonra duruma göre çağırılmasından kaynaklanmaktadır. Örneğe bakarsanız `tamamGoster` "evet" cevabı için *geri çağrım fonksiyonu*'dur.
 
-We can use Function Expressions to write the same function much shorter:
+Fonksiyon İfadesi kullanarak aynı fonksiyonu daha kısa bir şekilde yazmak mümkün:
 
 ```js run no-beautify
-function ask(question, yes, no) {
-  if (confirm(question)) yes()
-  else no();
+function sor(soru, evet, hayir) {
+  if (confirm(soru)) evet()
+  else hayir();
 }
 
 *!*
 ask(
-  "Do you agree?",
-  function() { alert("You agreed."); },
-  function() { alert("You canceled the execution."); }
+  "Kabul Ediyormusun?",
+  function() { alert("Kabul ettin"); },
+  function() { alert("Çalışmayı durdurdun."); }
 );
 */!*
 ```
+Gördüğünüz gibi yukarıda fonksiyonlar doğrudan `sor(...)` içerisinde tanımlandı. Hiç bir isim kullanılmadığından dolayı. Böyle fonksiyonlara *anonim* veya *anonymous* fonksiyonlar denir. Bu fonksiyonlar `sor` fonksiyonu dışında ulaşılabilir değillerdir(çünkü hiç bir değişkene atanmazlar).
+
+Bu şekilde isimsiz kullanım JavaScript içerisinde çok doğaldır. Bu JavaScript'in ruhunda var diyebiliriz.
 
 
-Here, functions are declared right inside the `ask(...)` call. They have no name, and so are called *anonymous*. Such functions are not accessible outside of `ask` (because they are not assigned to variables), but that's just what we want here.
+```smart header="Fonksiyon "fiil" bildiren bir değerdir."
+Normal değerler örneğin karakter dizisi ve sayılar *veri*dir.
+Fonksiyon *fiil* olarak adlandırılabilir.
 
-Such code appears in our scripts very naturally, it's in the spirit of JavaScript.
+Değişkenler arasında paylaşılabilir. İstendiği zaman çalıştırılabilir.
 
-
-```smart header="A function is a value representing an \"action\""
-Regular values like strings or numbers represent the *data*.
-
-A function can be perceived as an *action*.
-
-We can pass it between variables and run when we want.
 ```
 
 
-## Function Expression vs Function Declaration
+## Fonksiyon ifadesi ile Fonksiyon tanımının karışalaştırılması
 
-Let's formulate the key differences between Function Declarations and Expressions.
+Eğer Fonksiyon ifades ile fonksiyon tanımı arasındaki önemli farkları açıklamak gerekirse;
 
-First, the syntax: how to see what is what in the code.
+Yazım: Kodda neyin ne olduğunu görme.
 
-- *Function Declaration:* a function, declared as a separate statement, in the main code flow.
+
+- *Fonksiyon Tanımlama:* bir fonksiyon ana kod yapısında farklı bir cümle olarak tanımlanır.
+
 
     ```js
-    // Function Declaration
-    function sum(a, b) {
+    // Fonksiyon Tanımlama
+    function toplam(a, b) {
       return a + b;
     }
     ```
-- *Function Expression:* a function, created inside an expression or inside another syntax construct.
+- *Fonksiyon ifadesi:* bir fonksiyon ifadenin içinde  veya diğer bir yazım yapısı ile ifade edilir.
 
-    Here, the function is created at the right side of the "assignment expression =":
+    Burada fonksiyon "atama ifadesinin =" sağ tarafında tanımlanmıştır.
     ```js
-    // Function Expression
-    let sum = function(a, b) {
+    // Fonksiyon tanımı
+    let toplam = function(a, b) {
       return a + b;
     };
     ```
 
-The more subtle difference is *when* a function is created by the JavaScript engine.
+Daha ince bir değişiklik ise fonksiyonun JavaScript motorunda ne zaman yaratılacağıdır.
 
-**A Function Expression is created when the execution reaches it and is usable from then on.**
+**Fonksiyon ifadesi kod çalışırken fonksiyona geldikten sonra kullılır**
 
-Once the execution flow passes to the right side of the assignment `let sum = function…` -- here we go, the function is created and can be used (assigned, called etc) from now on.
+Çalışma atamanın sağ tarafaını geçince `let sum = function...`, bu noktadan sonra fonksiyon artık yaratıldı. Bundan böyle çağırılabilir veya başka bir değişkene atanabilir.
 
-Function Declarations are different.
+Fonksiyon tanımlama ise farklıdır.
 
-**A Function Declaration is usable in the whole script/code block.**
+**Fonksiyon tanımlama tüm kod bloğu içerisinde kullanılabilir**
 
-In other words, when JavaScript *prepares* to run the script or a code block, it first looks for Function Declarations in it and creates the functions. We can think of it as an "initialization stage".
+Diğer bir deyişle, JavaScript kod bloğunu çalıştırmaya *hazırlandığında*, önce fonksiyon tanımlamalarına bakar ve fonksiyonları yaratır. Bunu bir "başlatma evresi* olarak görmek mümkündür.
 
-And after all of the Function Declarations are processed, the execution goes on.
+Tüm Fonksiyon tanımlamaları tamamlandıktan sonra çalışmaya devam eder.
 
-As a result, a function declared as a Function Declaration can be called earlier than it is defined.
+Sonuç olarak, fonksiyon tanımı ile bu tanımdan önce çağırılabilir.
 
-For example, this works:
+Örnek verecek olursak:
 
 ```js run refresh untrusted
 *!*
-sayHi("John"); // Hello, John
+selamVer("Ahmet"); // Merhaba Ahmet
 */!*
 
-function sayHi(name) {
-  alert( `Hello, ${name}` );
+function sayHi(isim) {
+  alert( `Merhaba, ${isim}` );
 }
 ```
 
-The Function Declaration `sayHi` is created when JavaScript is preparing to start the script and is visible everywhere in it.
+Fonksiyon Tanımı olan `selamVer` JavaScript'in hazırlanma evresinde tanımlanır. Kod çalıştığında kodun her yerinden bu koda erişmek mümkündür.
 
-...If it was a Function Expression, then it wouldn't work:
+Eğer bu bir Fonksiyon tanımı olsaydı, çalışmazdı.
+
 
 ```js run refresh untrusted
 *!*
-sayHi("John"); // error!
+selamVer("Ahmet"); // hata!
 */!*
 
-let sayHi = function(name) {  // (*) no magic any more
-  alert( `Hello, ${name}` );
+let selamVer = function(adi) {  // (*) büyü ortadan kalktı
+  alert( `Merhaba, ${adi}` );
 };
 ```
+Fonksiyon tanımı kendisine ulaştığında çalışır. Yani `(*)`'gelmeden tanımlanmış olmalıydı ki `selamVer("Ahmet")` çalışabilsin.
 
-Function Expressions are created when the execution reaches them. That would happen only in the line `(*)`. Too late.
+**Fonksiyon tanımı eğer kod bloğunun içerisinde tanımlanırsa o bloğun içerisinde her yerde kullanılabilir. Fakat dışarıda kullanılamaz.**
 
-**When a Function Declaration is made within a code block, it is visible everywhere inside that block. But not outside of it.**
+Bazen sadece blok içinde o blokta kullanılacak yerel bir fonksiyon yaratmak daha kolay gelebilir. Fakat bu özellik problem yaratabilir.
 
-Sometimes that's handy to declare a local function only needed in that block alone. But that feature may also cause problems.
+Örneğin, `hosgeldin()` fonksiyonunu `yas` değişkenine göre tanımlayalım. Böylece sonradan kullanılacak hale getirmiş oluruz.
 
-For instance, let's imagine that we need to declare a function `welcome()` depending on the `age` variable that we get in run time. And then we plan to use it some time later.
-
-The code below doesn't work:
+Aşağıdaki kod çalışmayacaktır:
 
 ```js run
-let age = prompt("What is your age?", 18);
+let yas = prompt("Yaşın kaç?", 18);
 
-// conditionally declare a function
-if (age < 18) {
+// Şarta göre fonksiyon tanımlama
+if (yas < 18) {
 
-  function welcome() {
-    alert("Hello!");
+  function merhaba() {
+    alert("Merhaba!");
   }
 
 } else {
 
-  function welcome() {
-    alert("Greetings!");
+  function merhaba() {
+    alert("Merhaba!");
   }
 
 }
 
-// ...use it later
+// ...sonra kullan...
 *!*
-welcome(); // Error: welcome is not defined
+merhaba(); // Hata: merhaba() tanımlı değil.
 */!*
 ```
+Burada hata alınmasının nedeni Fonksiyon Tanımının `if..else` bloğu içerisinde tanımlandığından dolayı dışarıdan çağırılamamasından dolayıdır.
 
-That's because a Function Declaration is only visible inside the code block in which it resides.
-
-Here's another example:
+Diğer bir örnek:
 
 ```js run
-let age = 16; // take 16 as an example
+let yas = 16; // yaş 16 diyelim.
 
-if (age < 18) {
+if (yas < 18) {
 *!*
-  welcome();               // \   (runs)
+  merhaba();               // \   (çalışır)
 */!*
                            //  |
-  function welcome() {     //  |  
-    alert("Hello!");       //  |  Function Declaration is available
-  }                        //  |  everywhere in the block where it's declared
+  function merhaba() {     //  |  
+    alert("Merhaba!");     //  |  Fonksiyon tanımı bu blok içirisinde her yerden çağırılabilir.
+  }                        //  |  
                            //  |
 *!*
-  welcome();               // /   (runs)
+  merhaba();               // /   (çalışır)
 */!*
 
 } else {
 
-  function welcome() {     //  for age = 16, this "welcome" is never created
-    alert("Greetings!");
+  function merhaba() {     //  Yaş 16 olduğundan burası hiç bir zaman çalışmaz.
+    alert("Merhaba!");
   }
 }
 
-// Here we're out of figure brackets,
-// so we can not see Function Declarations made inside of them.
+// Artık if bloğunun dışında olduğumuzdan dolayı burada fonksiyon tanımlarına ulaşamayız.
 
 *!*
-welcome(); // Error: welcome is not defined
+merhaba(); // Error: merhaba tanımlı değil.
 */!*
 ```
 
