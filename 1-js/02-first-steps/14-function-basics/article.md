@@ -439,14 +439,15 @@ function fonksiyon ismi(parametreler, virgül , ile, ayrilirlar) {
 - Fonksiyon dışarıdaki değişkene erişebilir. Fakat içeride yaratılmış bir değişken dışarıda kullanılamaz.
 - Fonksiyon değer dönderebilir. Eğer döndermezse `undefined`olarak tanımlanır.
 
-To make the code clean and easy to understand, it's recommended to use mainly local variables and parameters in the function, not outer variables.
+Kodun daha anlaşılır ve okunabilir olması için, fonksiyonlar içerisinde yerel değişken kullanılması önerilir. Dış değişkenler kullanılması önerilmez.
 
-It is always easier to understand a function which gets parameters, works with them and returns a result than a function which gets no parameters, but modifies outer variables as a side-effect.
+Eğer fonksiyon parametre ile değer alır ve bu değer üzerinde çalışıp değer geri dönderirse anlaşılırlığı artar. Fakat eğer fonksiyon hiç bir parametre almadan sadece dışarıdaki değişkenleri değiştiriyor ise kodun anlaşılırlığı büyük ölçüde azalır.
 
-Function naming:
+Fonksiyon isimlendirme:
 
-- A name should clearly describe what the function does. When we see a function call in the code, a good name instantly gives us an understanding what it does and returns.
-- A function is an action, so function names are usually verbal.
-- There exist many well-known function prefixes like `create…`, `show…`, `get…`, `check…` and so on. Use them to hint what a function does.
+- Bir isim fonksiyonun ne işe yaradığını açıklayabiliyor olmalıdır. İyi bir isim fonksiyonun okunmadan ne iş yaptığına dair fikir verir.
+- Fonksiyon bir fiili yerine getirdiğinden, fonksiyon isimleri yüklem olmalıdır.
+- Bunlar için ön ek kullanabilirsiniz. Türkçe sondan eklemeli bir dil olduğundan dolayı fonksiyon ekleri sona gelmektedir. Örneğin `asalGoster`, bu tip kullanım aslında okunurluk açısından pekte iyi değil benim kanaatimce. Çünkü okurken önce ne yaptığını anlaşılmıyor. Fakat İngilizce örneğine bakarsanız `showPrime`, burada önce ne yaptığını söylüyor. Farzedin ki bir çok fonksiyonunuz var ve okuduğunuzda önce ne iş yaptığını bilmek bunları filtrelemenizde size yardımcı olacaktır.
+- Örnek kaç tane ek , `create...` , `show...`, `get...`, `check...` vs.
 
-Functions are the main building blocks of scripts. Now we've covered the basics, so we actually can start creating and using them. But that's only the beginning of the path. We are going to return to them many times, going more deeply into their advanced features.
+Fonksiyonlar kod yazarken kullanılan ana yapılardır. Artık temellerini anlaşıldığına göre kullanılmaya başlanabilir. Fakat sadece temellerinin gösterildiğini bilmekte fayda var. ileride defalaraca fonksiyonlar konusuna geri dönülecektir.
