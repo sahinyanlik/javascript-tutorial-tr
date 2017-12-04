@@ -11,7 +11,7 @@ function sor(soru, evet, hayir) {
 
 ask(
   "Kabul ediyor musun?",
-  function() { alert("Kabul Ettin"); },
+  function() { alert("Kabul ettin"); },
   function() { alert("Çalışmasını durdurdun"); }
 );
 ```
