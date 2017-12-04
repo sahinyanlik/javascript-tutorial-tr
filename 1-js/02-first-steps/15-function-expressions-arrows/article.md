@@ -253,7 +253,7 @@ Bazen sadece blok içinde o blokta kullanılacak yerel bir fonksiyon yaratmak da
 Aşağıdaki kod çalışmayacaktır:
 
 ```js run
-let yas = prompt("Yaşın kaç?", 18);
+let yas = prompt("Kaç yaşındasın?", 18);
 
 // Şarta göre fonksiyon tanımlama
 if (yas < 18) {
@@ -265,7 +265,7 @@ if (yas < 18) {
 } else {
 
   function merhaba() {
-    alert("Merhaba!");
+    alert("Merhabalar!");
   }
 
 }
@@ -298,7 +298,7 @@ if (yas < 18) {
 } else {
 
   function merhaba() {     //  Yaş 16 olduğundan burası hiç bir zaman çalışmaz.
-    alert("Merhaba!");
+    alert("Merhabalar!");
   }
 }
 
@@ -308,175 +308,171 @@ if (yas < 18) {
 merhaba(); // Error: merhaba tanımlı değil.
 */!*
 ```
+`merhaba` fonksiyonunu `if`in dışında da kullanılabilir kılmak için ne yapılmalıdır?
 
-What can we do to make `welcome` visible outside of `if`?
+Doğru yaklaşım Fonksiyon İfadesini kullanarak `if` in dışına bir `merhaba` değişkeni yaratıp `if`in içinde bunun tanımını yapmak olabilir.
 
-The correct approach would be to use a Function Expression and assign `welcome` to the variable that is declared outside of `if` and has the proper visibility.
-
-Now it works as intended:
+Artık beklenildiği gibi çalışır:
 
 ```js run
-let age = prompt("What is your age?", 18);
+let yas = prompt("Kaç yaşındasın?", 18);
 
-let welcome;
+let merhaba;
 
-if (age < 18) {
+if (yas < 18) {
 
-  welcome = function() {
-    alert("Hello!");
+  merhaba = function() {
+    alert("Merhaba!");
   };
 
 } else {
 
-  welcome = function() {
-    alert("Greetings!");
+  merhaba = function() {
+    alert("Merhabalar!");
   };
 
 }
 
 *!*
-welcome(); // ok now
+merhaba(); // artık çalışır.
 */!*
 ```
 
-Or we could simplify it even further using a question mark operator `?`:
+Veya `?` ile de bu fonksiyon şu şekilde yazılabilir:
 
 ```js run
-let age = prompt("What is your age?", 18);
+let yas = prompt("Kaç yaşındasın?", 18);
 
-let welcome = (age < 18) ?
-  function() { alert("Hello!"); } :
-  function() { alert("Greetings!"); };
+let merhaba = (yas < 18) ?
+  function() { alert("Merhaba!"); } :
+  function() { alert("Merhabalar!"); };
 
 *!*
-welcome(); // ok now
+merhaba(); // artık çalışır.
 */!*
 ```
 
 
-```smart header="When to choose Function Declaration versus Function Expression?"
-As a rule of thumb, when we need to declare a function, the first to consider is Function Declaration syntax, the one we used before. It gives more freedom in how to organize our code, because we can call such functions before they are declared.
+```smart header="Ne zaman Fonksiyon Tanımı, ne zaman Fonksiyon İfadesi kullanılmalıdır?"
 
-It's also a little bit easier to look up `function f(…) {…}` in the code than `let f = function(…) {…}`. Function Declarations are more "eye-catching".
+Öncelikle eğer fonksiyon tanımlamak istiyorsanız Fonksiyon Tanımı yazımını düşünmeniz gerekmekte. Kodunuzu düzenlemeniz için size özgürlük sağlar. Çünkü fonksiyon tanımından önce fonksiyonu çağırmak mümkündür.
 
-...But if a Function Declaration does not suit us for some reason (we've seen an example above), then Function Expression should be used.
+Ayrıca fonksiyon içerisinde `function f(...){}` ile araştırmak `let f= function(....){..}`e göre daha kolaydır. Fonksiyon Tanımı daha fazla göze batar.
+
+Fakat eğer Fonksiyon Tanımı işimize yaramaz ise(yukarıda örnğin Fonksiyon ifadesini kullandık), bu durumda Fonksiyon İfadesi yöntemi kullanılmalıdır.
 ```
 
 
-## Arrow functions [#arrow-functions]
+## Ok Fonksiyonları [#arrow-functions]
 
-There's one more very simple and concise syntax for creating functions, that's often better than Function Expressions. It's called "arrow functions", because it looks like this:
-
+Fonksiyonları yaratmak için daha kısa bir yöntem daha vardır, bu Fonksiyon İfadesinden daha iyi denilebilir. Bunlara "Ok Fonksiyonları" denir. Çünkü "ok" gibi görünürler.
 
 ```js
-let func = (arg1, arg2, ...argN) => expression
+let func = (arg1, arg2, ...argN) => ifade
 ```
 
-...This creates a function `func` that has arguments `arg1..argN`, evaluates the `expression` on the right side with their use and returns its result.
+Yukarıda yazılan kod `func` adında `arg1..argN`'e kadar argüman alan ve sonunda `ifade`yi çalıştıran bir fonksiyon bulunmaktadır.
 
-In other words, it's roughly the same as:
+Diğer bir deyişle, aşağıdaki ile neredeyse aynı kod yazılmıştır.
 
 ```js
 let func = function(arg1, arg2, ...argN) {
-  return expression;
+  return ifade;
 }
 ```
+... Fakat `ok` ile yazılan daha özlüdür.
 
-...But much more concise.
-
-Let's see an example:
-
+Örneğin:
 ```js run
-let sum = (a, b) => a + b;
+let topla = (a, b) => a + b;
 
-/* The arrow function is a shorter form of:
+/* ok fonksiyonu aşağıdaki fonksiyon ifadesinin daha özlü yazılmış halidir.:
 
-let sum = function(a, b) {
+let topla = function(a, b) {
   return a + b;
 };
 */
 
-alert( sum(1, 2) ); // 3
+alert( topla(1, 2) ); // 3
 
 ```
+Eğer tek argüman olsaydı, bu durumda parantez de çıkarılabilirdi, böylece daha da kolay olurdu:
 
-If we have only one argument, then parentheses can be omitted, making that even shorter:
 
 ```js run
-// same as
-// let double = function(n) { return n * 2 }
+// aynısı
+// let ikiKati = function(n) { return n * 2 }
 *!*
-let double = n => n * 2;
+let ikiKati = n => n * 2;
 */!*
 
-alert( double(3) ); // 6
+alert( ikiKati(3) ); // 6
 ```
 
-If there are no arguments, parentheses should be empty (but they should be present):
+Eğer hiç bir değer yoksa parantez eklenmelidir. ( Bir değer olduğunda yukarıdaki gibi kullanılabilir.)
+
 
 ```js run
-let sayHi = () => alert("Hello!");
+let selamVer = () => alert("Merhaba!");
 
-sayHi();
+selamVer();
+```
+Ok Fonksiyonları Fonksiyon ifadeleri ile aynı şekilde kullanılabilirler.
+
+Örneğin aşağıda `merhaba()` fonksiyonunun Ok Fonksiyonu şekliyle görebilirsiniz.
+
+```js run
+let yas = prompt("Kaç Yaşındasın?", 18);
+
+let merhaba = (yas < 18) ?
+  () => alert('Merhaba') :
+  () => alert("Merhabalar!");
+
+merhaba(); 
 ```
 
-Arrow functions can be used in the same way as Function Expressions.
+Ok fonksiyonları ilk yazılmaya başlandığında göze yabancı gelebilir. Fakat zamanla göz bu yapıya alışacak ve hemen ayak uyduracaktır.
 
-For instance, here's the rewritten example with `welcome()`:
+Uzunca yazmak istemiyorsanız, kolayca tek kelimelik fonksiyonlar yazabilirsiniz.
 
-```js run
-let age = prompt("What is your age?", 18);
 
-let welcome = (age < 18) ?
-  () => alert('Hello') :
-  () => alert("Greetings!");
+```smart header="Çok satırlı Ok Fonksiyonları"
 
-welcome(); // ok now
-```
+Yukarıdaki örnekte argüman `=>` solundan alınır ve sağında çalıştırılır.
 
-Arrow functions may appear unfamiliar and not very readable at first, but that quickly changes as the eyes get used to the structure.
+Bazen bundan daha karmaşık yapılara ihtiyaç duyabilirsiniz. Bunun için sağ tarafa başlarken `{` parantez ile başlar ve bittiğinde de `}` ile fonksiyonu kapatırsanız içerisine fonksiyonun gövdesini yazabilirsiniz.
 
-They are very convenient for simple one-line actions, when we're just too lazy to write many words.
-
-```smart header="Multiline arrow functions"
-
-The examples above took arguments from the left of `=>` and evaluated the right-side expression with them.
-
-Sometimes we need something a little bit more complex, like multiple expressions or statements. It is also possible, but we should enclose them in figure brackets. Then use a normal `return` within them.
-
-Like this:
+Bunun gibi:
 
 ```js run
-let sum = (a, b) => {  // the figure bracket opens a multiline function
-  let result = a + b;
+let toplam = (a, b) => {  // birden fazla satır yazmak için `{` kullanılmalıdı.
+  let sonuc = a + b;
 *!*
-  return result; // if we use figure brackets, use return to get results
+  return sonuc; // eğer süslü parantez kullanıyorsanız değer döndürmek için return yazmanız gerekmektedir.
 */!*
 };
 
-alert( sum(1, 2) ); // 3
+alert( toplam(1, 2) ); // 3
 ```
 
-```smart header="More to come"
-Here we praised arrow functions for brevity. But that's not all! Arrow functions have other interesting features. We'll return to them later in the chapter <info:arrow-functions>.
+```smart header="Dahası var"
+Şu anda sadece Ok Fonksiyonlarına giriş yaptık. Fakat elbette tamamı bu değil! Ok fonksiyonun başka ilginç özellikleri de mevcut. Bunlara <info:arrow-functions> bölümünde değinilecektir.
 
-For now, we can already use them for one-line actions and callbacks.
+Şimdilik tek satırlı fiillerde ve geri çağrım fonksiyonlarında kullabilirsiniz.
 ```
 
-## Summary
+## Özet
 
-- Functions are values. They can be assigned, copied or declared in any place of the code.
-- If the function is declared as a separate statement in the main code flow, that's called a "Function Declaration".
-- If the function is created as a part of an expression, it's called a "Function Expression".
-- Function Declarations are processed before the code block is executed. They are visible everywhere in the block.
-- Function Expressions are created when the execution flow reaches them.
+- Fonksiyonlar değerdir. Atanabilir, kopyalanabilir ve kodun herhangi bir yerinde tanımlanabilirler.
+- Eğer tanımı ana kod içerisinde ayrı bir cümle ise buna "Fonksiyon Tanımı" denir.
+- Fonksiyon tanımları kod çalıştırmadan önce işlenir. Böylece kodun her yerinden ulaşılabilir olurlar.
+- Fonksiyon tanımları ise kod çalışırken bu tanıma erişirse çalışır.
 
+Çoğu zaman Fonksiyon Tanımı metodu tercih edilmelidir. Çünkü bu şekilde fonksiyon tanımlanmadan önce fonksiyon çağrısı yapmak mümkündür. Bu kodun daha düzenli tutulmasında yarcımdı olur. Ayrıca daha okunabilirdir.
 
-In most cases when we need to declare a function, a Function Declaration is preferable, because it is visible prior to the declaration itself. That gives us more flexibility in code organization, and is usually more readable.
+Fonksiyon ifadesi sadece Fonksiyon Tanımı yetersiz kalırsa kullanılmalıdır. Bu örnek daha önce yukarıda yapılmıştı.
 
-So we should use a Function Expression only when a Function Declaration is not fit for the task. We've seen a couple of examples of that in this chapter, and will see more in the future.
+Ok Fonksiyonları tek satır için kullanışlıdır. İki türlüsü vardır:
 
-Arrow functions are handy for one-liners. They come in two flavors:
-
-1. Without figure brackets: `(...args) => expression` -- the right side is an expression: the function evaluates it and returns the result.
-2. With figure brackets: `(...args) => { body }` -- brackets allow us to write multiple statements inside the function, but we need an explicit `return` to return something.
+1. Süslü parantez olmadan: Fonksiyon sağ taraftaki ifadeyi çalıştırır ve sonucu dönderir. Tek satırda biten işlemler için kullanılmalıdır.
+2. Süslü parantez ile `(...args) => { gövde }` -- süslü parantez bizim birden fazla satır yazmamızı sağlar.  Fakat gövde içerisinde `return` kullanılması gerekmektedir.
