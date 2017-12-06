@@ -1,10 +1,10 @@
-# JavaScript specials
+# JavaScript incelikleri
 
-This chapter briefly recaps the features of JavaScript that we've learned by now, paying special attention to subtle moments.
+Bu bölümde kısaca JavaScript dilinde hali hazırda öğrendiğiniz fakat özellikle dikkat etmeniz gereken inceliklerden bahsedilecektir.
 
 [cut]
 
-## Code structure
+## Kod Yapısı
 
 Statements are delimited with a semicolon:
 
