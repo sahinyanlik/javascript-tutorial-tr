@@ -6,143 +6,140 @@ Bu bölümde kısaca JavaScript dilinde hali hazırda öğrendiğiniz fakat öze
 
 ## Kod Yapısı
 
-Statements are delimited with a semicolon:
+Cümleler birbirinden noktalı virgül ile ayrılır:
 
 ```js run no-beautify
-alert('Hello'); alert('World');
+alert('Merhaba'); alert('Dünya');
 ```
 
-Usually, a line-break is also treated as a delimiter, so that would also work:
+Genelde, yeni satıra geçmekte noktalı virgül görevi görür. Bundan dolayı aşağıdaki kod da çalışır:
 
 ```js run no-beautify
-alert('Hello')
-alert('World')
+alert('Merhaba')
+alert('Dünya')
 ```
-
-That's called "automatic semicolon insertion". Sometimes it doesn't work, for instance:
+Buna "otomatik noktalı virgül koyma" denir. Bazen çalışmaz, örneğin:
 
 ```js run
-alert("There will be an error after this message")
+alert("Bu mesajdan sonra hata verecek")
 
 [1, 2].forEach(alert)
 ```
 
-Most codestyle guides agree that we should put a semicolon after each statement.
+Çoğu kod klavuzu her cümlenizin sonuna noktalı virgül kullanmanız gerektiği kanısındadır.
 
-Semicolons are not required after code blocks `{...}` and syntax constructs with them like loops:
+Noktalı virgüller `{..}` kod bloğu sonunda gerekli değildir, örneğin döngüler:
 
 ```js
 function f() {
-  // no semicolon needed after function declaration
+  // fonksiyon tanımından sonra noktalı virgül yazılmaz
 }
 
 for(;;) {
-  // no semicolon needed after the loop
+  // döngüden sonra noktalı virgül yazılmaz
 }
 ```
+... Diyelim ki yine de noktalı virgül koymak istediniz. Bu bir hata değildir, önemsenmez.
 
-...But even if we can put an "extra" semicolon somewhere, that's not an error. It will be ignored.
+Daha fazlasına <info:structure> bölümünden bakabilirsiniz.
 
-More in: <info:structure>.
+## Sıkı Mod
 
-## Strict mode
-
-To fully enable all features of modern JavaScript, we should start scripts with `"use strict"`.
+JavaScript'in tüm modern özelliklerini kullanabilmek için, `"use strict"` kullanmanız gerekmektedir.
 
 ```js
 'use strict';
 
 ...
 ```
+Bu talimatı dosyanın başında veya fonksiyonun başında belirtmeniz gerekmektedir.
 
-The directive must be at the top of a script or at the beginning of a function.
+`"use strict"` kullanmadan da herşey çalışır. Fakat eski tipte ve uyumluluk modunda çalışır. Modern davranışı seçerseniz böylece son yenilikleri uyumluluk modu olmadan da çalıştırabilirsiniz.
 
-Without `"use strict"`, everything still works, but some features behave in the old-fashion, "compatible" way. We'd generally prefer the modern behavior.
+Bazı modern özellikler ise uyumluluk modunda da çalışmaz sadece sıkı modda çalışır. Bunlara ilerleyen zamanlarda değinilecektir.
+Dahası için: <info:strict-mode>.
 
-Some modern features of the language (like classes that we'll study in the future) enable strict mode implicitly.
+## Değişkenler
 
-More in: <info:strict-mode>.
-
-## Variables
-
-Can be declared using:
+Şu şekillerde tanımlanabilir:
 
 - `let`
-- `const` (constant, can't be changed)
-- `var` (old-style, will see later)
+- `const` (sabit, değiştirilemez)
+- `var` (eski tip)
 
-A variable name can include:
-- Letters and digits, but the first character may not be a digit.
-- Characters `$` and `_` are normal, on par with letters.
-- Non-Latin alphabets and hieroglyphs are also allowed, but commonly not used.
+Değişkenler isimlendirilirken aşağıdakileri içerebilir:
+- Harf ve sayıları içerebilir fakat ilk karakter sayı olamaz.
+- `$` ve `_` gibi karakterler diğer karakterle aynı niteliktedir ve her yerde kullanılabilir.
+- Latin olmayan yani Arapça, Japonca, Çince gibi diller de kullanılabilir fakat genelde kullanılmaz. 
 
-Variables are dynamically typed. They can store any value:
+Değişkenler dinamik yazıma sahiptir ve herşeyi tutabilirler:
 
 ```js
 let x = 5;
-x = "John";
+x = "Ahmet";
 ```
 
-There are 7 data types:
+7 çeşit veri tipi bulunmaktadır:
 
-- `number` for both floating-point and integer numbers,
-- `string` for strings,
-- `boolean` for logical values: `true/false`,
-- `null` -- a type with a single value `null`, meaning "empty" or "does not exist",
-- `undefined` -- a type with a single value `undefined`, meaning "not assigned",
-- `object` and `symbol` -- for complex data structures and unique identifiers, we didn't learn them yet.
+- `number` ( sayı ) floating-point ve doğal sayılar için kullanılır.
+- `string` (karakter dizileri),
+- `boolean` Mantıksal değerler için `dogru/yanlis`,
+- `null` -- sadece `null` değerini tutar ve bu da "boş" veya "varolmayan" anlamına gelir,
+- `undefined` -- sadece `undefined` değerine sahiptir. Bu da "değer atanmamış" demektir,
+- `object` ve `symbol` -- karmaşık veri yapıları için ve tek tanıtıcı(unique identifier) için kullanılabilir. Bu konular henüz anlatılmadı.
 
-The `typeof` operator returns the type for a value, with two exceptions:
+`typeof` operatörü değerin tipini dönderir, fakat şu hallerde hata verir:
+
 ```js
-typeof null == "object" // error in the language
-typeof function(){} == "function" // functions are treated specially
+typeof null == "object" // hata verir
+typeof function(){} == "function" // fonksiyonlara özel davranılır.
 ```
 
-More in: <info:variables> and <info:types>.
+Dahası için: <info:variables> ve <info:types> konularına bakabilirsiniz.
 
-## Interaction
+## Etkileşim
 
-We're using a browser as a working environment, so basic UI functions will be:
+Şu anda tarayıcıyı çalışma ortamı olarak kullandığınızdan dolayı, bazı basit arayüz fonksiyonlarını bilmekte fayda var:
 
-[`prompt(question[, default])`](mdn:api/Window/prompt)
-: Ask a `question`, and return either what the visitor entered or `null` if he pressed "cancel".
+[`prompt(soru[, varsayılan])`](mdn:api/Window/prompt)
+: `soru` sor ve kullanıcının girdiği değeri dönder. Eğer kullanıcı "iptal" tuşuna bakarsa `null` dönder.
 
-[`confirm(question)`](mdn:api/Window/confirm)
-: Ask a `question` and suggest to choose between Ok and Cancel. The choice is returned as `true/false`.
+[`confirm(soru)`](mdn:api/Window/confirm)
+: `soru` sor ve "Tamam" mı yoksa "İptal" mi diye seçenekler sun. Sonuçta seçilene göre  `true/false` dönder.
 
-[`alert(message)`](mdn:api/Window/alert)
-: Output a `message`.
+[`alert(mesaj)`](mdn:api/Window/alert)
+: Mesajın çıktısını ekrana uyarı olarak ver.
 
-All these functions are *modal*, they pause the code execution and prevent the visitor from interacting with the page until he answers.
+tüm bo fonksiyonlar *modal* dır. Tekrara hatırlatmak gerekirse modal kullanıcının etkileşimi olana kadar kodu durdururlar. Yani kullanıcıdan cevabı beklerler.
 
-For instance:
+Örneğin:
 
 ```js run
-let userName = prompt("Your name?", "Alice");
-let isTeaWanted = confirm("Do you want some tea?");
+let ziyaretci = prompt("Adınız?", "İbrahim");
+let cayIstermi = confirm("Biraz çay ister misiniz?");
 
-alert( "Visitor: " + userName ); // Alice
-alert( "Tea wanted: " + isTeaWanted ); // true
+alert( "Ziyaretçi: " + ziyaretci ); // İbrahim
+alert( "Çay isteriyor mu?: " + cayIstermi ); // true
 ```
 
-More in: <info:alert-prompt-confirm>.
+Dahası için: <info:alert-prompt-confirm>.
 
-## Operators
+## Operatörler
 
-JavaScript supports the following operators:
+JavaScript aşağıdaki operatörleri destekler:
 
-Arithmetical
-: Regular: `* + - /`, also `%` for the remainder and `**` for power of a number.
+Aritmetiksel
+: Normal işlemler: `* + - /`, mod alma `%`  ve `**` üs alma için bu operatörler kullanılır.
 
-    Binary plus `+` concatenates strings. And if any of the operands is a string, the other one is converted to string too:
+    Eğer operandlardan birisi karakter ise diğer taraf sayı bile olsa `+` kullanıldığında bu iki değer de karakter olarak varsayılır
 
     ```js run
-    alert( '1' + 2 ); // '12', string
-    alert( 1 + '2' ); // '12', string
+    alert( '1' + 2 ); // '12', karakter dizisi
+    alert( 1 + '2' ); // '12', karakter dizisi
     ```
 
-Assignments
-: There is a simple assignment: `a = b` and combined ones like `a *= 2`.
+Değer atama
+: Basit bir şekilde `a = b` şeklinde kullanılabilir. Veya birleşik olarak  `a *= 2` gibi de kullanıma sahiptir.
 
 Bitwise
 : Bitwise operators work with integers on bit-level: see the [docs](mdn:/JavaScript/Reference/Operators/Bitwise_Operators) when they are needed.
