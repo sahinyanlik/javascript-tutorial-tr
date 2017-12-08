@@ -141,50 +141,44 @@ Aritmetiksel
 Değer atama
 : Basit bir şekilde `a = b` şeklinde kullanılabilir. Veya birleşik olarak  `a *= 2` gibi de kullanıma sahiptir.
 
-Bitwise
-: Bitwise operators work with integers on bit-level: see the [docs](mdn:/JavaScript/Reference/Operators/Bitwise_Operators) when they are needed.
+Bit seviyesi işlemler
+: Bit seviye operatörleri şu şekilde kullanılabilir: [docs](mdn:/JavaScript/Reference/Operators/Bitwise_Operators)
 
-Ternary
-: The only operator with three parameters: `cond ? resultA : result B`. If `cond` is truthy, returns `resultA`, otherwise `resultB`.
+Üçlü operatör
+: Üç tane paremetreden oluşur: `koşul ? sonucA : sonucB`. Eğer `koşul` doğru ise `sonucA` döndürür, yanlış ise `sonucB` 
 
-Logical operators
-: Logical AND `&&` and OR `||` perform short-circuit evaluation and then return the value where it stopped.
+Mantıksal operatörler:
+: Mantıksal VE `&&`, VEYA `||` operatörleri ile bu işlemler yapılabilir.
 
-Comparisons
-: Equality check `==` for values of different types converts them to a number (except `null` and `undefined` that equal each other and nothing else), so these are equal:
+Karşılaştırma
+: Eşitlik kontrolü `==`, farklı tipteki verileri sayıya çevirip kontrol eder. `null` ve ` undefined` hariç, bu ikisi de birbirine eşittir.
 
     ```js run
     alert( 0 == false ); // true
     alert( 0 == '' ); // true
     ```
+    `sıkı eşitlik` operatörü `===` bu çeviriyi yapmamaktadır: farklı tipler her zaman farklı değerler ifade eder, öyleyse:
 
-    Other comparisons convert to a number as well.
+    `null` ve `undefined` değerleri özeldir: `==` şeklinde birbirlerine eşittirler. Fakat başka hiç bir değere eşit değildirler.
+    Büyüktür/Küçüktür karşılaştırmasında karakter dizileri karakter karakter karşılaştırılır. Diğer tipler sayıya çevrilir.
 
-    The strict equality operator `===` doesn't do the conversion: different types always mean different values for it, so:
 
-    Values `null` and `undefined` are special: they equal `==` each other and don't equal anything else.
+Geri kalan operatörleri daha derin bir biçimde <info:operators>, <info:comparison>, <info:logical-operators> bölümlerinden inceleyebilirsiniz.
 
-    Greater/less comparisons compare strings character-by-character, other types are converted to a number.
+## Döngüler
 
-Logical operators
-: There are few others, like a comma operator.
-
-More in: <info:operators>, <info:comparison>, <info:logical-operators>.
-
-## Loops
-
-- We covered 3 types of loops:
+- Şimdiye kadar 3 çeşit döngü işlendi:
 
     ```js
     // 1
-    while (condition) {
+    while (koşul) {
       ...
     }
 
     // 2
     do {
       ...
-    } while (condition);
+    } while (koşul);
 
     // 3
     for(let i = 0; i < 10; i++) {
@@ -192,95 +186,93 @@ More in: <info:operators>, <info:comparison>, <info:logical-operators>.
     }
     ```
 
-- The variable declared in `for(let...)` loop is visible only inside the loop. But we can also omit `let` and reuse an existing variable.
-- Directives `break/continue` allow to exit the whole loop/current iteration. Use labels to break nested loops.
+- `for(let...)` içinde tanımlanan değişkenler sadece döngü içerisinden erişilebilirdir. Fakat `let`i pas geçip var olan değişkeni kullanmak da mümkündür.
+- Direktifler `break/continue` döngüden çıkılmasını sağlar. `label` kullanarak iç içe döngüde `break/continue` nereye dallanacağını belirleyebilirsiniz.
 
-Details in: <info:while-for>.
+Detaylaına <info:while-for> bölümünden erişebilirsiniz.
 
-Later we'll study more types of loops to deal with objects.
+İlerleyen bölümlerde döngülerin nasıl objelerle başa çıktığı üzerinde durulacaktır.
 
-## The "switch" construct
+## "switch" yapısı
 
-The "switch" construct can replace multiple `if` checks. It uses `===` for comparisons.
+"switch" yapısı çoklu `if` kontrolleri yerine kullanılabilir. "switch" karşılaştırma için, sıkı karşılaştırmayı `===` kullanır.
 
-For instance:
-
+Örneğin:
 ```js run
-let age = prompt('Your age?', 18);
+let age = prompt('Kaç yaşındasın?', 18);
 
 switch (age) {
   case 18:
-    alert("Won't work"); // the result of prompt is a string, not a number
+    alert("Çalışmaz"); // `prompt` ile tutulan değer sayı değil karakterdir!!!
 
   case "18":
-    alert("This works!");
+    alert("Çalışır!");
     break;
 
   default:
-    alert("Any value not equal to one above");
+    alert("Değer yukarıda bulunan koşullara uymamakta");
 }
 ```
 
-Details in: <info:switch>.
+Detaylı bilgi için: <info:switch>.
 
-## Functions
+## Fonksiyonlar
 
-We covered three ways to create a function in JavaScript:
+Şimdiye kadar üç faklı yolla fonksiyon yazılabileceği gösterildi:
 
-1. Function Declaration: the function in the main code flow
+1. Fonksiyon Tanımlama: Fonksiyon ana kod akışında.
 
     ```js
-    function sum(a, b) {
-      let result = a + b;
+    function toplam(a, b) {
+      let sonuc = a + b;
 
-      return result;
+      return sonuc;
     }
     ```
 
-2. Function Expression: the function in the context of an expression
+2. Fonksiyon ifadesi: Fonksiyon ifadenin içerisinde
 
     ```js
-    let sum = function(a, b) {
-      let result = a + b;
+    let toplam = function(a, b) {
+      let sonuc = a + b;
 
-      return result;
+      return sonuc;
     }
     ```
+    Fonksiyon ifadesi bir `isme` sahip olabilir fakat bu `isim` sadece bu fonksiyon içinde kullanılabilir. Örneğin = `toplam = function isim(a,b)` gibi.
 
-    Function expression can have a name, like `sum = function name(a, b)`, but that `name` is only visible inside that function.
-
-3. Arrow functions:
+3. Ok fonksiyonları:
 
     ```js
-    // expression at the right side
-    let sum = (a, b) => a + b;
+    // ifada sağ tarafta
+    let toplam = (a, b) => a + b;
 
-    // or multi-line syntax with { ... }, need return here:
-    let sum = (a, b) => {
+    // Çoklu satır için {..} kullanılmalı ve `return` ile değerin dönderilmesi gerekmektedir:
+    let toplam = (a, b) => {
       // ...
       return a + b;
     }
 
-    // without arguments
-    let sayHi = () => alert("Hello");
+    // argümansız
+    let selamVer = () => alert("Merhaba");
 
-    // with a single argument
-    let double = n => n * 2;
+    // tek argümanlı
+    let ikiyeKatla = n => n * 2;
     ```
 
 
-- Functions may have local variables: those declared inside its body. Such variables are only visible inside the function.
-- Parameters can have default values: `function sum(a = 1, b = 2) {...}`.
-- Functions always return something. If there's no `return` statement, then the result is `undefined`.
+- Fonksiyonlar yerel değişkenlere sahip olabilirler: Bu değişkenler fonksiyon gövdesinde yazılır ve sadece fonksiyon içerisinde kullanılabilir.
+- Parametreler varsayılan değerlere sahip olabilirler: `function sum(a = 1, b = 2){...}`
+- Fonksiyonlar her zaman birşey döndürürler. Eğer `return` kelimesi yoksa sonuçta yine de `undefined` döner.
 
 
-| Function Declaration | Function Expression |
+| Fonksiyon Tanımlama | Fonksiyon ifadesi |
 |----------------------|---------------------|
-| visible in the whole code block | created when the execution reaches it |
-|   - | can have a name, visible only inside the function |
+| Tüm kod bloğunda görünür | kodların çalışması kendisine ulaşırsa çalışır |
+|   - | isme sahip olabilir, sadece fonksiyon içerisinde çalışır |
 
-More: see <info:function-basics>, <info:function-expressions-arrows>.
+Dahası için: <info:function-basics>, <info:function-expressions-arrows>. 
 
-## More to come
+## Dahası var
 
-That was a brief list of JavaScript features. As of now we've studied only basics. Further in the tutorial you'll find more specials and advanced features of JavaScript.
+Burada sadece JavaScrpt özelliklerinin kısa bir listesi verilmiştir. Şu ana kadar sadece basit anlamda bu dili inceledik. Gelecek konularda daha özel ve gelişmiş JavaScript özelliklerini inceleyebilirsiniz.
