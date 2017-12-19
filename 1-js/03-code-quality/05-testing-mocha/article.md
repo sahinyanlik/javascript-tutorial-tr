@@ -394,7 +394,7 @@ Testler olmazsa geliştiriciler iki şekilde devam edebilir:
 
 Eğer projede testler yazılmış olsaydı, böyle problemler olmazdı. Testleri çalıştırır ve yaptığınız değişikliklerin herhangi bir yeri etkileyip etkilemediğini anında görebilirdiniz.
 
-** Ayrıca iyi test edilmiş kodun mimarisi daha iyidir**
+**Ayrıca iyi test edilmiş kodun mimarisi daha iyidir**
 
 Çünkü değiştirmek ve geliştirmek daha kolaydır. Sadece bu değil
 
