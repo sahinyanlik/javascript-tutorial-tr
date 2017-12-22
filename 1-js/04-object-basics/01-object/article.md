@@ -16,8 +16,8 @@ Obje bir dolap gibi düşünülebilir. Bu dolabın içindeki her klasörün bir 
 Boş obje ( boş dolap ) iki türlü oluşturulabilir.
 
 ```js
-let user = new Object(); 
-let user = {}; 
+let kullanici = new Object(); 
+let kullanici = {}; 
 ```
 
 ![](object-user-empty.png)
@@ -244,7 +244,7 @@ function kullaniciOlustur(isim, yas) {
 }
 
 let kullanici = kullaniciOlustur("Mazlum", 30);
-alert(user.isim); // Mazlum
+alert(kullanici.isim); // Mazlum
 ```
 
 Yukarıdaki örnekte özellikler değişkenler ile aynı isme sahipler. Bu çeşit kullanım çok yaygındır, hatta bundan dolayı *kısaltma* bile yapılmıştır.
@@ -305,7 +305,7 @@ Eğer tırnağı unutursanız bu durumda değişkenin değerini obje içinde ara
 let kullanici = { yas: 30 };
 
 let anahtar = "yas";
-alert( *!*anahtar*/!* in user ); // true, değişkenden değerini alır ve kontrol eder.
+alert( *!*anahtar*/!* in kullanici ); // true, değişkenden değerini alır ve kontrol eder.
 ```
 
 ````smart header="Özellik undefined dönderiyorsa nasıl kontrol edilmeli?"
@@ -655,7 +655,7 @@ let kullanici = {
   }
 };
 
-alert( user.beden.boy ); // 182
+alert( kullanici.beden.boy ); // 182
 ```
 Artık eskisi gibi `klon.beden = kullanici.beden` demek yeterli olmayacaktır. Çünkü `kullanici.beden` artık bir objedir, objelerin referansları kopyalanır. Öyleyse `klon` ve `kullanici` aynı beden objesini kullanırlar.
 
