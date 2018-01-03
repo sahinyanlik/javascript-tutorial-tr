@@ -100,7 +100,7 @@ user.id = "ID Değeri";
 
 // Ardından kodun başka bir yerinde `id` başka bir amaçla kullanılırsa
 
-user.id = "Their id value"
+user.id = "Başka id değeri"
 // boom! üstüne yazıldı! Aslında daha öncekinin üzerine yazılmak istenmemişti, ama oldu!
 ```
 
@@ -114,7 +114,7 @@ Aşağıdaki Gibi:
 let id = Symbol("id");
 
 let kullanici = {
-  isim: "John",
+  isim: "Mahsun",
 *!*
   [id]: 123 // dikkat ederseniz id:123 değil
 */!*
