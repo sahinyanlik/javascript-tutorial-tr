@@ -1,5 +1,3 @@
-
-# Object to primitive conversion
 # Objelerin ilkel çevirileri
 
 Objeler `obj1 + obj2` gibi toplanırsa, `obj1 - obj2` gibi çıkarılırsa veya `alert(obj)` gibi yazdırılırsa ne olur?
