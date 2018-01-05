@@ -11,10 +11,11 @@ Objeler için boolean çevirimi bulunmamaktadır çünkü tüm objeler boolean d
 
 Sayısal çevirim obje çıkarıldığında veya metematiksel fonksiyonlar uygulandığında meydana gelir. Örneğin `Date` objesi (<info:date> bölümünde anlatılacak) çıkarılabilir ve `date1-date2` bu iki tarih arasındaki zaman farkını verir.
 
-String çevirimi için -- genelde `alert(ob)` çağırıldığında meydana gelir.
+Karakter dizisi çevirimi için -- genelde `alert(ob)` çağırıldığında meydana gelir.
 
 
 ## ToPrimitive
+
 Objenin ilkel bir tip olarak gerekli olduğu durumlarda, örneğin `alert` veya matematiksel uygulamalarda, `ToPrimitive` algoritması kullanılarak bu işlem yapılır. ([Özellikleri](https://tc39.github.io/ecma262/#sec-toprimitive))
 
 Bu algoritma özel bir obje metodu ile ilkel tipe çevrimi düzenlememizi sağlar.
@@ -66,7 +67,7 @@ Duruma bağlı olarak, bu çevirime "ipucu(hint)" da denir.
     
     Pratikte tüm objeler ( `Date` objesi hariç ) `"default" çevrimini `"number"` çevrimi ile aynı şekilde yaparlar.
     
-Sadece üç çeşit ipucu(hint) bulunmaktadır. `boolean` bulunmamamktadır, çünkü her obje zaten boolean `true` döndürür. `"default"` ve `"number"` için de aynı olduklarını varsayarsanız, sadece iki çevrim bulunmaktadır.
+Sadece üç çeşit ipucu(hint) bulunmaktadır. `boolean` bulunmamaktadır, çünkü her obje zaten boolean `true` döndürür. `"default"` ve `"number"` için de aynı olduklarını varsayarsanız, sadece iki çevrim bulunmaktadır.
 
 
 **Çevrimi yapabilmek için JavaScript üç obje metodu bulup çağırmaya çalışır"**
