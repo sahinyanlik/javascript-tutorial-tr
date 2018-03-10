@@ -1,4 +1,4 @@
-importance: 4
+Önem: 4
 
 ---
 
