@@ -275,25 +275,23 @@ let str = '𝒳😂𩷶';
 
 alert( slice(str, 1, 3) ); // 😂𩷶
 
-// native method does not support surrogate pairs
-alert( str.slice(1, 3) ); // garbage (two pieces from different surrogate pairs)
+// Varolan metodlar vekil çiftleri desteklemez.
+alert( str.slice(1, 3) ); // çöp 
 ```
 
 
-## Summary
+## Özet
+Objeler `for..of` ile kullanılırsa *sıralı erişim objesi* adını alır.
 
-Objects that can be used in `for..of` are called *iterable*.
+- Teknik olarak, sıralı erişim objelerinin `Symbol.iterator` metodunu uygulamış olması gerekir.
+    - `obj[Symbol.iterator]`'ün sonucunda bu objeye *sıralı erişim objesi* denir ve `for..of` içerisinde tekrarlanabilir.
+    - Bir *sıralı erişim objesi* `next()` metoduna kesinlikle sahip olmalıdır. Bu metod `{ done: Boolean, value:any}` döndürmelidir. Burada `done:true` olur ise bu döngü bitti anlamına gelir. Diğer türlü `value` bir sonraki değerdir.
+- `Symbol.iterator` metodu `for..of` tarafından otomatik olarak çağrılmaktadır. Elbette doğrudan da çağırılabilir.
+- Var olan sıralı erişilebilir objeler, yani karakterler ve diziler de `Symbol.iterator` metodunu yapmışlardır.
+- Karakter döngüsü vekil ikilileri anlayabilir.
 
-- Technically, iterables must implement the method named `Symbol.iterator`.
-    - The result of `obj[Symbol.iterator]` is called an *iterator*. It handles the further iteration process.
-    - An iterator must have the method named `next()` that returns an object `{done: Boolean, value: any}`, here `done:true` denotes the iteration end, otherwise the `value` is the next value.
-- The `Symbol.iterator` method is called automatically by `for..of`, but we also can do it directly.
-- Built-in iterables like strings or arrays, also implement `Symbol.iterator`.
-- String iterator knows about surrogate pairs.
+İndekslenmiş özelliklere ve `length` özelliğine sahip objelere *dizi-benzeri* denir. Böyle objeler başka özellik ve metodlara da sahip olabilir. Fakat dizilerin sahip olduğu metodlardan yoksundurlar.
 
+Eğer şartnameye bakılacak olursa -- Varolan çoğu metodun `iterables` veya `dizi-benzeri` ile çalışabileceği vurgulanmıştır. Gerçek diziler daha soyut kalmaktadır bundan dolayı pek bahsedilmez.
 
-Objects that have indexed properties and `length` are called *array-like*. Such objects may also have other properties and methods, but lack built-in methods of arrays.
-
-If we look inside the specification -- we'll see that most built-in methods assume that they work with iterables or array-likes instead of "real" arrays, because that's more abstract.
-
-`Array.from(obj[, mapFn, thisArg])` makes a real `Array` of an iterable or array-like `obj`, and then we can use array methods on it. The optional arguments `mapFn` and `thisArg` allow to apply a function to each item.
+`Array.from(obj[, mapFn, thisArg])` metodu `iterable` veya `dizi-benzeri`'inden gerçek `Array` üretirler, sonrasında bunu herhangi bir dizi metoduyla kullanılabilir. `mapFn` ve `thisArg` gibi isteğe bağlı metodlar dizinin her bir elemanın istenilen fonksiyona uygular.
