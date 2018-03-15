@@ -33,12 +33,12 @@ function formatTarih(tarih) {
   return d.slice(0, 3).join('.') + ' ' + d.slice(3).join(':');
 }
 
-alert( formatDate(new Date(new Date - 1)) ); // "Şimdi"
+alert( formatTarih(new Date(new Date - 1)) ); // "Şimdi"
 
-alert( formatDate(new Date(new Date - 30 * 1000)) ); // "30 saniye önce"
+alert( formatTarih(new Date(new Date - 30 * 1000)) ); // "30 saniye önce"
 
-alert( formatDate(new Date(new Date - 5 * 60 * 1000)) ); // "5 dakika önce"
+alert( formatTarih(new Date(new Date - 5 * 60 * 1000)) ); // "5 dakika önce"
 
 // dünün günü şu şekilde: 31.12.2016, 20:00
-alert( formatDate(new Date(new Date - 86400 * 1000)) );
+alert( formatTarih(new Date(new Date - 86400 * 1000)) );
 ```
