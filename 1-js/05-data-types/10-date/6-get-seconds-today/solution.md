@@ -10,7 +10,7 @@ function bugundenSaniye() {
  let bugun = new Date(simdi.getFullYear(), simdi.getMonth(), simdi.getDate());
 
   let fark = simdi - bugun; // ms cinsinden
-  return Math.round(diff / 1000); // saniyeye çevrildi
+  return Math.round(fark / 1000); // saniyeye çevrildi
 }
 
 alert( bugundenSaniye() );
