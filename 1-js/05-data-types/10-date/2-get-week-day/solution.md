@@ -10,5 +10,5 @@ function haftaninGunleriniAl(date) {
 }
 
 let tarih = new Date(2014, 0, 3); // 3 Jan 2014
-alert( haftaninGunleriniAl(tarih) ); // CU
+alert( haftaninGunleriniAl(tarih) ); // CM
 ```

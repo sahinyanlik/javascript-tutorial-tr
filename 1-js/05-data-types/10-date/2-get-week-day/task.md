@@ -9,5 +9,5 @@
 
 ```js no-beautify
 let tarih = new Date(2012, 0, 3);  // 3 Jan 2012
-alert( haftaninGunleriniAl(date) );        //  "TU" dönmesi gerekiyor.
+alert( haftaninGunleriniAl(date) );        //  "SA" dönmesi gerekiyor.
 ```
