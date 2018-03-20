@@ -1,3 +1,3 @@
 # Veri Tipleri
 
-Veri tiplerinin derinleme incelemesi
+Veri tiplerinin derinleme incelemesi 
