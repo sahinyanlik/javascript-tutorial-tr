@@ -1,291 +1,284 @@
-# Recursion and stack
+# Kendini tekrarlayan ( özçağrı )  ve yığın
 
-Let's return to functions and study them more in-depth.
+Bu bölümde fonksiyonlar daha derinlemesine incelenecektir.
 
-Our first topic will be *recursion*.
+İlk konu *özçağrı*  olacaktır.
 
-If you are not new to programming, then it is probably familiar and you could skip this chapter.
+Eğer daha önce program yazdıysanız bir sonraki bölüme geçebilirsiniz.
 
-Recursion is a programming pattern that is useful in situations when a task can be naturally split into several tasks of the same kind, but simpler. Or when a task can be simplified into an easy action plus a simpler variant of the same task. Or, as we'll see soon, to deal with certain data structures.
+Öz çağrı bir programlama desenidir. Bu desen bir görevin aynı türde daha basit görevcikler haline getirilmesini sağlar. Veya bir görev daha kolay aksiyonlara ve aynı şekilde görevlere dönüştürülebildiğinde, veya daha sonra göreceğiniz gibi, belirli veri yapılarında kullanılabilir.
 
-When a function solves a task, in the process it can call many other functions. A partial case of this is when a function calls *itself*. That's called *recursion*.
+Bir fonksiyon problemi çözerken birçok farklı fonksiyonu çağırabilir. Bu özel durumda ise fonksiyon *kendisini* çağırır. Bu olaya *özçağrı*, *recursion* denir.
 
 [cut]
 
-## Two ways of thinking
-
-For something simple to start with -- let's write a function `pow(x, n)` that raises `x` to a natural power of `n`. In other words, multiplies `x` by itself `n` times.
+## Çift yönlü düşünme
+Başlangıçta `us(x,n)` adında bir fonksiyon olsun ve bu `n` üssü `x` i hesaplasın. Diğer bir ifadeyle `x`'i `n` defa kendisiyle çarpsın.
 
 ```js
-pow(2, 2) = 4
-pow(2, 3) = 8
-pow(2, 4) = 16
+us(2, 2) = 4
+us(2, 3) = 8
+us(2, 4) = 16
 ```
 
-There are two ways to implement it.
+Bunu uygulamanın iki yolu bulunmaktadır.
 
-1. Iterative thinking: the `for` loop:
+1. Tekrarlı düşünürseniz: `for` döngüsü:
 
     ```js run
-    function pow(x, n) {
-      let result = 1;
-
-      // multiply result by x n times in the loop
+    function us(x, n) {
+      let sonuc = 1;
+      // x'in x defa kendisiyle çarpımı.
       for(let i = 0; i < n; i++) {
-        result *= x;
+        sonuc *= x;
       }
 
-      return result;
+      return sonuc;
     }
 
-    alert( pow(2, 3) ); // 8
+    alert( us(2, 3) ); // 8
     ```
 
-2. Recursive thinking: simplify the task and call self:
+2. Özçağrı: işi daha basite indirgeyerek kendisini çağırsın:
 
     ```js run
-    function pow(x, n) {
+    function us(x, n) {
       if (n == 1) {
         return x;
       } else {
-        return x * pow(x, n - 1);
+        return x * us(x, n - 1);
       }
     }
 
-    alert( pow(2, 3) ); // 8
+    alert( us(2, 3) ); // 8
     ```
 
-Please note how the recursive variant is fundamentally different.
-
-When `pow(x, n)` is called, the execution splits into two branches:
+Dikkat ederseniz özçağrı fonksiyonu aslen farklıdır.
+`us(x,n)` çağrıldığında çalıştırılma iki dala ayrılır.
 
 ```js
               if n==1  = x
              /
-pow(x, n) =
+us(x, n) =
              \       
-              else     = x * pow(x, n - 1)
+              else     = x * us(x, n - 1)
 ```
 
-1. If `n==1`, then everything is trivial. It is called *the base* of recursion, because it immediately produces the obvious result: `pow(x, 1)` equals `x`.
-2. Otherwise, we can represent `pow(x, n)` as `x * pow(x, n-1)`. In maths, one would write <code>x<sup>n</sup> = x * x<sup>n-1</sup></code>. This is called *a recursive step*: we transform the task into a simpler action (multiplication by `x`) and a simpler call of the same task (`pow` with lower `n`). Next steps simplify it further and further untill `n` reaches `1`.
+1. Eğer `n==1` ise geriye kalanlar önemsizdir. Buna *temel* özçağrı denir, çünkü bu belirli bir sonucu çıktı verir: `us(x,1)` eşittir `x` 
 
-We can also say that `pow` *recursively calls itself* till `n == 1`.
+2. Diğer türlü `us(x,n)` `x*us(x,n-1)` şeklinde ifade edilebilir. Matematiksel olarak <code>x<sup>n</sup> = x * x<sup>n-1</sup></code> şeklinde ifade edilebilir. Buna *öztekrar basamağı* denir. Görev daha küçük aksiyonlara ( `x` ile çarpma ) indirgenmiş olur. Ayrıca aynı görevi daha basit görevlerle ( `us`'ün daha küçük `n` değeri) indirgenmiş oldu. Bir sonraki sitep ise bunun daha basite indirgene indirgene `n`'in `1` e ulaşmasını sağlamaktır.
 
-![recursive diagram of pow](recursion-pow.png)
+Buna `us` *öz çağrı ile* kendisini `n==1` olana kadar çağırır diyebiliriz.
+
+![özçağrı diyagramı](recursion-pow.png)
 
 
-For example, to calculate `pow(2, 4)` the recursive variant does these steps:
+`us(2,4)`'ü hesaplayabilmek için *özçağrı* şu adımları gerçekleştirir:
 
-1. `pow(2, 4) = 2 * pow(2, 3)`
-2. `pow(2, 3) = 2 * pow(2, 2)`
-3. `pow(2, 2) = 2 * pow(2, 1)`
-4. `pow(2, 1) = 2`
+1. `us(2, 4) = 2 * us(2, 3)`
+2. `us(2, 3) = 2 * us(2, 2)`
+3. `us(2, 2) = 2 * us(2, 1)`
+4. `us(2, 1) = 2`
 
-So, the recursion reduces a function call to a simpler one, and then -- to even more simpler, and so on, until the result becomes obvious.
 
-````smart header="Recursion is usually shorter"
-A recursive solution is usually shorter than an iterative one.
+*özçağrı* böylece fonksiyon çağrılarını dah abasite indirgemiştir. Daha sonra daha basite ve en sonunda sonuç belirli olana kadar devam etmiştir.
 
-Here we can rewrite the same using the ternary `?` operator instead of `if` to make `pow(x, n)` more terse and still very readable:
+````smart header="Özçağrı genelde tekrarlı olana göre daha kısadır"
+
+Aşağıda aynı fonksiyonun `?` ile tekrar yazılmış hali bulunmaktadır. 
 
 ```js run
-function pow(x, n) {
+function us(x, n) {
   return (n == 1) ? x : (x * pow(x, n-1));
 }
 ```
 ````
+Maksimum iç içe çağırma sayısına *özçağrı derinliği* `us` fonksiyonunda bu `n`'dir.
 
-The maximal number of nested calls (including the first one) is called *recursion depth*. In our case, it will be exactly `n`.
+JavaScript motorları maksimum özçağrı derinliğini sınırlamaktadır. Bazı motorlarda 10000, bazılarında 100000 limiti bulunmaktadır. Bunun için otomatik optimizasyonlar bulunmaktadır. Fakat yine de her motorda desteklenmemektedir ve çok basit durumlarda kullanılır.
 
-The maximal recursion depth is limited by JavaScript engine. We can make sure about 10000, some engines allow more, but 100000 is probably out of limit for the majority of them. There are automatic optimizations that help alleviate this ("tail calls optimizations"), but they are not yet supported everywhere and work only in simple cases.
+Bu özçağrı uygulamalarını limitler, fakat yine de çoğu yerde kullanılmaktadırlar. Çoğu görevde özçağrı şeklinde düşünmek daha basit ve sürdürülebilir bod yazmanızı sağlayacaktır.
 
-That limits the application of recursion, but it still remains very wide. There are many tasks where recursive way of thinking gives simpler code, easier to maintain.
+## Çalıştırma Yığını
 
-## The execution stack
+Peki *özçağrılar* nasıl çalışır. Bunun için fonksiyonların içinde ne yaptıklarına bakmak gerekmektedir.
 
-Now let's examine how recursive calls work. For that we'll look under the hood of functions.
+Çalışan fonksiyon hakkında bilgi *çalıştırma kaynağında* tutulur.
 
-The information about a function run is stored in its *execution context*.
+[Çalıştırma Kaynağı -  Execution Context](https://tc39.github.io/ecma262/#sec-execution-contexts) fonksiyonun çalışması hakkında detayları tutan dahili bir veri yapısıdır: Kontrol akışı nerede, o anki değişkenlerin değeri, `this` neye denk gelir ve bunun gibi detaylar dahili detaylar tutar.
 
-The [execution context](https://tc39.github.io/ecma262/#sec-execution-contexts) is an internal data structure that contains details about the execution of a function: where the control flow is now, the current variables, the value of `this` (we don't use it here) and few other internal details.
+Her fonksiyon çağrısı kendine ait çalıştırma kaynağı tutar.
 
-One function call has exactly one execution context associated with it.
+Eğer bir fonksiyon içeride başka bir çağrı yaparsa şunlar olur:
 
-When a function makes a nested call, the following happens:
+- O anki fonksiyon durur.
+- Bu fonksiyon ile ilintili çalışma kaynağı *çalışma kaynağı yığını* veri yapısı şeklinde kaydedilir.
+- Dallanılan çağrı çalıştırılır.
+- Bu işlem bittikten sonra çalışma kaynağı yığınından daha önceki çalışmakta olan yer geri alınır, böylece fonksiyon kaldığı yerden görevini tamamlayabilir.
 
-- The current function is paused.
-- The execution context associated with it is remembered in a special data structure called *execution context stack*.
-- The nested call executes.
-- After it ends, the old execution context is retrieved from the stack, and the outer function is resumed from where it stopped.
+Aşağıda `us(2,3)`'ün çalışması gösterilmiştir.
 
-Let's see what happens during the `pow(2, 3)` call.
+### us(2, 3)
 
-### pow(2, 3)
+`us(2,3)` çağrısının başlangıcında, çalışma kaynağı değişkenleri `x=2,n=3` olacak şekilde tutar. Çalışma şu anda birinci satırdadır. 
 
-In the beginning of the call `pow(2, 3)` the execution context will store variables: `x = 2, n = 3`, the execution flow is at line `1` of the function.
-
-We can sketch it as:
-
+Bu aşağıdaki gibi gösterilebilir:
 <ul class="function-execution-context-list">
   <li>
-    <span class="function-execution-context">Context: { x: 2, n: 3, at line 1 }</span>
-    <span class="function-execution-context-call">pow(2, 3)</span>
+    <span class="function-execution-context">Çalışma kaynağı: { x: 2, n: 3, birinci satırda }</span>
+    <span class="function-execution-context-call">us(2, 3)</span>
   </li>
 </ul>
 
-That's when the function starts to execute. The condition `n == 1` is falsy, so the flow continues into the second branch of `if`:
+Ardından fonksiyon çalışmaya başlar. `n==1` şartı yanlıştır, bundan dolayı ikinci `if`'e geçer.
 
 ```js run
-function pow(x, n) {
+function us(x, n) {
   if (n == 1) {
     return x;
   } else {
 *!*
-    return x * pow(x, n - 1);
+    return x * us(x, n - 1);
 */!*
   }
 }
 
-alert( pow(2, 3) );
+alert( us(2, 3) );
 ```
 
-
-The variables are same, but the line changes, so the context is now:
-
-<ul class="function-execution-context-list">
-  <li>
-    <span class="function-execution-context">Context: { x: 2, n: 3, at line 5 }</span>
-    <span class="function-execution-context-call">pow(2, 3)</span>
-  </li>
-</ul>
-
-To calculate `x*pow(x, n-1)`, we need to make a subcall of `pow` with new arguments `pow(2, 2)`.
-
-### pow(2, 2)
-
-To do a nested call, JavaScript remembers the current execution context in the *execution context stack*.
-
-Here we call the same function `pow`, but it absolutely doesn't matter. The process is the same for all functions:
-
-1. The current context is "remembered" on top of the stack.
-2. The new context is created for the subcall.
-3. When the subcall is finished -- the previous context is popped from the stack, and its execution continues.
-
-Here's the context stack when we entered the subcall `pow(2, 2)`:
+Değişkenler aynı fakat satır değiştir, şimdiki kaynak şu şekilde:
 
 <ul class="function-execution-context-list">
   <li>
-    <span class="function-execution-context">Context: { x: 2, n: 2, at line 1 }</span>
-    <span class="function-execution-context-call">pow(2, 2)</span>
-  </li>
-  <li>
-    <span class="function-execution-context">Context: { x: 2, n: 3, at line 5 }</span>
-    <span class="function-execution-context-call">pow(2, 3)</span>
+    <span class="function-execution-context">Kaynak: { x: 2, n: 3, 5. satırda }</span>
+    <span class="function-execution-context-call">us(2, 3)</span>
   </li>
 </ul>
 
-The new current execution context is on top (and bold), and previous remembered contexts are below.
+`x*pow(x, n-1)`'i hesaplayabilmek için `us` fonksiyonuna `us(2,2)` şeklinde yeni bir çağrı yapılmalıdır.
 
-When we finish the subcall -- it is easy to resume the previous context, because it keeps both variables and the exact place of the code where it stopped. Here in the picture we use the word "line", but of course it's more precise.
+### us(2, 2)
 
-### pow(2, 1)
+Dallanma işleminin yapılabilmesi için JavaScript'in öncelikle o anki çalışma durumunu *çalışma kaynağı yığını*na atması gerekmektedir.
 
-The process repeats: a new subcall is made at line `5`, now with arguments `x=2`, `n=1`.
+Burada `us` fonksiyonu çağrılmıştır. Bu herhangi bir fonksiyon da olabilirdi, aralarında bu yönden hiç bir farklılık bulunmamaktadır:
 
+1. O anki kaynak yığının en üstüne "hatırlatılır"
+2. Alt çağrı için yeni bir kaynak yaratılır.
+3. Alt çağrılar bittiğinde -- bir önceki kaynak yığından alınır ve çalışmasına devam eder.
+
+Aşağıda `pow(2,2)` altçağrısına girildiğinde kaynak yığınının durumu gösterilmektedir.
+
+<ul class="function-execution-context-list">
+  <li>
+    <span class="function-execution-context">Kaynak: { x: 2, n: 2, 1. satırda }</span>
+    <span class="function-execution-context-call">us(2, 2)</span>
+  </li>
+  <li>
+    <span class="function-execution-context">Kaynak: { x: 2, n: 3, 5. satırda }</span>
+    <span class="function-execution-context-call">us(2, 3)</span>
+  </li>
+</ul>
+
+Üst tarafta o anda çalışan kaynak ( kalın harflerle ), alt tarafta ise "hatırlatılan" kaynak bulunmaktadır.
+
+Altçağrı bittiğinde, daha önceki kalınan kaynaktan devam etmek kolaydır. Çünkü bu her iki değişkeni ve kaldığı satırı tutmaktadır. Burada "satır" denmesine rağmen aslında bunun daha net birşey olduğu bilinmelidir.
+
+
+### us(2, 1)
+
+İşlem tekrar ediyor: `5.` satırda yeni bir altçağrı yapılmaktadır, argümanlar ise `x=2`, `n=1` şeklindedir.
+
+Yeni çalışma yığını oluşturur, bir önceki yığının üstüne itelenir. 
 A new execution context is created, the previous one is pushed on top of the stack:
 
 <ul class="function-execution-context-list">
   <li>
-    <span class="function-execution-context">Context: { x: 2, n: 1, at line 1 }</span>
-    <span class="function-execution-context-call">pow(2, 1)</span>
+    <span class="function-execution-context">Kaynak: { x: 2, n: 1, 1. satır }</span>
+    <span class="function-execution-context-call">us(2, 1)</span>
   </li>
   <li>
-    <span class="function-execution-context">Context: { x: 2, n: 2, at line 5 }</span>
-    <span class="function-execution-context-call">pow(2, 2)</span>
+    <span class="function-execution-context">Kaynak: { x: 2, n: 2, 5. satır }</span>
+    <span class="function-execution-context-call">us(2, 2)</span>
   </li>
   <li>
-    <span class="function-execution-context">Context: { x: 2, n: 3, at line 5 }</span>
-    <span class="function-execution-context-call">pow(2, 3)</span>
+    <span class="function-execution-context">Kaynak: { x: 2, n: 3, 5.satır }</span>
+    <span class="function-execution-context-call">us(2, 3)</span>
   </li>
 </ul>
 
-There are 2 old contexts now and 1 currently running for `pow(2, 1)`.
+Şu anda 2 eski kaynak ve 1 tane çalışmakta olan kaynak bulunmaktadır `us(2,1)`
 
-### The exit
-
-During the execution of `pow(2, 1)`, unlike before, the condition `n == 1` is truthy, so the first branch of `if` works:
+### Çıkış
+`us(2,1)` çalışırken diğerlerinin aksine `n==1` şartı sağlanır, bundan dolayı ilk defa birinci `if` çalışır.
 
 ```js
-function pow(x, n) {
+function us(x, n) {
   if (n == 1) {
 *!*
     return x;
 */!*
   } else {
-    return x * pow(x, n - 1);
+    return x * us(x, n - 1);
   }
 }
 ```
+Daha fazla dallanan çağrı olmadığından dolayı fonksiyon sona erer ve değeri döner.
 
-There are no more nested calls, so the function finishes, returning `2`.
+Fonksiyon bittiğinden dolayı, çalışma kaynağına gerek kalmamıştır ve dolayısıyla hafızadan silinir. Bir önceki yığından alınır:
 
-As the function finishes, its execution context is not needed any more, so it's removed from the memory. The previous one is restored off the top of the stack:
-
-
-<ul class="function-execution-context-list">
-  <li>
-    <span class="function-execution-context">Context: { x: 2, n: 2, at line 5 }</span>
-    <span class="function-execution-context-call">pow(2, 2)</span>
-  </li>
-  <li>
-    <span class="function-execution-context">Context: { x: 2, n: 3, at line 5 }</span>
-    <span class="function-execution-context-call">pow(2, 3)</span>
-  </li>
-</ul>
-
-The execution of `pow(2, 2)` is resumed. It has the result of the subcall `pow(2, 1)`, so it also can finish the evaluation of `x * pow(x, n-1)`, returning `4`.
-
-Then the previous context is restored:
 
 <ul class="function-execution-context-list">
   <li>
-    <span class="function-execution-context">Context: { x: 2, n: 3, at line 5 }</span>
-    <span class="function-execution-context-call">pow(2, 3)</span>
+    <span class="function-execution-context">Kaynak: { x: 2, n: 2, 5. satırda }</span>
+    <span class="function-execution-context-call">us(2, 2)</span>
+  </li>
+  <li>
+    <span class="function-execution-context">Kaynak: { x: 2, n: 3, 5. satırda }</span>
+    <span class="function-execution-context-call">us(2, 3)</span>
   </li>
 </ul>
 
-When it finishes, we have a result of `pow(2, 3) = 8`.
+`us(2,2)` nin çalışması devam etti. `us(2,1)`'in sonucuna sahip olduğundan `x * us(x,n-1)`'in sonucunu bulabilir, bu da `4`'tür.
 
-The recursion depth in this case was: **3**.
+Ardından bir önceki kaynak geri yüklenir:
 
-As we can see from the illustrations above, recursion depth equals the maximal number of context in the stack.
+<ul class="function-execution-context-list">
+  <li>
+    <span class="function-execution-context">Kaynak: { x: 2, n: 3, 5. satırda }</span>
+    <span class="function-execution-context-call">us(2, 3)</span>
+  </li>
+</ul>
 
-Note the memory requirements. Contexts take memory. In our case, raising to the power of `n` actually requires the memory for `n` contexts, for all lower values of `n`.
+İşlemler bittiğinde, `us(2,3) = 8` sonucu alınır.
 
-A loop-based algorithm is more memory-saving:
+Bu durumda özçağrı derinliği **3**tür
+
+Yukarıda da görüldüğü üzere, özçağrı derinliği yığındaki kaynak sayısı demektir. Bu drumda `n`'in üssü değiştirildiğinde daha fazla hafıza kullanacaktır.
+
+Döngü bazlı algoritma daha az hafıza kullanacaktır:
 
 ```js
-function pow(x, n) {
-  let result = 1;
+function us(x, n) {
+  let sonuc = 1;
 
   for(let i = 0; i < n; i++) {
-    result *= x;
+    sonuc *= x;
   }
 
-  return result;
+  return sonuc;
 }
 ```
 
-The iterative `pow` uses a single context changing `i` and `result` in the process. Its memory requirements are small, fixed and do not depend on `n`.
+Tekrar eden `us` fonksiyonu `i` ve `sonuc` kaynağını kullanır ve sürekli bunları değiştirir. Hafıza gereksinimleri oldukça azdır ve bu hafıza büyüklüğü `n`'e bağlı değildir.
 
-**Any recursion can be rewritten as a loop. The loop variant usually can be made more effective.**
+**Tüm özçağrılar döngü olarak yazılabilir. Döngü versiyonu daha az kaynak gerektirecektir**
 
-...But sometimes the rewrite is non-trivial, especially when function uses different recursive subcalls depending on conditions and merges their results or when the branching is more intricate. And the optimization may be unneeded and totally not worth the efforts.
+... Bazen yeniden yazmak çok kolay değildir, özellikle fonksiyon alt çağrılarda özçağrı kullanıyorsa, bu çağrılar sonucunda daha karmaşık dallanmalar oluyor ise optimizasyon değmeyebilir.
 
-Recursion can give a shorter code, easier to understand and support. Optimizations are not required in every place, mostly we need a good code, that's why it's used.
+Özçağrı fonksiyonun daha kısa kod ile yazılmasını sağlar, ayrıca anlaşılmayı da kolaylaştırır. Optimizasyon her yerde gerekli değildir, genelde iyi kod gereklidir, bunun için kullanılır.
 
-## Recursive traversals
+## Özçağrı Recursive traversals
 
 Another great application of the recursion is a recursive traversal.
 
