@@ -500,7 +500,7 @@ list = { deger: "yeni eleman", sonraki: list };
 */!*
 ```
 
-![linked list](linked-list-0.png)
+![linked list](linked-list-0.png) 
 
 Yine ortalardan bir yerden veri silineceği zaman `sonraki`'nin bir öncekine getirilmesi gerekri.
 
