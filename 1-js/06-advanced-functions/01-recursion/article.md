@@ -278,250 +278,266 @@ Tekrar eden `us` fonksiyonu `i` ve `sonuc` kaynağını kullanır ve sürekli bu
 
 Özçağrı fonksiyonun daha kısa kod ile yazılmasını sağlar, ayrıca anlaşılmayı da kolaylaştırır. Optimizasyon her yerde gerekli değildir, genelde iyi kod gereklidir, bunun için kullanılır.
 
-## Özçağrı Recursive traversals
+## Özçağrı Akışı
 
-Another great application of the recursion is a recursive traversal.
+Özçağrıların kullanılabileceği diğer bir uygulama özçağrı akışıdır.
 
-Imagine, we have a company. The staff structure can be presented as an object:
+Bir firma hayal edin. Çalışanların yapısı obje olarak şu şekilde tanımlanabilir:
 
 ```js
-let company = {
-  sales: [{
-    name: 'John',
-    salary: 1000
+let firma = {
+  satis: [{
+    adi: 'Ahmet',
+    maasi: 1000
   }, {
-    name: 'Alice',
-    salary: 600
+    adi: 'Mehmet',
+    salary: 150
   }],
 
-  development: {
-    sites: [{
-      name: 'Peter',
-      salary: 2000
+  gelistirme: {
+    siteler: [{
+      adi: 'Mustafa',
+      ucret: 200
     }, {
-      name: 'Alex',
-      salary: 1800
+      adi: 'Mazlum',
+      ucret: 50
     }],
 
-    internals: [{
-      name: 'Jack',
-      salary: 1300
+    dahili: [{
+      adi: 'Zafer',
+      ucret: 1300
     }]
   }
 };
 ```
+Diğer bir deyişle bu firmanın departmanları bulunmaktadır.
 
-In other words, a company has departments.
+- Bir departman çalışanlar dizilerinden oluşabilir. Öreğin `satis` departmanı 2 tane çalışana sahiptir: Ahmet ve Mehmet.
+- Veya bazen departmanlar alt departmanlara ayrılabilirler. Örneğin `gelistirme` departmanı `siteler` ve `dahili` olmak üzere ikiye ayrılmıştır. Her bir alt departmanın kendine ait çalışanları vardır.
+- Bunun yanında departmanların büyüyüp alt departmanlara ayrılması da mümkündür.
 
-- A department may have an array of staff. For instance, `sales` department has 2 employees: John and Alice.
-- Or a department may split into subdepartments, like `development` has two branches: `sites` and `internals`. Each of them has the own staff.
-- It is also possible that when a subdepartment grows, it divides into subsubdepartments (or teams).
+    Örneğin `siteler` departmanı ileride iki ayrı takıma `siteA` ve `siteB` şeklinde ayrılabilirler. Ve yine potansiyele göre ileride bu takımlar da alt takımlara ayrılabilirler.
 
-    For instance, the `sites` department in the future may be split into teams for `siteA` and `siteB`. And they, potentially, can split even more. That's not on the picture, just something to have in mind.
+Öyle bir fonksiyon olsun ki tüm çalışanların maaşlarının toplamını dönsün. Bu nasıl yapılır?
 
-Now let's say we want a function to get the sum of all salaries. How can we do that?
 
-An iterative approach is not easy, because the structure is not simple. The first idea may be to make a `for` loop over `company` with nested subloop over 1st level departments. But then we need more nested subloops to iterate over the staff in 2nd level departments like `sites`. ...And then another subloop inside those for 3rd level departments that might appear in the future? Should we stop on level 3 or make 4 levels of loops? If we put 3-4 nested subloops in the code to traverse a single object, it becomes rather ugly.
+Döngü yaklaşımı kolay değildir, çünkü yapı kolay değildir. Önce `firma` için bir `for` döngüsü kullanıldığını ve bununla ilk seviye departmanları bulduğunuzu varsayın. Sonrasında bunun içine bir döngü daha yapıp `siteler`'i bulmanız gerekir. Ayrıca ilerisi için bir tane daha `for` döngüsü yapmanız lazım ve belki yine onun içerisine de bir döngü koymanız lazım. 3. basamakta mı 4. basamakta mı durmalı? Eğer ileride bu yapı sadece bir seviyeye indirilirse kodda karmaşıklık meydana gelir.
 
-Let's try recursion.
+Özçağrı yaklaşımıyla.
 
-As we can see, when our function gets a department to sum, there are two possible cases:
+Fonksiyon toplanacak departmanı aldığında iki muhtemel durum mevcuttur:
 
-1. Either it's a "simple" department with an *array of people* -- then we can sum the salaries in a simple loop.
-2. Or it's *an object with `N` subdepartments* -- then we can make `N` recursive calls to get the sum for each of the subdeps and combine the results.
+1. Bu "basit" bir departman olabilir *içerisinde çalışanlar bulunur* -- sonra bunların maaşları basit bir döngüyle toplanabilir.
+2. Veya *`N` alt departmana sahip obje* olabilir - öyleyse `N` defa özçağrı yapıp her bir alt departmanın toplamının sonucunu döndürülür.
 
-The (1) is the base of recursion, the trivial case.
+(1) özçağrının temelidir.
 
-The (2) is the recursive step. A complex task is split into subtasks for smaller departments. They may in turn split again, but sooner or later the split will finish at (1).
+(2) Özçağrının tekrar eden adımlarıdır. Karmaşık görev daha küçük departman görevlerine ayrılır. Sonrasında yine ayrılabilir fakat en sonunda (1)'e erişecektir.
 
-The algorithm is probably even easier to read from the code:
+Algoritma kodunu okumak oldukça kolaydır:
 
 
 ```js run
-let company = { // the same object, compressed for brevity
-  sales: [{name: 'John', salary: 1000}, {name: 'Alice', salary: 600 }],
-  development: {
-    sites: [{name: 'Peter', salary: 2000}, {name: 'Alex', salary: 1800 }],
-    internals: [{name: 'Jack', salary: 1300}]
+let firma = {
+  satis: [{
+    adi: 'Ahmet',
+    maasi: 1000
+  }, {
+    adi: 'Mehmet',
+    salary: 150
+  }],
+
+  gelistirme: {
+    siteler: [{
+      adi: 'Mustafa',
+      ucret: 200
+    }, {
+      adi: 'Mazlum',
+      ucret: 50
+    }],
+
+    dahili: [{
+      adi: 'Zafer',
+      ucret: 1300
+    }]
   }
 };
 
-// The function to do the job
+// İşi yapan fonksiyon
 *!*
-function sumSalaries(department) {
-  if (Array.isArray(department)) { // case (1)
-    return department.reduce((prev, current) => prev + current.salary, 0); // sum the array
-  } else { // case (2)
-    let sum = 0;
-    for(let subdep of Object.values(department)) {
-      sum += sumSalaries(subdep); // recursively call for subdepartments, sum the results
+function maaslariTopla(firma) {
+  if (Array.isArray(firma)) { // (1). durum
+    return firma.reduce((onceki, suanki) => onceki + suanki.salary, 0); // diziyi topla
+  } else { // (2.) durum
+    let toplam = 0;
+    for(let altDep of Object.values(altDep)) {
+      sum += maaslariTopla(altDep); // özçağrı ile alt departmanların çağrılması, bunu sum ile topla.
     }
     return sum;
   }
 }
 */!*
 
-alert(sumSalaries(company)); // 6700
+alert(maaslariTopla(firma)); // 2700
 ```
+Kod oldukça kısa ve anlaması kolay(umarım). Burada özçağrının gücünden bahsetmek mümkün, her seviye alt departman için çalışacaktır.
 
-The code is short and easy to understand (hopefully?). That's the power of recursion. It also works for any level of subdepartment nesting.
+Aşağıda ise bu çağrının diyagramı bulunmaktadır.
 
-Here's the diagram of calls:
+![Özçağrı ile maaşlar](recursive-salaries.png)
 
-![recursive salaries](recursive-salaries.png)
+Prensip basitçe şu şekilde açıklanabilir: Obje için `{...}` altçağrıları yapılır, `[...]` ise özçağrı ağacının "yapraklarıdır", anında sonucu dönerler.
 
-We can easily see the principle: for an object `{...}` subcalls are made, while arrays `[...]` are the "leaves" of the recursion tree, they give immediate result.
+Kodun akıllı özellikler kullandığına dikkat edin, bunlar daha önceki kolarda işlenmişti:
 
-Note that the code uses smart features that we've covered before:
-
-- Method `arr.reduce` explained in the chapter <info:array-methods> to get the sum of the array.
-- Loop `for(val of Object.values(obj))` to iterate over object values: `Object.values` returns an array of them.
+-  `arr.reduce` metodu <info:array-methods> bölümünde bir dizinin toplamını almak için kullanılmıştı.
+- `for(val of Object.values(obj))` objenin değerlerini dönmek için kullanılmıştı: `Object.values` objenin değerlerini dizi olarak döner.
 
 
-## Recursive structures
+## Özçağrı yapıları
 
-A recursive (recursively-defined) data structure is a structure that replicates itself in parts.
+Özçağrı yapıları, kendini bazı bölümlerde tekrar eden veri yapılarıdır.
 
-We've just seen it in the example of a company structure above.
+Örnekte kullanılan firmalar objesi bu yapıyı kullanmaktadır.
 
-A company *department* is:
-- Either an array of people.
-- Or an object with *departments*.
+Bir *departman*
+- Dizi veya çalışanlardan oluşur.
+- Veya *departmanlardan* oluşur.
 
-For web-developers there are much better known examples: HTML and XML documents.
+Web-geliştiricileri için daha bilinen bir örneği: HTML ve XML dökümanlarıdır.
 
-In the HTML document, an *HTML-tag* may contain a list of:
-- Text pieces.
-- HTML-comments.
-- Other *HTML-tags* (that in turn may contain text pieces/comments or other tags etc).
+HTML dökümanında, *HTML-tag*'ı şunları içerebilir:
+- Metinler
+- HTML-yorumları
+- Diğer *HTML-tagları* ( bunlar da yine metinler, yorumlar ve diğer tagları içerebilir)
 
-That's once again a recursive definition.
+Bu da yine özçağrı yapısıdır.
 
-For better understanding, we'll cover one more recursive structure named "Linked list" that might be a better alternative for arrays in some cases.
+Daha iyi anlaşılması için "Linked list" yapısı üzerinden gitmek gerekir. Bu bazı durumlarda *dizi*lere alternatif olarak kullanılabilir.
 
 ### Linked list
 
-Imagine, we want to store an ordered list of objects.
+Diyelim objelerin sıralı şekilde liste halinde tutmak istiyorsunuz.
 
-The natural choice would be an array:
+
+Diziler ile aşağıdaki gibi yapılabilir:
 
 ```js
 let arr = [obj1, obj2, obj3];
 ```
 
-...But there's a problem with arrays. The "delete element" and "insert element" operations are expensive. For instance, `arr.unshift(obj)` operation has to renumber all elements to make room for a new `obj`, and if the array is big, it takes time. Same with `arr.shift()`.
+... Fakat diziler "eleman silme", "eleman ekle" gibi olaylar için çok işlem yaparlar. Örneğin `arr.unshift(ob)` işlemi tüm elemanları yeni eleman için tekrardan sıraya dizer, eğer dizi büyükse bu zaman alır. Aynısı `arr.shift()` için de geçerlidir.
 
-The only structural modifications that do not require mass-renumbering are those that operate with the end of array: `arr.push/pop`. So an array can be quite slow for big queues.
 
-Alternatively, if we really need fast insertion/deletion, we can choose another data structure called a [linked list](https://en.wikipedia.org/wiki/Linked_list).
+Tekrardan numaralama gerektirmeyen `arr.push/pop` metodları kullanılabilir. Bunlar da dizinin sonuna ekler veya çıkarır. Çok elemanlı dizilerde bu işlemlerin yavaş olacağı söylenebilir.
 
-The *linked list element* is recursively defined as an object with:
-- `value`.
-- `next` property referencing the next *linked list element* or `null` if that's the end.
+Alternatif olarak, eğer hızlı bir şekilde, silme/yerleştirme istenirse diğer bir veri yapısı olan [linked list](https://en.wikipedia.org/wiki/Linked_list) kullanılabilir.
 
-For instance:
+
+*linked list elemanı* özçağrı biçimde aşağıdaki obje gibi tanımlanır:
+- `deger`.
+- `sonraki` sonraki *linked list elemanı*'nı tenımlar, sonuncuysa `null` döner.
+
+Örneğin:
 
 ```js
 let list = {
-  value: 1,
-  next: {
-    value: 2,
-    next: {
-      value: 3,
-      next: {
-        value: 4,
-        next: null
+  deger: 1,
+  sonraki: {
+    deger: 2,
+    sonraki: {
+      deger: 3,
+      sonraki: {
+        deger: 4,
+        sonraki: null
       }
     }
   }
 };
 ```
+Bu listenin grafiksel gösterimi şu şekildedir:
 
-Graphical representation of the list:
 
 ![linked list](linked-list.png)
 
-An alternative code for creation:
+Bu yapıyı yaratmanın alternatif yolu şu şekildedir:
 
 ```js no-beautify
-let list = { value: 1 };
-list.next = { value: 2 };
-list.next.next = { value: 3 };
-list.next.next.next = { value: 4 };
+let list = { deger: 1 };
+list.sonraki = { deger: 2 };
+list.sonraki.sonraki = { deger: 3 };
+list.sonraki.sonraki.sonraki = { deger: 4 };
 ```
+Burada görüldüğü üzere her obje `deger`e sahiptir ve komşusu olan `sonraki`ni gösterir. `list` değişkeni bu zincirin ilk halkasıdır, sonrasında `sonraki` pointer'ını takip eder.
 
-Here we can even more clearer see that there are multiple objects, each one has the `value` and `next` pointing to the neighbour. The `list` variable is the first object in the chain, so following `next` pointers from it we can reach any element.
-
-The list can be easily split into multiple parts and later joined back:
+Liste kolayca birçok parçaya bölünebilir ve sonradan tek bir yapı haline getirilebilir:
 
 ```js
-let secondList = list.next.next;
+let ikinciList = list.next.next;
 list.next.next = null;
 ```
 
-![linked list split](linked-list-split.png)
+![linked list ayırma](linked-list-split.png)
 
-To join:
+Birleştirme:
 
 ```js
-list.next.next = secondList;
+list.next.next = ikinciList;
 ```
+Ve istenildiği gibi elemanlar bir yerden silinebilir veya eklenebilir.
 
-And surely we can insert or remove items in any place.
-
-For instance, to prepend a new value, we need to update the head of the list:
+Örneğin yeni bir değer ekleneceği zaman, listenin başlangıcının güncellenmesi gerekir:
 
 ```js
-let list = { value: 1 };
-list.next = { value: 2 };
-list.next.next = { value: 3 };
-list.next.next.next = { value: 4 };
+let list = { deger: 1 };
+list.sonraki = { deger: 2 };
+list.sonraki.sonraki = { deger: 3 };
+list.sonraki.sonraki.sonraki = { deger: 4 };
 
 *!*
-// prepend the new value to the list
-list = { value: "new item", next: list };
+// Yeni bir değer ekleneceği zaman 
+list = { deger: "yeni eleman", sonraki: list };
 */!*
 ```
 
 ![linked list](linked-list-0.png)
 
-To remove a value from the middle, change `next` of the previous one:
+Yine ortalardan bir yerden veri silineceği zaman `sonraki`'nin bir öncekine getirilmesi gerekri.
 
 ```js
-list.next = list.next.next;
+list.sonraki = list.sonraki.sonraki;
 ```
 
 ![linked list](linked-list-remove-1.png)
 
-We made `list.next` jump over `1` to value `2`. The value `1` is now excluded from the chain. If it's not stored anywhere else, it will be automatically removed from the memory.
+`list.sonraki`'nin değeri `1`'den `2`'ye geçirildi. `1` değeri artık zincirden çıkarıldı. Eğer bu değer başka bir yerde tutulmuyor ise, bu değer ileride otomatik olarak hafızadan silinecektir.
 
-Unlike arrays, there's no mass-renumbering, we can easily rearrange elements.
+Diziler gibi çok büyük sayida tekrar numaralama bulunmamaktadır, ve kolayca istenilen eleman istenilen yere koyulur.
 
-Naturally, lists are not always better than arrays. Otherwise everyone would use only lists.
+Her zaman List diziden daha iyidir denemez. Öyle olsaydı herkes dizi yerine List kullanırdı.
 
-The main drawback is that we can't easily access an element by its number. In an array that's easy: `arr[n]` is a direct reference. But in the list we need to start from the first item and go `next` `N` times to get the Nth element.
+En büyük handikapı List'te istenilen elemana kolayca erişim sağlanamaz. Dizilerde bu oldukça kolaydır: `dizi[n]` doğrudan referans verir. Fakat dizilerde ilk elemandan itibaren `sonraki` şeklinde `N` defa gitmek gerekir.
 
-...But we don't always need such operations. For instance, when we need a queue or even a [deque](https://en.wikipedia.org/wiki/Double-ended_queue) -- the ordered structure that must allow very fast adding/removing elements from both ends.
+Fakat çoğu zaman böyle bir işleme ihtiyaç duymayız. Örneğin bir kuyruk ihtiyacı olduğunda hatta [deque](https://en.wikipedia.org/wiki/Double-ended_queue) ihtiyacı olduğunda hızlı bir şekilde baştan veya sondan eleman eklenip silinmesi gerekir.
 
-Sometimes it's worth to add another variable named `tail` to track the last element of the list (and update it when adding/removing elements from the end). For large sets of elements the speed difference versus arrays is huge.
+Bazen `kuyruk` adında bir değişken eklenerek  ( yeni eleman eklendiğinde/çıkarıldığında ) listenin son elemanı takip edilebilir. Büyük dizilerde listeye göre hız oldukça fazladır.
 
-## Summary
+## Özet
 
-Terms:
-- *Recursion*  is a programming term that means a "self-calling" function. Such functions can be used to solve certain tasks in elegant ways.
+Tanımlar:
+- *Öz Çağrı*  kendi kendini çağırma fonksiyonu demektir. Böyle fonksiyonlar belirli yapıdaki görevlerin çözülmesini sağlar. 
 
-    When a function calls itself, that's called a *recursion step*. The *basis* of recursion is function arguments that make the task so simple that the function does not make further calls.
+    Fonksiyon kendisini çağırdığında buna *öztekrar adımı* denir. *temel* ise öz çağrı fonksiyonun argümanının tekrar öz çağrı yapılamayacak kadar basite indirgenmesi olayıdır.
+    
+-  [Özçağrı yapısı](https://en.wikipedia.org/wiki/Recursive_data_type) kendisini tekrar kullanarak tanımlanan veri yapılarıdır.
 
-- A [recursively-defined](https://en.wikipedia.org/wiki/Recursive_data_type) data structure is a data structure that can be defined using itself.
-
-    For instance, the linked list can be defined as a data structure consisting of an object referencing a list (or null).
-
+    Örneğin, linked list objenin listeyi referans veren bir veri yapısı olarak tanımlanabilir.
+    
     ```js
-    list = { value, next -> list }
+    list = { deger, sonraki -> list }
     ```
-
-    Trees like HTML elements tree or the department tree from this chapter are also naturally recursive: they branch and every branch can have other branches.
-
-    Recursive functions can be used to walk them as we've seen in the `sumSalary` example.
-
-Any recursive function can be rewritten into an iterative one. And that's sometimes required to optimize stuff. But for many tasks a recursive solution is fast enough and easier to write and support.
+    HTML elemanlarının ağacı veya departman ağacı gibi yapılar özçağrı yapısıdır: Bunların dalları ve dallarının yine dalları bulunmaktadır.
+    
+    *Özçağrı* fonksiyonları `maaslariTopla` fonksiyonunda olduğu gibi elemanların üzerinden geçer.
+    
+Her özçağrı fonksiyonu tekrarlı şekile getirilebilir. Bazen optimize etmek için kullanılabilir. Fakat çoğu görev için özçağrı çözümleri yeteri kadar hızlı ve yazması kolaydır.
