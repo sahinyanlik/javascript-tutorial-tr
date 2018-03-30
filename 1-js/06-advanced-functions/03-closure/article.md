@@ -1,131 +1,130 @@
 
 # Closure
 
-JavaScript is a very function-oriented language. It gives a lot of freedom. A function can be created at one moment, then copied to another variable or passed as an argument to another function and called from a totally different place later.
+JavaScript fonksiyon yönelimli bir dildir. Çok bağımsızlık verir. Fonksiyon bir yerde yaratılıp sonra başka bir değişkene atanarak diğer bir fonksiyona argüman olarak gönderilebilir ve sonra tamamen farklı bir yerden çağrılabilir.
 
-We know that a function can access variables outside of it. And this feature is used quite often.
+Bildiğiniz gibi fonksiyon kendi dışında olan değişkenlere ulaşabilir ve bu özelliklik oldukça fazla kullanılır.
 
-But what happens when an outer variables changes? Does a function get a most recent value or the one that existed when the function was created?
+Peki ya dışarıdaki değişken değişirse? Fonksiyon en son değerini mi alacak yoksa yaratıldığında var olan değeri mi?
 
-Also, what happens when a function travels to another place of the code and is called from there -- does it get access to outer variables in the new place?
+Ayrıca diyelim ki fonksiyon başka bir yere gönderildi ve oradan çağrıldığında ne olur, yeni yerinden dışarıda bulunan değişkenlere erişebilir mi?
 
-Different languages behave differently here, in this chapter we cover JavaScript.
+Bu sorulara farklı diller farklı cevaplar vermektedir, bu bölümde JavaScriptin bu sorulara cevabını öğreneceksiniz.
 
 [cut]
 
-## A couple of questions
+## Birkaç soru
 
-Let's formulate two questions for the seed, and then study the internal mechanics piece-by-piece, so that you'll be able to answer these questions and more complex ones in the future.
+Örnek olması amacıyla iki soru formülize edilecek olursa, sonrasında içsel mekanizması parça parça incelenecektir, ileride daha karmaşık sorularacevap verebilirsiniz.
 
-1. The function `sayHi` uses an external variable `name`. When the function runs, which value of these two it's going to use?
+1. `selamVer` fonksiyonu dışarıda bulunan `isim` değişkenini kullanmaktadır. Fonksiyon çalıştığında, hangi `isim` değişkeni kullanılacaktır?
 
     ```js
-    let name = "John";
+    let isim = "Ahmet";
 
-    function sayHi() {
-      alert("Hi, " + name);
+    function selamVer() {
+      alert("Merhaba, " + isim);
     }
 
-    name = "Pete";
+    isim = "Mehmet";
 
     *!*
-    sayHi(); // what will it show: "John" or "Pete"?
+    selamVer(); // "Ahmet" mi yoksa "Mehmet" mi gösterilecek?
     */!*
     ```
 
-    Such situations are common in both browser and server-side development. A function may be scheduled to execute later than it is created, for instance after a user action or a network request.
+    Böyle durumlara tarayıcı ve sunucu tabanlı geliştirmelerde oldukça sık karşılaşılır. Bir fonksiyon yaratıldığı anda değil de daha sonra çalışmak üzere programlanabilir. Örneğin bir kullanıcı aksiyonu veya ağ üzerinden istekler bu gruba girer.
+    
+    Öyleyse soru: son değişiklikleri alır mı?
+    
 
-    So, the question is: does it pick up latest changes?
-
-
-2. The function `makeWorker` makes another function and returns it. That new function can be called from somewhere else. Will it have access to outer variables from its creation place or the invocation place or maybe both?
+2. `calisanYarat` diğer bir fonksiyon yaratır ve bunu döner. Bu yeni fonksiyon herhangi bir yerden çağrılabilir. Peki yaratıldığı yerin dışındaki değişkenlere veya çağrılan yerin dışındaki değişkenlere veya ikisine birden erişebilece mi?
 
     ```js
-    function makeWorker() {
-      let name = "Pete";
+    function calisanYarat() {
+      let isim = "Mehmet";
 
       return function() {
-        alert(name);
+        alert(isim);
       };
     }
 
-    let name = "John";
+    let isim = "Zafer";
 
-    // create a function
-    let work = makeWorker();
+    // fonksiyon yarat
+    let is = calisanYarat();
 
-    // call it
+    // çağır
     *!*
-    work(); // what will it show? "Pete" (name where created) or "John" (name where called)?
+    is(); // burada "Mehmet" mi yoksa "Zafer" mi gösterilecek ? 
     */!*
     ```
 
 
-## Lexical Environment
+## Sözcüksel ortam ( Lexical Environment )
 
-To understand what's going on, let's first discuss what a "variable" technically is.
+Ne olduğunu anlamak için önce "değişken"'in tekniksel anlamı üzerinde tartışmak lazım
 
-In JavaScript, every running function, code block and the script as a whole have an associated object named *Lexical Environment*.
+JavaScript'te çalışan her fonksiyon, kod bloğu bir bütün olarak "Sözcüksel Ortam" adında bir objeye sahiptir.
 
-The Lexical Environment object consists of two parts:
+Bu "Sözcüksel Ortam" iki bölümden oluşur:
 
-1. *Environment Record* -- an object that has all local variables as its properties (and some other information like the value of `this`).
-2. A reference to the *outer lexical environment*, usually the one associated with the code lexically right outside of it (outside of the current figure brackets).
+1. *Ortam Kaydı* -- tüm yerel değişkenleri ve özelliklerini ( ve ek özellikleri `this` gibi ) tutan objedir.
+2. *Dış Sözcüksel Ortam*'a referans genelde süslü parantezin dışındaki kod ile ilintilidir.
 
-So, a "variable" is just a property of the special internal object, Environment Record. "To get or change a variable" means "to get or change the property of that object".
+Öyleyse "değişken" içsel objedeki bir özelliktir, çevresel kayıtlar. "değişkeni almak veya değiştirmek" demek "o objenin özelliğini almak veya değiştirmek" demektir.
 
-For instance, in this simple code, there is only one Lexical Environment:
+Örneğin, aşağıdaki kodda sadece bir tane Sözcüksel Ortam bulunmaktadır:
 
-![lexical environment](lexical-environment-global.png)
+![Sözcüksel Ortam](lexical-environment-global.png)
 
-This is a so-called global Lexical Environment, associated with the whole script. For browsers, all `<script>` tags share the same global environment.
+Buna evrensel sözcük ortamı denilmektedir, kodun tamamıyla alakalıdır. Tüm tarayıcılarda `<script>` etiketleri aynı evrensel ortamı paylaşır.
 
-On the picture above, the rectangle means Environment Record (variable store) and the arrow means the outer reference. The global Lexical Environment has no outer one, so that's `null`.
+Yukarıdaki görselde, dikdörtgen ile gösterilen Çevresel Kayıt ( değişken kaynağı ) anlamına gelir ve ok işareti dışsal referanstır. Evrensel Sözcük Ortamından daha dış ortam bulunmamaktadır. Yani `null` dur. 
 
-Here's the bigger picture of how `let` variables work:
+Aşağıda `let` değişkenlerinin nasıl çalıştığı görsel ile açıklanmıştır:
 
-![lexical environment](lexical-environment-global-2.png)
+![Sözcüksel Ortam](lexical-environment-global-2.png)
 
-Rectangles on the right-hand side demonstrate how the global Lexical Environment changes during the execution:
+Sağ tarafta bulunan dikdörtgenler evrensel Sözcük Ortamının çalışırkenki değişikliklerini gösterir.
 
-1. When the script starts, the Lexical Environment is empty.
-2. The `let phrase` definition appears. Now it initially has no value, so `undefined` is stored.
-3. `phrase` is assigned.
-4. `phrase` refers to a new value.
+1. Kod çalışmaya başladığında, Sözcüksel Ortam boştur.
+2. `let ifade`  tanımlaması görünür. İlk başta bir değeri bulunmamaktadır bundan `undefined` olarak saklanır.
+3. `ifade`'ye değer atanır.
+4. `ifade` yeni bir defere referans olur.
 
-Everything looks simple for now, right?
+Herşey çok basit görünüyor değil mi?
 
-To summarize:
+Özetlemek gerekirse:
 
-- A variable is a property of a special internal object, associated with the currently executing block/function/script.
-- Working with variables is actually working with the properties of that object.
+- Değişken özel bir iç objenin özelliğidir. Bu obje o anda çalışan kod, fonksiyon ile bağlantılıdır.
+- Değişkenlerle çalışmak aslında o objenin özellikleri ile çalışmak demektir.
 
-### Function Declaration
+### Fonksiyon tanımı
 
-Function Declarations are special. Unlike `let` variables, they are processed not when the execution reaches them, but when a Lexical Environment is created. For the global Lexical Environment, it means the moment when the script is started.
+Fonksiyon tanımları özeldir. `let` değişkenlerine nazaran çalıştırıldıklarında değil de Sözcüksel Ortam yaratıldığında işlenirler, bu da kodun başladığı zamandır.
 
-...And that is why we can call a function declaration before it is defined.
+... Ve bundan dolayı bir fonksiyon tanımından önce çağırılabilir.
 
-The code below demonstrates that the Lexical Environment is non-empty from the beginning. It has `say`, because that's a Function Declaration. And later it gets `phrase`, declared with `let`:
+Aşağıdaki kodda Sözcüksel Ortam başlangıçta boş değildir. `say`'e sahiptir çünkü bu bir fonksiyon tanımıdır. Sonrasında `ifade` alır ve bunu `let` ile tanımlar:
 
-![lexical environment](lexical-environment-global-3.png)
+![Sözcüksel Ortam](lexical-environment-global-3.png)
 
+### İç ve dış Sözcüksel Ortamlar
 
-### Inner and outer Lexical Environment
+`say()` fonksiyonu çağrısı sırasında dış değişkenler çağrılır, bu olaya daha detaylı bakacak olursak.
 
-During the call `say()` uses an outer variable, so let's see the details of what's going on.
-
-First, when a function runs, a new function Lexical Environment is created automatically. That's a general rule for all functions. That Lexical Environment is used to store local variables and parameters of the call.
+Fonksiyon ilk çalıştığında yeni bir Sözcüksel Çevre otomatik olarak yaratılır. Bu tüm fonksiyonlar için genel bir kuraldır. Bu Sözcüksel Çevre yerel değişkenlerin tutulması ve çağrının tüm parametrelerini tutar.
 
 <!--
 ```js
-let phrase = "Hello";
+let ifade = "Merhaba";
 
-function say(name) {
-  alert( `${phrase}, ${name}` );
+function say(adi) {
+  alert( `${ifade}, ${adi}` );
 }
 
-say("John"); // Hello, John
+say("Ahmet"); // Merhaba, Ahmet
 ```
 -->
 
