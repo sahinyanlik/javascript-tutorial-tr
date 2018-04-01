@@ -127,63 +127,63 @@ function say(adi) {
 say("Ahmet"); // Merhaba, Ahmet
 ```
 -->
+`say("Ahmet")` fonksiyonu çalıştığı sırada Sözcüksel Ortam aşağıdaki gibi olur:
 
-Here's the picture of Lexical Environments when the execution is inside `say("John")`, at the line labelled with an arrow:
+![Sözcüksel Çevre](lexical-environment-simple.png)
 
-![lexical environment](lexical-environment-simple.png)
+Fonksiyon çağrıldığında ise iki tane sözcüksel ortam bulunmaktadır: içte olan(fonksiyon çağrısı için) ve dışta olan(evrensel):
 
-During the function call we have two Lexical Environments: the inner one (for the function call) and the outer one (global):
+- İçte olan sözcüksel ortam `say` fonksiyonunun o anki durumuna bakar, o anda tek `adi` degiskeni bulunmaktadır. `say("Ahmet")` çağrıldığından dolayı `idi` değişkeninin değeri `"Ahmet"` olur.
+- Dış Sözcük Ortamı ise bu durumda Evrensel Sözcük Ortamıdır.
 
-- The inner Lexical Environment corresponds to the current execution of  `say`. It has a single variable: `name`, the function argument. We called `say("John")`, so the value of `name` is `"John"`.
-- The outer Lexical Environment is the global Lexical Environment.
+İç Sözcük ortamı `outer` ile Dış Sözcük Ortamına referans olur.
 
-The inner Lexical Environment has the `outer` reference to the outer one.
+**Kod değişkene ulaşmak istediğinde -- önce İç Sözcük ortamında arara, daha sonra dış sözcüm ortamına bakar ve daha sonra daha dıştakine bakar bu şekilde zincirin en sonuna kadar devam eder**
 
-**When a code wants to access a variable -- it is first searched in the inner Lexical Environment, then in the outer one, then the more outer one and so on until the end of the chain.**
+Eğer değişken hiç bir yerde bulunamazsa, sıkı modda hata verir. `use strict` kullanılmazsa tanımsız değişken yeni bir global değişken yaratır.
 
-If a variable is not found anywhere, that's an error in strict mode. Without `use strict`, an assignment to an undefined variable creates a new global variable, for backwards compatibility.
+Arama olayı bizim yazdığımız kodlarda nasıl işliyor buna bakalım:
 
-Let's see how the search proceeds in our example:
+- `say` içindeki `alert` `adi` değişkenine erişmek istediğinde, anında Sözcük Ortamında bulabilir.
+- `ifade`'ye erişmek istediğinde önce fonksiyonun içine bakar fakat orada da bulamayacağından `outer` referansı takip ederek evrensel sözcük ortamından bu değişkene erişebilir.
 
-- When the `alert` inside `say` wants to access `name`, it finds it immediately in the function Lexical Environment.
-- When it wants to access `phrase`, then there is no `phrase` locally, so it follows the `outer` reference and finds it globally.
+![Sözcüksel İfade Araması](lexical-environment-simple-lookup.png)
 
-![lexical environment lookup](lexical-environment-simple-lookup.png)
+Şimdi bölümün ilk başında sorulan sorulara cevap bulunabilir.
 
-Now we can give the answer to the first seed question from the beginning of the chapter.
+**Bir fonksiyon dışta bulunan değişkenin en son değerini alır**
 
-**A function gets outer variables as they are now, the most recent values.**
+Bunun nedeni tanımlanan mekanizmadan dolayıdır. Eski değişkenler bir yere kaydedilmezler. Fonksiyon bunları istediğinde iç sözcük ortamından veya dış sözcük ortamından o anki değeri alır.
 
-That's because of the described mechanism. Old variable values are not saved anywhere. When a function wants them, it takes the current values from its own or an outer Lexical Environment.
-
-So the answer to the first question is `Pete`:
+Bundan dolayı ilk sorunun cevabı `Mehmet` olacaktır:
 
 ```js run
-let name = "John";
+let adi = "Ahmet";
 
-function sayHi() {
-  alert("Hi, " + name);
+function selamVer() {
+  alert("Merhaba, " + adi);
 }
 
-name = "Pete"; // (*)
+adi = "Mehmet"; // (*)
 
 *!*
-sayHi(); // Pete
+selamVer(); // Pete
 */!*
 ```
 
 
-The execution flow of the code above:
+Çalışma akışı şu şekildedir:
 
-1. The global Lexical Environment has `name: "John"`.
-2. At the line `(*)` the global variable is changed, now it has `name: "Pete"`.
-3. When the function `say()`, is executed and takes `name` from outside. Here that's from the global Lexical Environment where it's already `"Pete"`.
+1. Evrensel Sözcük ortamında `adi:"Ahmet"` bulunmaktadır.
+2. `(*)` satırında evrensel değişken değişir, şimdi `adi:"Mehmet"` bulunmaktadır.
+3. `selamVer()` fonksiyonu çalıştığında `adi` dğeişkenini dışarıdan alır. Bu `dış` sözcüksel ortamda değişkenin değeri `"Mehmet"`tir.
 
 
-```smart header="One call -- one Lexical Environment"
-Please note that a new function Lexical Environment is created each time a function runs.
+```smart header="Bir çağrı -- bir Sözcüksel Ortam"
 
-And if a function is called multiple times, then each invocation will have its own Lexical Environment, with local variables and parameters specific for that very run.
+Fonksiyon Sözcük Ortamı her fonksiyon çağrıldığında yeniden yaratılır.
+
+Eğer fonksiyon bir kaç defa çağırılırsa her çağrıldığında kendine ait ayrı bir Sözcüksel Ortamı olur, tabi bu ortam o anki çağırılmaya ait yerel değişkenleri ve parametreleri tutar.
 ```
 
 ```smart header="Lexical Environment is a specification object"
