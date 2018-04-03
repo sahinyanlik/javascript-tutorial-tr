@@ -186,81 +186,82 @@ Fonksiyon Sözcük Ortamı her fonksiyon çağrıldığında yeniden yaratılır
 Eğer fonksiyon bir kaç defa çağırılırsa her çağrıldığında kendine ait ayrı bir Sözcüksel Ortamı olur, tabi bu ortam o anki çağırılmaya ait yerel değişkenleri ve parametreleri tutar.
 ```
 
-```smart header="Lexical Environment is a specification object"
-"Lexical Environment" is a specification object. We can't get this object in our code and manipulate it directly. JavaScript engines also may optimize it, discard variables that are unused to save memory and perform other internal tricks, but the visible behavior should be as described.
+```smart header="Sözcüksel Ortam Şartname Objesidir"
+
+"Sözcüksel Ortam" bir şartname objesidir. Bu objeyi alıp düzenleyemezsiniz veya doğrudan kullanamazsınız. JavaScript motoru yapabildiğince bu değişkenleri optimize etmeye çalışır, kullanılmayan değişkenleri saf dışı bırakabilir fakat görülen davranışları yukarıda anlatıldığı gibi olmalıdır.
+
 ```
 
 
-## Nested functions
+## İç içe fonksiyonlar
 
-A function is called "nested" when it is created inside another function.
+Bir fonksiyon diğer bir fonksiyon içerisinde yaratılırsa buna iç içe fonksiyon denir.
 
-Technically, that is easily possible.
+Teknik olarak bu mümkündür.
 
-We can use it to organize the code, like this:
+Kodu organize etmek için şu şekilde kullanabilirsiniz:
 
 ```js
-function sayHiBye(firstName, lastName) {
+function selamYolcu(adi, soyadi) {
 
-  // helper nested function to use below
-  function getFullName() {
-    return firstName + " " + lastName;
+  // yardımcı iç içe fonksiyon.
+  function tamIsim() {
+    return adi + " " + soyadi;
   }
 
-  alert( "Hello, " + getFullName() );
-  alert( "Bye, " + getFullName() );
+  alert( "Merhaba, " + tamIsım() );
+  alert( "Güle Güle, " + tamIsım() );
 
 }
 ```
 
-Here the *nested* function `getFullName()` is made for convenience. It can access the outer variables and so can return the full name.
+*iç içe* fonksiyon `tamIsım()` kullanım kolaylığı sağlaması amacıyla yapılmıştır. Dışta bulunan değişkenlere erişebilir ve tam ismi döndürebilir.
 
-What's more interesting, a nested function can be returned: as a property of a new object (if the outer function creates an object with methods) or as a result by itself. And then used somewhere else. No matter where, it still keeps the access to the same outer variables.
+Daha ilginci, iç içe bir fonksiyon geri döndürülebilir:  Bu yeni objenin bir özelliği olarak veya sonucun kendisi dönebilir. Sonra başka yerde kullanılabilir. Nerede olduğu önemli olmaksızın, hala aynı dış değişkene erişebilir.
 
-An example with the constructor function (see the chapter <info:constructor-new>):
+Bunun örneği yapıcı ( constructor ) fonksiyondur ( <info:constructor-new> bölümünden inceleyebilirsiniz. )
 
 ```js run
-// constructor function returns a new object
-function User(name) {
+// yapıcı fonksiyon yeni bir obje dönderir.
+function Kullanici(isim) {
 
-  // the object method is created as a nested function
-  this.sayHi = function() {
-    alert(name);
+  // obje metodu iç içe fonksiyon olarak yaratıldı.
+  this.Kullanici = function() {
+    alert(isim);
   };
 }
 
-let user = new User("John");
-user.sayHi(); // the method code has access to the outer "name"
+let kullanici = new Kullanici("Ahmet");
+kullanici.selamYolcu(); // metod dışarıda bulunan "isim" değişkenine erişebilir.
 ```
 
-An example with returning a function:
+Fonksiyonun döndürülmesi örneği:
 
 ```js run
-function makeCounter() {
-  let count = 0;
+function sayacUret() {
+  let sayac = 0;
 
   return function() {
-    return count++; // has access to the outer counter
+    return sayac++; // dışarıda bulunan sayac değişkenine erişimi bulunmaktadır.
   };
 }
 
-let counter = makeCounter();
+let sayac = sayacUret();
 
-alert( counter() ); // 0
-alert( counter() ); // 1
-alert( counter() ); // 2
+alert( sayac() ); // 0
+alert( sayac() ); // 1
+alert( sayac() ); // 2
 ```
+`sayacUret` örneğine bakılacak olursa. "sayac" fonksiyonunu bir sonraki sayı ile döndürür. Basit olmasının yanında biraz modifiye edilmiş hali pratikte kullanılmaktadır [pseudorandom number generator](https://en.wikipedia.org/wiki/Pseudorandom_number_generator). Yani çok suni bir örnek değildir.
 
-Let's go on with the `makeCounter` example. It creates the "counter" function that returns the next number on each invocation. Despite being simple, slightly modified variants of that code have practical uses, for instance, as a [pseudorandom number generator](https://en.wikipedia.org/wiki/Pseudorandom_number_generator), and more. So the example is not quite artificial.
+Peki sayaç içeride nasıl çalışmakta?
 
-How does the counter work internally?
-
-When the inner function runs, the variable in `count++` is searched from inside out. For the example above, the order will be:
+İçteki fonksiyon çalıştığında `sayac++` içeriden dışarıya kadar `sayac` değişkenini arar. Yukarıdaki örneğe bakılacak olursa, sıralama şu şekilde olacaktır:
 
 ![](lexical-search-order.png)
 
-1. The locals of the nested function.
-2. The variables of the outer function.
+1. İçte bulunan fonksiyonun yerel değişkenleri.
+2. Dışta bulunan fonksiyonların değişkenleri.
 3. ...And further until it reaches globals.
 
 In that example `count` is found on the step `2`. When an outer variable is modified, it's changed where it's found. So `count++` finds the outer variable and increases it in the Lexical Environment where it belongs. Like if we had `let count = 1`.
