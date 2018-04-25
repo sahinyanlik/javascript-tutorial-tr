@@ -262,319 +262,318 @@ Peki sayaç içeride nasıl çalışmakta?
 
 1. İçte bulunan fonksiyonun yerel değişkenleri.
 2. Dışta bulunan fonksiyonların değişkenleri.
-3. ...And further until it reaches globals.
+3. ...Bu evrensel değişkenlere kadar gider.
 
-In that example `count` is found on the step `2`. When an outer variable is modified, it's changed where it's found. So `count++` finds the outer variable and increases it in the Lexical Environment where it belongs. Like if we had `let count = 1`.
+`sayac` orneğinde `2`. adımda bulundu. Dıştaki değişken değiştirildiğinde, bulunduğu yerde değişiklik olur. Bundan dolayı `sayac++` dıştaki değşikeni bulur ve dıştaki değişkenin Sözcüksel Ortamında bu değişkenin değerini değiştirir. Saki `let sayac = 1` yapıyormuş gibi.
 
-Here are two questions for you:
 
-1. Can we somehow reset the `counter` from the code that doesn't belong to `makeCounter`? E.g. after `alert` calls in the example above.
-2. If we call `makeCounter()` multiple times -- it returns many `counter` functions. Are they independent or do they share the same `count`?
+Size iki tane sorum var:
 
-Try to answer them before going on reading.
+1. `sayacUret`'e ait olmayan bir koddan `sayac` değişkeni sıfırlanabilir mi? Mesela yukarıdaki örnekte `alert` sonrasında.
+2. Eğer `sayacUret()`'i bir kaç defa çağırırsanız -- birçok `sayac` fonksiyonu döndürür. Bunlar birbirinden bağımsız mıdır yoksa aynı `sayac`'ı mı kullanılar?
 
-...Are you done?
+Okumaya devam etmeden yukarıdaki sorulara cevap vermeye çalışın.
 
-Okay, here we go with the answers.
+...Bitti mi?
 
-1. There is no way. The `counter` is a local function variable, we can't access it from the outside.
-2. For every call to `makeCounter()` a new function Lexical Environment is created, with its own `counter`. So the resulting `counter` functions are independent.
+Peki o zaman, şimdi cevaplar.
 
-Here's the demo:
+1. Hayır sıfırlayamaz. `sayac` yerel bir değişkendir ve dışarıdan erişilemez.
+2. Her `sayacUret` çağrısı o fonksiyona ait Sözcüksel Çevre üretir, bunun da kendine ait `sayac` değişkeni bulunmaktadır. Öyleyse `sayac` değişkenleri her fonksiyon için bağımsızdır denebilir.
+
+Örneğin:
 
 ```js run
-function makeCounter() {
-  let count = 0;
+function sayacUret() {
+  let sayac = 0;
+
   return function() {
-    return count++;
+    return sayac++; // dışarıda bulunan sayac değişkenine erişimi bulunmaktadır.
   };
 }
 
-let counter1 = makeCounter();
-let counter2 = makeCounter();
+let sayac1 = sayacUret();
+let sayac2 = sayacUret();
 
-alert( counter1() ); // 0
-alert( counter1() ); // 1
+alert( sayac1() ); // 0
+alert( sayac1() ); // 1
 
-alert( counter2() ); // 0 (independant)
+alert( sayac2() ); // 0 (independant)
 ```
 
+Muhetemelen, aklınızda dış değişkenlerin nasıl çalıştığı açıklığa kavuştu. Fakat daha karmaşık olaylar için daha derine inmeye gerek var.
 
-Probably, the situation with outer variables is quite clear for you as of now. But in more complex situations a deeper understanding of internals may be required. So let's go ahead.
+## Detaylı şekilde ortamların incelenmesi.
 
-## Environments in detail
+Şu anda clouse'ların genel olarak nasıl çalıştığını biliyorsunuz, artık daha derinine inme vakti geldi.
 
-Now as you understand how closures work generally, we may finally descend to the very nuts and bolts.
+Aşağıda `sayacUret` fonksiyonunun adımları gösterilmektedir, herşeyi anladığınıza emin olun. Basamaklarda göreceğiniz `[[Environment]]` henüz işlenmedi.
 
-Here's what's going on in the `makeCounter` example step-by-step, follow it to make sure that you understand everything. Please note the additional `[[Environment]]` property that we didn't cover yet.
-
-1. When the script has just started, there is only global Lexical Environment:
+1. Kod çalışmaya başkadığında sadece bir tane Sözcüksel Ortam bulunmaktadır:
 
     ![](lexenv-nested-makecounter-1.png)
 
-    At that starting moment there is only `makeCounter` function, because it's a Function Declaration. It did not run yet.
+    Başlangıçta sadece `sayacUret` fonksiyonu bulunmaktadır, çünkü bu fonksiyon tanımıdır. Henüz çalışmadı.
 
-    All functions "on birth" receive a hidden property `[[Environment]]` with the reference to the Lexical Environment of their creation. We didn't talk about it yet, but technically that's a way how the function knows where it was made.
+    Tüm fonksiyonlar başlangıçta gizli bir `[[Environment]]` değişkeni alırlar, bu yaratılmaya dair üretilecek Sözcüksel Çevreye referans olur. Bunun hakkında henüz bilgi verilmedi, fakat teknik olarak bunu fonksiyonun nerede yaratıldığını bilmesi olarak anlayabilirsiniz.
 
-    Here, `makeCounter` is created in the global Lexical Environment, so `[[Environment]]` keeps the reference to it.
-
-    In other words, a function is "imprinted" with a reference to the Lexical Environment where it was born. And `[[Environment]]` is the hidden function property that has that reference.
-
-2. Then the code runs on, and the call to `makeCounter()` is performed. Here's the picture for the moment when the execution is on the first line inside `makeCounter()`:
+    Burada `sayacUret` Evrensel Sözcüksel Ortamda yaratıldı. Bundan dolayı `[[Environemnt]]` bu ortamın referansıdır.
+    
+    Diğer bir değişle fonksiyon üretildiğinde Sözcüksel Ortama ait bir "baskı" ile üretilir. Bu `[[Environment]]` gizli bir özellik olarak burayı referans verir.
+    
+2. Sonrasında kod `sayacUret()` çağrısını yapıyor. Aşağıda `sayacUret()`'in ilk satırı çalıştığındaki durumu gösterilmektedir.
 
     ![](lexenv-nested-makecounter-2.png)
 
-    At the moment of the call of `makeCounter()`, the Lexical Environment is created, to hold its variables and arguments.
+    `sayacUret()` fonksiyonu çağrıldığında, bu fonksiyonun değişkenlerini ve argümanlarını tutmak için Sözcüksel Ortam yaratılır.
 
-    As all Lexical Environments, it stores two things:
-    1. An Environment Record with local variables. In our case `count` is the only local variable (appears in it when the line with `let count` is executed).
-    2. The outer lexical reference, which is set to `[[Environment]]` of the function. Here `[[Environment]]` of `makeCounter` references the global Lexical Environment.
+    Her Sözcüksel Çevre iki şeyi tutar:
+    1. Yerel değişkenlere ait Ortamsal Kayıtlar. Bu durumda `let sayac` çalıştırıldığında yerel değişken olarak `sayac` tutulmaktadır.
+    
+    2. Dış sözcüksel referans, bu fonksiyonun `[[Environment]]`'i dir. Burada `sayacUret` fonksiyonunun `[[Environment]]`'i evrensel sözcüksel ortama referans verir.
+ 
+    Öyleyse şimdi iki tane sözcüksel ortam bulunmaktadır: evrensel olan ve `sayacUret` çağrısını yapan( dış referans verir).
+    
+3. `sayacUret()` fonksiyonu çalıştığında küçük bir iç fonksiyon yaratılır.
 
-    So, now we have two Lexical Environments: the first one is global, the second one is for the current `makeCounter` call, with the outer reference to global.
-
-3. During the execution of `makeCounter()`, a tiny nested function is created.
-
-    It doesn't matter whether the function is created using Function Declaration or Function Expression. All functions get the `[[Environment]]` property that references the Lexical Environment where they were made. So that new tiny nested function gets it as well.
-
-    For our new nested function the value of `[[Environment]]` is the current Lexical Environment of `makeCounter()` (where it was born):
+    Fonksiyonun nasıl yaratıldığı yani Fonksiyon Tanımıyla mı yoksa Fonksiyon ifadesiyle mi yaratıldığı önemli değildir. Tüm fonksiyonlar bulunduğu sözcüksel ortama referans eden `[[Environment]]` özelliği ile yaratılırlar. Bundan dolayı en küçük fonksiyon bile bu özelliği içerir.
+    
+    İçte olan yeni fonksiyon için `[[Environment]]` dğeişkeni var olan `sayacUret`'in Sözcüksel Ortamıdır.( Doğduğu yer )
 
     ![](lexenv-nested-makecounter-3.png)
 
-    Please note that on this step the inner function was created, but not yet called. The code inside `function() { return count++; }` is not running, we're going to return it.
+    Dikkat ederseniz bu basamakta iç fonksiyon yaratıldı fakat çağırılmadı. İçindeki kod `function() { return sayac++; }` çalışmadı, bu kod döndürülecek.
 
-4. As the execution goes on, the call to `makeCounter()` finishes, and the result (the tiny nested function) is assigned to the global variable `counter`:
+
+4. Çalışma devam ettiğinde `sayacUret()` biter, sonuc olarak ( küçük iç fonksiyon ) global `counter` değişkenine atanıyor.
 
     ![](lexenv-nested-makecounter-4.png)
 
-    That function has only one line: `return count++`, that will be executed when we run it.
-
-5. When the `counter()` is called, an "empty" Lexical Environment is created for it. It has no local variables by itself. But the `[[Environment]]` of `counter` is used as the outer reference for it, so it has access to the variables of the former `makeCounter()` call, where it was created:
+    Bu fonksiyonun sadece bir satır kodu var: `return sayac++`, sadece bu çalışacaktır.
+    
+5. `sayac()` çağrıldığında, "boş" bir Sözcüksel Ortam yaratılır. Hiç bir yerel değişkeni yoktur. Fakat `sayac`'ın `[[Environment]]`'i dış referans olarak kullanılır. Bundan dolayı, daha önceden yapılan `sayacUret()`'in değişkenlerine erişebilir. Oluşturulduğu yerder:
 
     ![](lexenv-nested-makecounter-5.png)
 
-    Now if it accesses a variable, it first searches its own Lexical Environment (empty), then the Lexical Environment of the former `makeCounter()` call, then the global one.
+    Değişkene erişmesi gerekirse önce kendi yerel sözcüksel ortamına(boş), sonra daha önce çağrılan `sayacUret()`'in sözcüksel ortamına, en son evrensel ortama bakar.
+    
+    `sayac` için arama yaptığında, en yakınında `sayacUret`'in sözcüksel çevresi bulunmaktadır.
+    
+    Buradaki hafıza yönetimine dikkat ederseniz. `sayacUret()` çağrısı bittikten bir süre sonra, Sözcüksel ortam hafızada tutulur, çünkü içte bulunan fonksiyonun `[[Environment]]`'i `sayacUret`'e referans vermektedir.
+    
+    Genel olarak, sözcüksel ortam objesi fonksiyon kullanılabilir olduğu sürece yaşar. Fonksiyon kullanılmadığında silinir.
+  
 
-    When it looks for `count`, it finds it among the variables `makeCounter`, in the nearest outer Lexical Environment.
-
-    Please note how memory management works here. When `makeCounter()` call finished some time ago, its Lexical Environment was retained in memory, because there's a nested function with `[[Environment]]` referencing it.
-
-    Generally, a Lexical Environment object lives as long as there is a function which may use it. And when there are none, it is cleared.
-
-6. The call to `counter()` not only returns the value of `count`, but also increases it. Note that the modification is done "in place". The value of `count` is modified exactly in the environment where it was found.
+6. `sayac()` sadece `sayac` değişkenini döndürmekle kalmaz, artırırda. Dikkat ederseniz değişiklik sadece "olduğu yerde" yapıldı. Var olan `sayac` değişkeni bulunduğu ortamda değiştirildi.
 
     ![](lexenv-nested-makecounter-6.png)
 
-    So we return to the previous step with the only change -- the new value of `count`. The following calls all do the same.
+    Öyleyse bir önceki adıma tek değişiklikle geri dönülmektedir -- `sayac`'ın yeni değeri. Devam eden çağrılar da aynı şekilde çalışırlar.
 
-7. Next `counter()` invocations do the same.
+7. Sonraki `sayac()` da aynısını yapar.
 
-The answer to the second seed question from the beginning of the chapter should now be obvious.
+Başlangıçta sorulan ikinci sorunun cevabı şimdi açıklık kazanmış olmalı.
 
-The `work()` function in the code below uses the `name` from the place of its origin through the outer lexical environment reference:
+Aşağıda `isim` özelliği `calisanUret()` fonksiyonu tarafından bulunduğu ortamdan kullanılmıştır: 
 
 ![](lexenv-nested-work.png)
 
-So, the result is `"Pete"` here.
+Sonuç görüşdüğü gibi `"Pete"` olacaktır.
 
-...But if there were no `let name` in `makeWorker()`, then the search would go outside and take the global variable as we can see from the chain above. In that case it would be `"John"`.
+...Fakat eğer `calisanUret()` fonksiyonu içerisinde `let name` tanımlanmamış olsaydı, bu durumda değişkeni arayış evrensel değişkenler ile devam edecekti ve bu durumda sonuç `"John"` olacaktı.
 
-```smart header="Closures"
-There is a general programming term "closure", that developers generally should know.
+```smart header="Closure"
 
-A [closure](https://en.wikipedia.org/wiki/Closure_(computer_programming)) is a function that remembers its outer variables and can access them. In some languages, that's not possible, or a function should be written in a special way to make it happen. But as explained above, in JavaScript all functions are naturally closures (there is only one exclusion, to be covered in <info:new-function>).
+Genel programlama tanımlarında "closure" adında bir tanım bulunmaktadır. Bunun ile [closure](https://en.wikipedia.org/wiki/Closure_(computer_programming)) dıştaki değişkenleri hatırlayabilen ve bunlara erişebilen fonksiyon anlaşılmalıdır. Bazı dillerde, bu mümkün değildir veya fonksiyonun özel bir biçimde yazılması gerekmektedir. Fakat yukarıda görüldüğü üzere tüm fonksiyonlar doğal olarak closure'dur ( bunun sadece bir tane istisnası bulunmaktadır bunu <info:new-function> bölümünde inceleyebilirsiniz.)
 
-That is: they automatically remember where they are created using a hidden `[[Environment]]` property, and all of them can access outer variables.
-
-When on an interview a frontend developer gets a question about "what's a closure?", a valid answer would be a definition of the closure and an explanation that all functions in JavaScript are closures, and maybe few more words about technical details: the `[[Environment]]` property and how Lexical Environments work.
+Ön yüz için bir görüşmeye gittiğinizde "Closure nedir?" diye sorulursa doğru cevap closure'un tanımın verilip tüm JavaScript fonksiyonlarının aslında closure olduğunun anlatılması ve sonrasında `[[Environment]]` özelliğinden, Sözcüksel Ortamdan bahsedilmesi yeterli olacaktır.
 ```
 
-## Code blocks and loops, IIFE
+## Kod blokları ve döngüler, IIFE
 
-The examples above concentrated on functions. But Lexical Environments also exist for code blocks `{...}`.
+Yukarıdaki örnekler fonksiyonlara odaklanmıştır. Fakat Sözcüksel Ortam `{...}` süslü parantez içerisinde de geçerlidir.
 
-They are created when a code block runs and contain block-local variables. Here's a couple of examples.
+Bir kod bloğu çalıştığında oluşturulur ve blok seviyesinde yerel değişkenleri tutar. Aşağıda bir kaç örneği bulunmaktadır.
+
 
 ## If
 
-In the example below, when the execution goes into `if` block, the new "if-only" Lexical Environment is created for it:
+Aşağıdaki örnekte işlem blok çalıştığında `if` bloğunun içine girer, yeni Sözcüksel Ortam "if-only" için yaratılmıştır:
 
 <!--
 ```js run
-let phrase = "Hello";
+let ifade = "Merhaba";
 
 if (true) {
-  let user = "John";
+  let kullanici = "Ahmet";
 
-  alert(`${phrase}, ${user}`); // Hello, John
+  alert(`${ifade}, ${kullanici}`); // Merhaba, Ahmet
 }
 
-alert(user); // Error, can't see such variable!
+alert(kullanici); // Hata, böyle bir değişken bulunamamakta!
 ```
 -->
 
 ![](lexenv-if.png)
 
-The new Lexical Environment gets the enclosing one as the outer reference, so `phrase` can be found. But all variables and Function Expressions declared inside `if` reside in that Lexical Environment and can't be seen from the outside.
+Yeni sözcüksel ortam bilgileri dış çevreden alabilir, bundan dolayı `ifade` erişilebilirdir. Fakat `if` içerisindeki tüm değişkenler ve Fonksiyonel ifadeler kendi Sözcüksel Çevresinden erişilebilir, dışarıdan erişilemez.
 
-For instance, after `if` finishes, the `alert` below won't see the `user`, hence the error.
+Örneğin `if` bittikten sonra `kullanici` değişkeni görünmez olacaktır.
+
 
 ## For, while
 
-For a loop, every run has a separate Lexical Environment. If the variable is declared in `for`, then it's also local to that Lexical Environment:
+Her bir döngü kendine ait Sözcüksel Ortama sahiptir. Eğer değişken `for` içerisinde tanımlanmışsa o sözcüksel ortama yereldir.
 
 ```js run
 for(let i = 0; i < 10; i++) {
-  // Each loop has its own Lexical Environment
-  // {i: value}
+  // Her döngü kendisine ait sözcüksel ortama sahiptir.
+  // {i: deger}
 }
 
-alert(i); // Error, no such variable
+alert(i); // Hata, böyle bir değişken yoktur.
 ```
 
-That's actually an exception, because `let i` is visually outside of `{...}`. But in fact each run of the loop has its own Lexical Environment with the current `i` in it.
+Bu aslında istisnadır, çünkü `let i`, görünürde `{...}` dışındadır. Fakat her döngü kendine ait sözcüksel ortamında `i`'nin o anki değerini içermektedir.
 
-After the loop, `i` is not visible.
+Döngüden sonra `i` görünmez olur.
 
-### Code blocks
+### Kod Blokları
 
-We also can use a "bare" code block `{…}` to isolate variables into a "local scope".
+"yalın" kod bloğu `{...}` ile değişkenler "yerel kapsama" tamlanabilir.
 
-For instance, in a web browser all scripts share the same global area. So if we create a global variable in one script, it becomes available to others. But that becomes a source of conflicts if two scripts use the same variable name and overwrite each other.
+Örneğin, bir tarayıcıda tüm kodlar evrensel alanları paylaşabilir. Eğer bir kod bloğu içerisinde evrensel alanda bir değişken yaratılırsa, kodun tamamında kullanılabilir. Fakat bu çatışmalara neden olabilir, örneğin aynı değişkenler farklı yerlerde yazılabilirler ve birbirlerinin bilgilerini silebilirler.
 
-That may happen if the variable name is a widespread word, and script authors are unaware of each other.
+Bu değişken isimleri genel kullanılırsa ve kod yazan kişi diğer değişkenin kullanıldığını bilmiyor ise yaşanılacak bir olaydır.
 
-If we'd like to evade that, we can use a code block to isolate the whole script or an area in it:
+Bunlardan kaçınmak için bir kod bloğu oluşturarak dışarıda bulunan evrensel ortamdan isole edilebilir:
 
 ```js run
 {
-  // do some job with local variables that should not be seen outside
+  // yerel değişkenler ile dışarıdaki değişkenlere etki etmeden istenilen şekilde izolasyon yapılabilir.
+  let mesaj = "Merhaba";
 
-  let message = "Hello";
-
-  alert(message); // Hello
+  alert(mesaj); // Merhaba
 }
 
-alert(message); // Error: message is not defined
+alert(mesaj); // Hata: mesaj tanımlı değildir.
 ```
 
-The code outside of the block (or inside another script) doesn't see variables in it, because a code block has its own Lexical Environment.
+Bloğun dışındaki kod içerideki değişkeni göremez. Çünkü bir her kod bloğu kendine ait sözcüksel ortama sahiptir.
 
 ### IIFE
 
-In old scripts, one can find so-called "immediately-invoked function expressions" (abbreviated as IIFE) used for this purpose.
+Eski kodları arasanız "anında çalışan fonksiyon ifadeleri" ( IIFE )  bu amaçla kullanılmıştır.
 
-They look like this:
+
+Aşağıdaki gibidirler:
 
 ```js run
 (function() {
 
-  let message = "Hello";
+  let mesaj = "Merhaba";
 
-  alert(message); // Hello
+  alert(mesaj); // Merhaba
 
 })();
 ```
 
-Here a Function Expression is created and immediately called. So the code executes right now and has its own private variables.
+Burada bir fonksiyon ifadesi yaratıldı ve doğrudan çağırıldı. Kod hemen çalışır ve kendine ait değişkenlere sahiptir.
 
-The Function Expression is wrapped with brackets `(function {...})`, because when JavaScript meets `"function"` in the main code flow, it understands it as a start of Function Declaration. But a Function Declaration must have a name, so there will be an error:
+Fonksiyon ifadesi parantez içine alınmıştır `(function {...})`, çünkü eğer JavaScript ana kod akışında `"function"` görürse bunu Fonksiyon Tanımı olarak algılar. Fakat Fonksiyon Tanımının ismi olmalıdır ve ismi olmadığından dolayı bu kod parantez içine alınmaz ise hata verir.
 
 ```js run
 // Error: Unexpected token (
-function() { // <-- JavaScript cannot find function name, meets ( and gives error
+function() { // <-- JavaScript fonksiyon ismini bulamadı. ('i gördü ve hemen hata verdi.
 
-  let message = "Hello";
+  let mesaj = "Merhaba";
 
-  alert(message); // Hello
+  alert(mesaj); // Merhaba
 
 }();
 ```
-
-We can say "okay, let it be Function Declaration, let's add a name", but it won't work. JavaScript does not allow Function Declarations to be called immediately:
+"Tamam, önemli değil, hadi Fonksiyon tanımı yapmak için bir ad verelim" derseniz bu da çalışmaz. Çünkü JavaScript Fonksiyon Tanımlarının anında çalışmasına izin vermez:
 
 ```js run
-// syntax error because of brackets below
+// Bu defa aşağıdaki parantez hata verecektir.
 function go() {
 
-}(); // <-- can't call Function Declaration immediately
+}(); // <-- Fonskyion Tanımı anında çalıştırılamaz.
 ```
 
-...So the brackets are needed to show JavaScript that the function is created in the context of another expression, and hence it's a Function Expression. Needs no name and can be called immediately.
+...Bundan dolayı parantez bu fonksiyonun başka bir ifade kaynağında yaratıldığını ifade eder ve bu da Fonksiyon İfadesidir. İsme gerek duymaksızın doğrudan çalıştırılır.
 
-There are other ways to tell JavaScript that we mean Function Expression:
+JavaScript'e başka yollarla da Fonksiyon İfadesini belirtmek mümkündür.
 
 ```js run
-// Ways to create IIFE
+//  IIFE yaratmanın yolları.
 
 (function() {
-  alert("Brackets around the function");
+  alert("Fonksiyon etrafındaki parantezler");
 }*!*)*/!*();
 
 (function() {
-  alert("Brackets around the whole thing");
+  alert("Herşeyin etrafında parantez");
 }()*!*)*/!*;
 
 *!*!*/!*function() {
-  alert("Bitwise NOT operator starts the expression");
+  alert("Lojik NOT kapısıyla ifadenin başlaması.");
 }();
 
 *!*+*/!*function() {
-  alert("Unary plus starts the expression");
+  alert("Matematiksel toplama işareti ile ifadenin başlaması.");
 }();
 ```
 
-In all cases above we declare a Function Expression and run it immediately.
+Yukarıdaki tüm durumlarda Fonksiyon İfadesi tanımlanır ve doğrudan çalıştırılır.
+## Garbage Koleksiyonu
 
-## Garbage collection
+Sözcüksel Ortam objeleri aynı normal değerler gibi hafıza yönetimine konu olurlar.
 
-Lexical Environment objects that we've been talking about are subjects to same memory management rules as regular values.
-
-- Usually, Lexical Environment is cleaned up after the function run. For instance:
+- Genelde, Sözcüksel Ortam fonksiyon çalıştıktan sonra temizlenir. Örneğin:
 
     ```js
     function f() {
-      let value1 = 123;
-      let value2 = 456;
+      let deger1 = 123;
+      let deger2 = 456;
     }
 
     f();
     ```
+    Buradaki iki değer teknik olarak Sözcük Ortamının özellikleridir. Fakat `f()` bittikten sonra bu Sözcük Ortamı erişilemez hale gelir, bundan dolayı hafızadan silinir.
 
-    Here two values are technically the properties of the Lexical Environment. But after `f()` finishes that Lexical Environment becomes unreachable, so it's deleted from the memory.
-
-- ...But if there's a nested function that is still reachable after the end of `f`, then its `[[Environment]]` reference keeps the outer lexical environment alive as well:
+- ... Fakat `f` den sonra hala iç içe fonksiyon var ise `[[Environment]]` dıştaki sözcük ortamını canlı tutar:
 
     ```js
     function f() {
-      let value = 123;
+      let deger = 123;
 
-      function g() { alert(value); }
+      function g() { alert(deger); }
 
     *!*
       return g;
     */!*
     }
 
-    let g = f(); // g is reachable, and keeps the outer lexical environment in memory
+    let g = f(); // g ulaşılabilir ise, dıştaki sözcük ortamı canlı kalır.
     ```
 
-- Please note that if `f()` is called many times, and resulting functions are saved, then the corresponding Lexical Environment objects will also be retained in memory. All 3 of them in the code below:
+- Eğer `f()` birçok defa çağırılırsa ve sonuçları kaydedilirse bu kaydedilen Sözcüksel Ortam objeleri de hafızada kalır. Aşağıdaki 3 farklı kodda daha açık bir şekilde gösterilmiştir.
 
     ```js
     function f() {
-      let value = Math.random();
+      let deger = Math.random();
 
-      return function() { alert(value); };
+      return function() { alert(deger); };
     }
 
     // 3 functions in array, every of them links to Lexical Environment
-    // from the corresponding f() run
+    // Dizideki 3 fonksiyon da kendine ait sözcüksel ortama sahiptirler.
     //         LE   LE   LE
     let arr = [f(), f(), f()];
     ```
 
-- A Lexical Environment object dies when it becomes unreachable. That is: when no nested functions remain that reference it. In the code below, after `g` becomes unreachable, the `value` is also cleaned from the memory;
-
+- Sözcüksel Ortam objesi erişim kalmayınca ölür. Bu iç içe fonksiyonların referansı kalmadığında meydana gelir. Aşağıdaki kodda `g` erişilemez olduğunda `value`'da hafızadan silinir.
     ```js
     function f() {
       let value = 123;
@@ -584,30 +583,32 @@ Lexical Environment objects that we've been talking about are subjects to same m
       return g;
     }
 
-    let g = f(); // while g is alive
-    // there corresponding Lexical Environment lives
-
-    g = null; // ...and now the memory is cleaned up
+    let g = f(); // g canlı olursa
+    ona karşılık gelen Sözcüksel Ortam'da hayatta kalır.
+    
+    g = null; // şimdi hafıza temizlendi.
     ```
 
-### Real-life optimizations
+### Gerçek-hayat Optimizasyonu
 
-As we've seen, in theory while a function is alive, all outer variables are also retained.
+Görüldüğü üzere, teoride bir fonksiyon hayatta olduğun sürece onun dışındaki ona bağlı değişkenler de hayatta kalır.
 
-But in practice, JavaScript engines try to optimize that. They analyze variable usage and if it's easy to see that an outer variable is not used -- it is removed.
+Pratikte ise, JavaScript motoru bunu optimize eder. Değişken kullanımını analiz eder ve eğer dışarıdaki fonksiyonun kullanılmadığı açık ise silinir.
 
 **An important side effect in V8 (Chrome, Opera) is that such variable will become unavailable in debugging.**
 
-Try running the example below with the open Developer Tools in Chrome.
+**Bunun V8 ( Chrome, Opera)'daki yan etkisi ise böyle değişkenlerin debugging sırasında da görünememesidir.
 
-When it pauses, in console type `alert(value)`.
+Aşağıdaki örneğin Chrome'da konsolu açarak test ediniz.
+
+Durduğunda konsolda `alert(deger)` komutunu yazınız.
 
 ```js run
 function f() {
-  let value = Math.random();
+  let deger = Math.random();
 
   function g() {
-    debugger; // in console: type alert( value ); No such variable!
+    debugger; // konsolda: alert(deger) yazdırın; Böyle bir değişken bulunamamktadır.
   }
 
   return g;
@@ -617,15 +618,15 @@ let g = f();
 g();
 ```
 
-As you could see -- there is no such variable! In theory, it should be accessible, but the engine optimized it out.
+Gördüğünüz gibi böyle bir değişken bulunamamaktadır. Teoride, erişilebilir olmalıdır fakat JavaScript motoru bunu optimize etmiştir.
 
-That may lead to funny (if not such time-consuming) debugging issues. One of them -- we can see a same-named outer variable instead of the expected one:
+Bu komik debug problemlerine neden olabilir. Bunlardan biri -- beklenenin aksine aynı isme sahip dış değişkenin görülmesi:
 
 ```js run global
-let value = "Surprise!";
+let deger = "Sürpriz!";
 
 function f() {
-  let value = "the closest value";
+  let deger = "En yakın değer";
 
   function g() {
     debugger; // in console: type alert( value ); Surprise!
@@ -638,9 +639,10 @@ let g = f();
 g();
 ```
 
-```warn header="See ya!"
-This feature of V8 is good to know. If you are debugging with Chrome/Opera, sooner or later you will meet it.
+```warn header="Görüşmek üzere!"
 
-That is not a bug of debugger, but a special feature of V8. Maybe it will be changed some time.
-You always can check for it by running examples on this page.
+V8'in bu özelliğini bilmekte fayda var. Eğer Chrome/Opera ile ayıklama yapıyorsanız, er geç bu özellikle tanışacaksınız.
+
+Bu ayıklayıcının(debugger) bir problemi değil, V8 motorunun bir özelliğidir. Belki ileride bu özellik değişebilir.
+Bu sayfayadaki örneği çalıştırarak her zaman kontrol edebilirsiniz.
 ```
