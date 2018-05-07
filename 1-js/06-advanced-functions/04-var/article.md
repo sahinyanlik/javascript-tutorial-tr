@@ -161,8 +161,8 @@ function selamVer() {
 }
 
 selamVer();
-```
- 
+``` 
+  
 
 Because all `var` declarations are processed at the function start, we can reference them at any place. But variables are undefined until the assignments.
 
