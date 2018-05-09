@@ -3,8 +3,8 @@
 ```js run
 let kullanicilar = [
   { ad: "Ahmet", yas: 20, soyad: "Zurnacı" },
-  { ad: "Hideo", yas: 18, surname: "Konami" },
-  { ad: "Jane", yas: 19, surname: "Hathaway" }
+  { ad: "Hideo", yas: 18, soyad: "Konami" },
+  { ad: "Jane", yas: 19, soyad: "Hathaway" }
 ];
 
 *!*
@@ -13,10 +13,10 @@ function alanIle(alan) {
 }
 */!*
 
-users.sort(alanIle('ad'));
-users.forEach(user => alert(user.name)); // Ann, John, Pete
+kullanicilar.sort(alanIle('ad'));
+kullanicilar.forEach(kullanici => alert(kullanici.ad)); // Ahmet, Hideo, Jane
 
-users.sort(alanIle('yas'));
-users.forEach(user => alert(user.name)); // Pete, Ann, John
+kullanicilar.sort(alanIle('yas'));
+kullanicilar.forEach(kullanici => alert(kullanici.ad)); // Hideo, Jane, Ahmet
 ```
 
