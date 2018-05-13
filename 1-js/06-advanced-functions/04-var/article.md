@@ -163,18 +163,17 @@ function selamVer() {
 selamVer();
 ``` 
   
+Tüm `var` tanımları fonksiyon başladığında işlendiğinden dolayı, istenildiği yerlere bu değişkenlere erişim bulunmaktadır. Fakat değişkenler atama yapılana kadar tanımsızdır ( undefined ).
 
-Because all `var` declarations are processed at the function start, we can reference them at any place. But variables are undefined until the assignments.
+Yukarıdaki her iki `alert` örneği de hatasız çalışmaktadır çünkü `terim` mevcuttur. Değeri atanmadığından `undefined` göstermiştir.
 
-In both examples above `alert` runs without an error, because the variable `phrase` exists. But its value is not yet assigned, so it shows `undefined`.
+## Özet
 
-## Summary
+`var`'ın iki tane ana farklılığı mevcuttur:
 
-There are two main differences of `var`:
+1. Değişkenlerin blok limiti yoktur. En düşük fonksiyon içerisinden görünebilirler. Yani aynı fonksiyon içerisinde farklı bir bloğun içinde yazılsa bile fonksiyon içinden erişilebilmektedir.
+2. Değişkenlerin tanımlanması fonksiyon başladığında gerçekleşir.
 
-1. Variables have no block scope, they are visible minimum at the function level.
-2. Variable declarations are processed at function start.
+Evrensel obje söz konusu olduğunda bir farklılık bulunmaktadır bunu bir sonraki bölümde göreceğiz.
 
-There's one more minor difference related to the global object, we'll cover that in the next chapter.
-
-These differences are actually a bad thing most of time. First, we can't create block-local variables. And hoisting just creates more space for errors. So, for new scripts `var` is used exceptionally rarely.
+Bu farklılıklar aslında kötüdür. Öncelikle blok seviyesinde değişken yaratılmamaktadır. "Yükseltme" olayı hataya neden olabilmektedir. Bundan dolayı yeni kodlarda `var` çok nadir olarak kullanılır.
