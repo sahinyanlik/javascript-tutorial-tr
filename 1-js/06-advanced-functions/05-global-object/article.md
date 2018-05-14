@@ -1,63 +1,64 @@
 
+# Evrensel Objeler
 
-# Global object
+JavaScript dili yazılırken "evren obje" diye bir obje fikri vardı. Bu obje tüm değişken ve fonksiyonları içinde barındırark tarayıcıda bulunan kodların evrensel obje yardımıyla değişkenleri paylaşabileceği düşünülmüştü.
 
-When JavaScript was created, there was an idea of a "global object" that provides all global variables and functions. It was planned that multiple in-browser scripts would use that single global object and share variables through it.
+Tabi o zamandan beri JavaScript çok değişti, artık evrensel obje göze batar oldu. Modern JavaScript'te bu objenin yerini module yapısı aldı.
 
-Since then, JavaScript greatly evolved, and that idea of linking code through global variables became much less appealing. In modern JavaScript, the concept of modules took its place.
+Global obje hala dil içerisinde yer almaktadır.
 
-But the global object still remains in the specification.
+Tarayıcıc için bu "window" ve NodeJs için ise "global"'dir. Diğer ortamlar da kendine ait evrensel objelere sahiptirler.
 
-In a browser it is named "window", for Node.JS it is "global", for other environments it may have another name.
+İki şeyi yapmaktadır:
 
-It does two things:
-
-1. Provides access to built-in functions and values, defined by the specification and the environment.
-    For instance, we can call `alert` directly or as a method of `window`:
+1. Dil dahilindeki fonksiyon ve değişkenlere erişim sağlar.
+    Örneğin, `alert` doğrudan veya `window`'un bir metodu olarak çağırılabilir.
 
     ```js run
-    alert("Hello");
+    alert("Merhaba");
 
-    // the same as
-    window.alert("Hello");
+    // aynısı 
+    window.alert("Merhaba");
     ```
+    Bu aynı şekilde diğer dahili fonksiyon ve değişkenler için de geçerlidir. Örneğin `Array` yerine `window.Array` kullanılabilir.
 
-    The same applies to other built-ins. E.g. we can use `window.Array` instead of `Array`.
-
-2. Provides access to global Function Declarations and `var` variables. We can read and write them using its properties, for instance:
+2. Global `var` değişkeni tanımlamaya olanak tanır. `window` özellikleri ile okuma ve yazma sağlanabilir. Çrneğin
 
     <!-- no-strict to move variables out of eval -->
     ```js untrusted run no-strict refresh
-    var phrase = "Hello";
+    var selam = "Merhaba";
 
-    function sayHi() {
-      alert(phrase);
+    function selamVer() {
+      alert(selam);
     }
 
-    // can read from window
-    alert( window.phrase ); // Hello (global var)
-    alert( window.sayHi ); // function (global function declaration)
+    // window'dan okunabilir
+    alert( window.terim ); // Merhaba (global var)
+    alert( window.selamVer ); // function (global function declaration)
 
-    // can write to window (creates a new global variable)
+    // window'a yazılabilir. ( yeni global değişken oluşturur.
+
     window.test = 5;
 
     alert(test); // 5
     ```
-
-...But the global object does not have variables declared with `let/const`!
+...Fakat global obje `let/cons` ile tanımlanmış değişkenler barındıramaz.
 
 ```js untrusted run no-strict refresh
-*!*let*/!* user = "John";
-alert(user); // John
+*!*let*/!* kullanici = "Ahmet";
+alert(kullanici); // Ahmet
 
-alert(window.user); // undefined, don't have let
-alert("user" in window); // false
+alert(window.kullanici); // tanımsız, let ile tanımlama yapılamaz.
+alert("kullanici" in window); // false
 ```
 
-```smart header="The global object is not a global Environment Record"
-In versions of ECMAScript prior to ES-2015, there were no `let/const` variables, only `var`. And global object was used as a global Environment Record (wordings were a bit different, but that's the gist).
+```smart header="Global Obje global ortam kaydı değildir"
+ECMAScript ES-2015 öncesi `let/const` değişkenleri bulunmamaktaydı, sadece `var` değişkeni vardı. Global objeler global ortam kaydı olarak kullanılıyordu.
 
-But starting from ES-2015, these entities are split apart. There's a global Lexical Environment with its Environment Record. And there's a global object that provides *some* of the global variables.
+Fakat ES-2015 sonrası, bu varlıklar ayrıldı. Artık evrensel sözcük ortamı ve bunun ortam kaydı. İkinci olarak evrensel obje ve bunun sunduğu *bazı" evrensel değişkenler bulunmaktadır.
+
+Uygulamada global `let/cons` değişkenleri global Evrensel Kayıtta tanımlanmış özelliklerdir fakat evrensel obje'de bulunmamaktadırlar.
+
 
 As a practical difference, global `let/const` variables are definitively properties of the global Environment Record, but they do not exist in the global object.
 
