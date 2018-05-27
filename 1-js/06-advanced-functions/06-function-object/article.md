@@ -1,83 +1,76 @@
 
-# Function object, NFE
+# Fonksiyon Objeleri, NFE
 
-As we already know, functions in JavaScript are values.
+Bildiğiniz gibi JavaScript'te fonksiyonlar deperdir.
 
-Every value in JavaScript has the type. What type of value is a function?
+Her değerin bir tipi olduğuna göre fonksiyonun tipi nedir?
 
-In JavaScript, a function is an object.
+JavaScript'te fonksiyon bir objedir.
 
-A good way to imagine functions is as callable "action objects". We can not only call them, but also treat them as objects: add/remove properties, pass by reference etc.
+Daha iyi görselleyebilmek adına fonksiyonlara "aksiyon objeleri" denebilir. Sadece çağırarak değil, obje olarak da davranabilirsiniz: özellik ekleme çıkarma, referans paslama vs.
 
+## "name" özelliği
 
-## The "name" property
+Fonksiyon objelerinin kullanışlı özellikleri bulunmaktadır.
 
-Function objects contain few sometimes-useable properties.
-
-For instance, a function name is accessible as the "name" property:
+Örneğin, fonksiyonun ismi "name" özelliği ile alınabilir.
 
 ```js run
-function sayHi() {
-  alert("Hi");
+function selamVer() {
+  alert("Selam");
 }
 
-alert(sayHi.name); // sayHi
+alert(selamVer.name); // selamVer
 ```
-
-What's more funny, the name-assigning logic is smart. It also sticks the right name to function that are used in assignments:
+"name" özelliği atama o kadar akıllıdır ki, fonksiyon tanımlama ifadelerindeki ismi bile doğru alır.
 
 ```js run
-let sayHi = function() {
-  alert("Hi");
+let selamVer = function() {
+  alert("Selam");
 }
 
-alert(sayHi.name); // sayHi (works!)
+alert(selamVer.name); // selamVer 
 ```
-
-Also works if the assignment is done via a default value:
+Hatta atama varsayılan değer ile yapıldığında bile çalışır:
 
 ```js run
-function f(sayHi = function() {}) {
-  alert(sayHi.name); // sayHi (works!)
+function f(selamVer = function() {}) {
+  alert(selamVer.name); // selamVer (çalıştı!)
 }
 
 f();
 ```
+Tanımda bu özelliğe "bağlamsal isim" denir. Eğer fonksiyonda böyle birşey yoksa, tanımlama bunu içerikten alır.
 
-In the specification, this feature is called a "contextual name". If the function does not provide one, then in an assignment it is figured out from the context.
-
-Object methods have names too:
-
+Object metodlarının da isimleri vardır:
 ```js run
-let user = {
+let kullanici = {
 
-  sayHi() {
+  selamVer() {
     // ...
   },
 
-  sayBye: function() {
+  yolcuEt: function() {
     // ...
   }
 
 }
 
-alert(user.sayHi.name); // sayHi
-alert(user.sayBye.name); // sayBye
+alert(kullanici.selamVer.name); // Merhaba
+alert(kullanici.yolcuEt.name); // Güle güle
 ```
+Burada bir sihir yoktur. İsmin çıkarılamadığı birçok durum meydana gelebilir.
 
-There's no magic though. There are cases when there's no way to figure out the right name.
-
-Then it's empty, like here:
+Böyle durumlarda aşağıdaki gibi boş dönerler:
 
 ```js
-// function created inside array
+// Dizinin içerisinde fonksiyon yaratılması
 let arr = [function() {}];
 
-alert( arr[0].name ); // <empty string>
-// the engine has no way to set up the right name, so there is none
+alert( arr[0].name ); // <boş>
+// motorun doğru ismi bulmasına imkan yok bundna dolayı boş dönüyor.
 ```
-
-In practice, most functions do have a name.
+Pratikte çoğu fonksiyonun ismi bulunmaktadır.
 
 ## The "length" property
 

@@ -57,86 +57,82 @@ ECMAScript ES-2015 öncesi `let/const` değişkenleri bulunmamaktaydı, sadece `
 
 Fakat ES-2015 sonrası, bu varlıklar ayrıldı. Artık evrensel sözcük ortamı ve bunun ortam kaydı. İkinci olarak evrensel obje ve bunun sunduğu *bazı" evrensel değişkenler bulunmaktadır.
 
-Uygulamada global `let/cons` değişkenleri global Evrensel Kayıtta tanımlanmış özelliklerdir fakat evrensel obje'de bulunmamaktadırlar.
+Uygulamada evrensel `let/cons` değişkenleri global Evrensel Kayıtta tanımlanmış özelliklerdir fakat evrensel obje'de bulunmamaktadırlar.
 
-
-As a practical difference, global `let/const` variables are definitively properties of the global Environment Record, but they do not exist in the global object.
-
-Naturally, that's because the idea of a global object as a way to access "all global things" comes from ancient times. Nowadays is not considered to be a good thing. Modern language features like `let/const` do not make friends with it, but old ones are still compatible.
+Doğal olarak, evrensel objenin "evrensel olan herşeye erişebilir" fikri eski zamanlarda kalmıştır. Artık bu iyi birşey olarak görülmemektedir. `let/const` gibi dil özellikleri bunu desteklememektedir, fakat eski olanlara hala destek verir.
 ```
 
-## Uses of "window"
 
-In server-side environments like Node.JS, the `global` object is used exceptionally rarely. Probably it would be fair to say "never".
+## "window"'un kullanım alanları
 
-In-browser `window` is sometimes used though.
+Node.JS gibi sunucu ortamlarında, `global` obje çok az kullanılır. Hatta `hiç bir zaman` diyebiliriz.
 
-Usually, it's not a good idea to use it, but here are some examples you can meet.
+Buna rağmen `window` bazı durumlarda kullanılmaktadır.
 
-1. To access exactly the global variable if the function has the local one with the same name.
+Genelde, kullanmak çok iyi bir fikir olmasa da, aşağıda bazı örnekleri görebilirsiniz.
+
+1. Eğer evrenselde bulunan değişken ile fonksiyon içindeki değişken ismi aynı ise;
 
     ```js untrusted run no-strict refresh
-    var user = "Global";
+    var kullanici = "Evrensel";
 
-    function sayHi() {
-      var user = "Local";
+    function selamVer() {
+      var user = "Yerel";
 
     *!*
-      alert(window.user); // Global
+      alert(window.user); // Evrensel
     */!*
     }
 
-    sayHi();
+    selamVer();
     ```
 
-    Such use is a workaround. Would be better to name variables differently, that won't require use to write the code it this way. And please note `"var"` before `user`. The trick doesn't work with `let` variables.
+    Bu sizi çözüme ulaştırır fakat değişkenlere farklı isimler vermek daha iyidir, böylece `window` kullanmanıza gerek kalmaz. Ayrıca dikkat ederseniz `kullici` tanımlamak için `var` kullanılmıştır. `let` kullanılmış olsaydı `window`'dan bu değeri alamazdınız.
+    
+3. Global bir değişkenin var olup olmadığına bakar.
 
-2. To check if a certain global variable or a builtin exists.
-
-    For instance, we want to check whether a global function `XMLHttpRequest` exists.
-
-    We can't write `if (XMLHttpRequest)`, because if there's no `XMLHttpRequest`, there will be an error (variable not defined).
-
-    But we can read it from `window.XMLHttpRequest`:
-
+    Örneğin, `XMLHttpRequest`'in global bir fonksiyon olup olmadığını kontrol etmek isterseniz.
+    
+    `if (XMLHttpRequest)` şeklinde yazamazsınız, çünkü `XMLHttpRequest` yoksa hata verecektir.
+    
+    Bunu `window.XMLHttpRequest` üzerinden okuyabilirsiniz.
+    
     ```js run
     if (window.XMLHttpRequest) {
-      alert('XMLHttpRequest exists!')
+      alert('XMLHttpRequest tanımlı!')
     }
     ```
-
-    If there is no such global function then `window.XMLHttpRequest` is just a non-existing object property. That's `undefined`, no error, so it works.
-
-    We can also write the test without `window`:
-
+    Eğer böyle bir global fonksiyon olmasaydı `undefined` dönerdi.
+    
+    `window` olmadan da bunu test etmek mümkündür:
+    
     ```js
     if (typeof XMLHttpRequest == 'function') {
-      /* is there a function XMLHttpRequest? */
+      /*  XMLHttpRequest? fonksiyonu var mı? */
     }
     ```
+    Burada `window` kullanılmasa da (teorik olarak) daha az güvenilirdir, çünkü `typeof` yerel XMLHttpRequest kullanabilir, halbuki biz evrensel olanını kontrol etmek istiyoruz.
 
-    This doesn't use `window`, but is (theoretically) less reliable, because `typeof` may use a local XMLHttpRequest, and we want the global one.
 
+3. Doğru pencereden değişken alma. Bu en uygun kullanım şeklidir.
 
-3. To take the variable from the right window. That's probably the most valid use case.
-
-    A browser may open multiple windows and tabs. A window may also embed another one in `<iframe>`. Every browser window has its own `window` object and global variables. JavaScript allows windows that come from the same site (same protocol, host, port) to access variables from each other.
-
-    That use is a little bit beyond our scope for now, but it looks like:
+    Tarayıcıda birçok tab ve pencere açılabilir. Bir pencere diğerini `<iframe>` içerisinde gösterebilir. Her tarayıcı kendine ait `window` objesine ve bunun global değişkenlerine sahiptir. JavaScript pencerelerin (aynı site içerisinde ise) birbirlerinden değişken almalarına izin verir.
+    
+    Bu biraz amacının dışında da olsa şuna benzer:
     ```html run
     <iframe src="/" id="iframe"></iframe>
 
     <script>
-      alert( innerWidth ); // get innerWidth property of the current window (browser only)
-      alert( Array ); // get Array of the current window (javascript core builtin)
+      alert( innerWidth ); //  içerideki boyutu olır ( sadece tarayıcı için) 
+      alert( Array ); // o anki pencerenin dizisini alır.get Array of the current window (javascript core builtin)
 
       // when the iframe loads...
       iframe.onload = function() {
-        // get width of the iframe window
+        // iframe'in genişliğini al
       *!*
         alert( iframe.contentWindow.innerWidth );
       */!*
-        // get the builtin Array from the iframe window
+        // iframe penceresinin dizisini al.
       *!*
         alert( iframe.contentWindow.Array );
       */!*
@@ -144,29 +140,28 @@ Usually, it's not a good idea to use it, but here are some examples you can meet
     </script>
     ```
 
-    Here, first two alerts use the current window, and the latter two take variables from `iframe` window. Can be any variables if `iframe` originates from the same protocol/host/port.
+    Burada ilk iki alert var olan pencereyi kullanmaktadır, geriye kalan iki tanesi de `iframe`'den değişken almaktadır. Bu eğer `iframe` aynı protocol/host/port'tan besleniyor ise herhangi bir değişken olabilir.
+    
+## "this" ve evrensel objeler
 
-## "this" and global object
+Bazen, `this`'in değeri tamamen evrensel obje olur. Bu çok nadir de olsa bazı kod sayfalarında görülmektedir.
 
-Sometimes, the value of `this` is exactly the global object. That's rarely used, but some scripts rely on that.
-
-1. In the browser, the value of `this` in the global area is `window`:
+1. Tarayıcıda `this`'in global alandaki değeri `window`'dur:
 
     ```js run
-    // outside of functions
+    // fonksiyonların dışında
     alert( this === window ); // true
     ```
+    Tarayıcı olmayan çevrelerde ise, `this` için farklı değer kullanabilirler.
 
-    Other, non-browser environments, may use another value for `this` in such cases.
-
-2. When a function with `this` is called in non-strict mode, it gets the global object as `this`:
+2. Sıkı olmayan modda bir fonksiyon `this` çağırırsa, evrensel obje olan `this`'i kabul eder:
     ```js run no-strict
-    // not in strict mode (!)
+    // Sıkı modda değil (!)
     function f() {
       alert(this); // [object Window]
     }
 
-    f(); // called without an object
+    f(); // obje olmadan çağırıldı.
     ```
 
-    By specification, `this` in this case must be the global object, even in non-browser environments like Node.JS. That's for compatibility with old scripts, in strict mode `this` would be `undefined`.
+    Tanım gereği, `this` bu durumda evrensel obje olmalı, Node.JS ortamında olmasa bile `this` evrensel objedir. Bu eski kodlar ile uyumluluk amacıyladır, sıkı modda `this` tanımsız olabilir.
