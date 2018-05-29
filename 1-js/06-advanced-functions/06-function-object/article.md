@@ -72,9 +72,8 @@ alert( arr[0].name ); // <boş>
 ```
 Pratikte çoğu fonksiyonun ismi bulunmaktadır.
 
-## The "length" property
-
-There is another built-in property "length" that returns the number of function parameters, for instance:
+## "length" özelliği 
+"length" adında ayrı bir özellik daha bulunmaktadır. Bu özellik fonksiyon parametrelerinin sayısını döndürür:
 
 ```js run
 function f1(a) {}
@@ -85,31 +84,30 @@ alert(f1.length); // 1
 alert(f2.length); // 2
 alert(many.length); // 2
 ```
+Gördüğünüz gibi geriye kalan parametresi `...` sayılmamaktadır.
 
-Here we can see that rest parameters are not counted.
+`length` özelliği bazen diğer fonksiyonların üzerinde çalışan fonksiyonlara bir iç bakış oluşturur.
 
-The `length` property is sometimes used for introspection in functions that operate on other functions.
+Mesela, aşağıdaki kodda `sor`fonksiyonu `soru` parametresi alır ve belirli olmayan sayıda `isleyici` fonksiyonunu çağırır.
 
-For instance, in the code below `ask` function accepts a `question` to ask and an arbitrary number of `handler` functions to call.
+Kullanıcı cevap verdiğinde `isleyici` çağırılır. İki türlü işleyici gönderilebilir:
 
-When a user answers, it calls the handlers. We can pass two kinds of handlers:
+- Argümansız fonksiyon, sadece pozitif cevaplarda çağırılır.
+- Argümanlı fonksiyonlar, cevap alınan her durumda çağırılır.
 
-- A zero-argument function, then it is only called for a positive answer.
-- A function with arguments, then it is called in any case and gets the answer.
+Mantık şu şekildedir; cevap pozisit olduğunda argüman almayan isleyici calisir, fakat evrensel isleyiciye de izin verir.
 
-The idea is that we have a simple no-arguments handler syntax for positive cases (most frequent variant), but allow to provide universal handlers as well.
-
-To call `handlers` the right way, we examine the `length` property:
+`isleyici`'lerin doğru çalışması için, `length` özelliğinden faydalanılabilir.
 
 ```js run
-function ask(question, ...handlers) {
-  let isYes = confirm(question);
+function sor(soru, ...isleyiciler) {
+  let dogruMu = confirm(soru);
 
-  for(let handler of handlers) {
-    if (handler.length == 0) {
-      if (isYes) handler();
+  for(let isleyici of isleyiciler) {
+    if (isleyici.length == 0) {
+      if (dogruMu) isleyici();
     } else {
-      handler(isYes);
+      isleyici(dogruMu);
     }
   }
 
