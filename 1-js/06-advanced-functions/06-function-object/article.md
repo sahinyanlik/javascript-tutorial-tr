@@ -90,7 +90,7 @@ Gördüğünüz gibi geriye kalan parametresi `...` sayılmamaktadır.
 
 Mesela, aşağıdaki kodda `sor`fonksiyonu `soru` parametresi alır ve belirli olmayan sayıda `isleyici` fonksiyonunu çağırır.
 
-Kullanıcı cevap verdiğinde `isleyici` çağırılır. İki türlü işleyici gönderilebilir:
+Kullanıcı cevap verdiğinde `isleyici`(handler) çağırılır. İki türlü işleyici gönderilebilir:
 
 - Argümansız fonksiyon, sadece pozitif cevaplarda çağırılır.
 - Argümanlı fonksiyonlar, cevap alınan her durumda çağırılır.
@@ -113,48 +113,45 @@ function sor(soru, ...isleyiciler) {
 
 }
 
-// for positive answer, both handlers are called
-// for negative answer, only the second one
-ask("Question?", () => alert('You said yes'), result => alert(result));
+// Olumlu cevap için, her ikisi çalışırken
+// Olumsuz cevap için sadece ikincisi çalışmaktadır.
+sor("Soru?", () => alert('Evet dedin'), sonuc => alert(sonuc));
 ```
+Bu duruma [polymorphism](https://en.wikipedia.org/wiki/Polymorphism_(computer_science)) denilmektedir. Bu argümanlara tiplerine göre farklı davranma olayıdır. Bu bizim durumumuzda `length`'e bağlıdır. Bu fikir  JavaScript  kütüphanelerinde de kullanılmaktadır.
 
-This is a particular case of so-called [polymorphism](https://en.wikipedia.org/wiki/Polymorphism_(computer_science)) -- treating arguments differently depending on their type or, in our case depending on the `length`. The idea does have a use in JavaScript libraries.
+## Özelleştirilmiş özellikler
 
-## Custom properties
-
-We can also add properties of our own.
-
-Here we add the `counter` property to track the total calls count:
+Kendi özelliğinizi eklemek de mümkündür.
+Örneğin aşağıda `counter` özelliği ile toplan çağrı sayısı tutulmaktadır:
 
 ```js run
-function sayHi() {
-  alert("Hi");
+function selamVer() {
+  alert("Selam");
 
   *!*
-  // let's count how many times we run
+  // Kaç defa çağırıldığını tutar.
   sayHi.counter++;
   */!*
 }
-sayHi.counter = 0; // initial value
+sayHi.counter = 0; // ilk değer
 
-sayHi(); // Hi
-sayHi(); // Hi
+selamVer(); // Selam
+selamVer(); // Selam
 
-alert( `Called ${sayHi.counter} times` ); // Called 2 times
+alert( `selamVer ${selamVer.counter} defa çağırılmıştır` ); // selamVer 2 defa çağırılmıştır.
 ```
 
-```warn header="A property is not a variable"
-A property assigned to a function like `sayHi.counter = 0` does *not* define a local variable `counter` inside it. In other words, a property `counter` and a variable `let counter` are two unrelated things.
+```warn header="Özellik değişken değildir"
+Fonksiyona atanan `selamVer.counter = 0` selamVer fonksiyonunun içerisinde `counter` değişkenini tanımlamaz. Diğer bir deyişle `counter` özelliği ile `let counter` birbirinden tamamen farklı şeylerdir.
 
-We can treat a function as an object, store properties in it, but that has no effect on its execution. Variables never use function properties and vice versa. These are just parallel words.
+Fonksiyona obje gibi davranıp özellik eklenebilir. Bu çalışmasında bir etki yaratmaz. Değişkenler fonksiyon özelliklerini kullanmaz, keza fonksiyon özellikleri de değişkenleri kullanmaz.
 ```
 
-Function properties can replace the closure sometimes. For instance, we can rewrite the counter example from the chapter <info:closure> to use a function property:
+Fonksiyon özellikleri closure kullanılarak tekrardan yazılabilir. Örneğin yukarıdaki sayaç örneğini <info:closure> kullanarak tekrardan yazacak olursak:
 
 ```js run
 function makeCounter() {
-  // instead of:
-  // let count = 0
+    // let count = 0 yazmak yerine
 
   function counter() {
     return counter.count++;
@@ -169,10 +166,10 @@ let counter = makeCounter();
 alert( counter() ); // 0
 alert( counter() ); // 1
 ```
+`count` artık fonksiyonun içerisinde bulunur, dış ortamda değil.
 
-The `count` is now stored in the function directly, not in its outer Lexical Environment.
+Closure kullanmak iyi mi kötü mü?
 
-Is it worse or better than using the closure?
 
 The main difference is that if the value of `count` lives in an outer variable, then an external code is unable to access it. Only nested functions may modify it. And if it's bound to function, then such thing is possible:
 
