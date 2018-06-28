@@ -170,8 +170,8 @@ alert( counter() ); // 1
 
 Closure kullanmak iyi mi kötü mü?
 
+Eğer `sayac`'ın değeri dışarıdaki değişkende bulunuyorsa, dışta bulunan kod buna erişemez. Sadece içteki fonksiyon bunu modifiye edebilir. Bu da anca fonksiyona bağlıysa gerçekleşebilir:
 
-The main difference is that if the value of `count` lives in an outer variable, then an external code is unable to access it. Only nested functions may modify it. And if it's bound to function, then such thing is possible:
 
 ```js run
 function makeCounter() {
@@ -193,102 +193,96 @@ alert( counter() ); // 10
 */!*
 ```
 
-So it depends on our aims which variant to choose.
+Bundan dolayı asıl önemli olan sizin hangi şekilde kullanmak istediğiniz.
 
-## Named Function Expression
+## İsimlendirilmiş Fonksiyon İfadeleri ( Named Function Expression - NFE ) 
 
-Named Function Expression or, shortly, NFE, is a term for Function Expressions that have a name.
+İsimlendirilmiş fonksiyon ifadeleri , NFE, daha önce kullandığımız Fonksiyon İfadelerinin isimlendirilmiş halidir.
 
-For instance, let's take an ordinary Function Expression:
-
-```js
-let sayHi = function(who) {
-  alert(`Hello, ${who}`);
-};
-```
-
-...And add a name to it:
+Örneğin, sıradan bir Fonksiyon İfadesi incelenecek olursa:
 
 ```js
-let sayHi = function *!*func*/!*(who) {
-  alert(`Hello, ${who}`);
+let selamVer = function(kim) {
+  alert(`Selam, ${kim}`);
 };
 ```
+... isimlendirilirse:
 
-Did we do anything sane here? What's the role of that additional `"func"` name?
+```js
+let selamVer = function *!*func*/!*(kim) {
+  alert(`Merhaba, ${kim}`);
+};
+```
+Peki buradaki mantık ne? Ayrıca bir `"func"` eklemenin ne anlamı var?
 
-First let's note, that we still have a Function Expression. Adding the name `"func"` after `function` did not make it a Function Declaration, because it is still created as a part of an assignment expression.
+Tekrar etmek gerekirse, hala bir Fonksiyon İfadeniz var. Fonksiyon ifadesine `"function"` 'dan sonra `"func"` eklemek bu fonksiyonu Fonksiyon Tanımı haline getirmez çünkü hala bir atama operasyonu ile tanımlanmıştır.
 
-Adding such a name also did not break anything.
+Böyle bir isim eklemek hiç bir soruna neden olmaz. 
 
-The function is still available as `sayHi()`:
+Fonksiyon hala `selamVer()` şeklinde kullanılabilir:
 
 ```js run
-let sayHi = function *!*func*/!*(who) {
-  alert(`Hello, ${who}`);
+let selamVer = function *!*func*/!*(kim) {
+  alert(`Selam, ${kim}`);
 };
 
-sayHi("John"); // Hello, John
+selamVer("Ahmet"); // Selam, Ahmet
 ```
+`func` ismine ait iki tane özellik vardır:
 
-There are two special things about the name `func`:
+1.Bu şekilde fonksiyonun kendisine içerisinden referans vermek mümkündür.
+2. Fonksiyonun dışından erişilemez.
 
-1. It allows to reference the function from inside itself.
-2. It is not visible outside of the function.
-
-For instance, the function `sayHi` below re-calls itself with `"Guest"` if no `who` is provided:
+Örneğin, `selamVer` fonksiyonu eğer bir parametre olmadan çağırılırsa kendisini `"Misafir"` ile tekrardan çağırabilir.
 
 ```js run
-let sayHi = function *!*func*/!*(who) {
-  if (who) {
-    alert(`Hello, ${who}`);
+let selamVer = function *!*func*/!*(kim) {
+  if (kim) {
+    alert(`Selam, ${kim}`);
   } else {
 *!*
-    func("Guest"); // use func to re-call itself
+    func("Misafir"); // kendisni yeniden çağırabilir.
 */!*
   }
 };
 
-sayHi(); // Hello, Guest
+selamVer(); // Selam, Misafir
 
-// But this won't work:
-func(); // Error, func is not defined (not visible outside of the function)
+// Fakat aşağıdaki çalışmayacaktır:
+func(); // func tanımlı değildir. ( Fonksiyonun dışından erişilemez.)
 ```
+Peki neden `func` kullanıyoruz? Sadece `selamVer` kullansak olmaz mı?
 
-Why do we use `func`? Maybe just use `sayHi` for the nested call?
-
-
-Actually, in most cases we can:
+Aslında çoğu durumda olur:
 
 ```js
-let sayHi = function(who) {
-  if (who) {
-    alert(`Hello, ${who}`);
+let selamVer = function(kim) {
+  if (kim) {
+    alert(`Selam, ${kim}`);
   } else {
 *!*
-    sayHi("Guest");
+    selamVer("Misafir");
 */!*
   }
 };
 ```
-
-The problem with that code is that the value of `sayHi` may change. The function may go to another variable, and the code will start to give errors:
+Buradaki problem `selamVer`'in değeri değişebilir. Fonksiyon diğer bir değişkene gidebilir ardından hatalar vermeye başlar.
 
 ```js run
-let sayHi = function(who) {
-  if (who) {
-    alert(`Hello, ${who}`);
+let selamVer = function(kim) {
+  if (kim) {
+    alert(`Selam, ${kim}`);
   } else {
 *!*
-    sayHi("Guest"); // Error: sayHi is not a function
+    selamVer("Misafir");
 */!*
   }
 };
 
-let welcome = sayHi;
-sayHi = null;
+let hosGeldin = selamVer;
+selamVer = null;
 
-welcome(); // Error, the nested sayHi call doesn't work any more!
+hosGeldin(); //Artık selamVer çağırılamaz.
 ```
 
 That happens because the function takes `sayHi` from its outer lexical environment. There's no local `sayHi`, so the outer variable is used. And at the moment of the call that outer `sayHi` is `null`.
