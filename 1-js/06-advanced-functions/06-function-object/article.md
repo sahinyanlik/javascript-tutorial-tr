@@ -284,53 +284,51 @@ selamVer = null;
 
 hosGeldin(); //Artık selamVer çağırılamaz.
 ```
+Bunun olmasının nedeni fonksiyonun `selamVer`'i dış ortamdan alıyor olmasıdır. Yerel bir `selamVer` bulunmadığından dıştaki değişken kullanılmaktadır. O anda da dışta bulunan `selamVer` `null`'dur.
 
-That happens because the function takes `sayHi` from its outer lexical environment. There's no local `sayHi`, so the outer variable is used. And at the moment of the call that outer `sayHi` is `null`.
+Opsiyonel olarak konulan isim tam olarak Fonksiyon İfadesinin bu problemini çözer.
 
-The optional name which we can put into the Function Expression is exactly meant to solve this kind of problems.
-
-Let's use it to fix the code:
+Bunu kullanarak kod şu şekilde düzeltilebilir:
 
 ```js run
-let sayHi = function *!*func*/!*(who) {
+let selamVer = function *!*func*/!*(kim) {
   if (who) {
-    alert(`Hello, ${who}`);
+    alert(`Selam, ${kim}`);
   } else {
 *!*
-    func("Guest"); // Now all fine
+    func("Misafir"); // Şimdi hepsi doğru şekilde çalışır.
 */!*
   }
 };
 
-let welcome = sayHi;
-sayHi = null;
+let hosGeldin = selamVer;
+selamVer = null;
 
-welcome(); // Hello, Guest (nested call works)
+hosGeldin(); // Selam, Misafir (iç çağrı çalışır)
 ```
 
-Now it works, because the name `"func"` is function-local. It is not taken from outside (and not visible there). The specification guarantees that it always references the current function.
+Şimdi çalışır, bunun nedeni `"func"`'in lokal fonksiyon olmasındandır. Dışarıdan alınmaz ( dışarıdan görünmez de ). Bu şekilde yazıldığında var olan fonksiyonu referans vereceği garantidir.
 
-The outer code still has it's variable `sayHi` or `welcome` later. And `func` is an "internal function name", how it calls itself privately.
+Dışta bulunan kod hala `selamVer` veya `hosGeldin` değişkenlerine sahiptir. Dıştaki değişkenlere birşey olsa bile `func`"iç fonksiyon ismi"'dir. Kendisini gizli biçimde çağırabilir.
 
-```smart header="There's no such thing for Function Declaration"
-The "internal name" feature described here is only available for Function Expressions, not to Function Declarations. For Function Declarations, there's just no syntax possibility to add a one more "internal" name.
+```smart header="Fonksiyon Tanımı diye birşey yoktur."
+"içsel isim" olarak tanımlanan özellik sadece Fonksiyon İfadeleri için geçerlidir. Fonksiyon Tanımlarında çalışmaz. Fonksiyon tanımları için "içsel" bir isim ekleme yöntemi yoktur.
 
-Sometimes, when we need a reliable internal name, it's the reason to rewrite a Function Declaration to Named Function Expression form.
+Bazen güvenli bir isme ihtiyaç duyulduğunda Fonksiyon Tanımı tekrardan İsimlendirilmiş Fonksiyon İfadesi şekline getirilir.
 ```
 
-## Summary
+## Özet
+Fonksiyonlar objedir.
 
-Functions are objects.
+Özellikleri şu şekildedir:
 
-Here we covered their properties:
+- `name` -- Fonksiyon ismi. Sadece fonksiyon tanımlama da değil, atamalar ve obje özellikleri için.
+- `length`  -- Fonksiyon tanımındaki argüman sayısı, geriye kalan parametreleri ( ... ) sayılmaz.
 
-- `name` -- the function name. Exists not only when given in the function definition, but also for assignments and object properties.
-- `length` -- the number of arguments in the function definition. Rest parameters are not counted.
+Eğer fonksiyon Fonksiyon Tanımı yöntemi ile ( ana akışta olmayan ) tanımlanmışsa ve isim taşıyorsa buna İsimlendirilmiş Fonksiyon Tanımı denir. İsim içersiinde veya recursive çağrılarda kullanılabilir.
 
-If the function is declared as a Function Expression (not in the main code flow), and it carries the name, then it is called Named Function Expression. The name can be used inside to reference itself, for recursive calls or such.
+Fonksiyonlar ayrıca başka özelliklerde taşıyabilirler. Çoğu bilinen JavaScript kütüpyanesi bu özelliği ziyadesiyle kullanır.
 
-Also, functions may carry additional properties. Many well-known JavaScript libraries make a great use of this feature.
+Genelde bir "ana" fonksiyon ve bu fonksiyona bağlı birçok "yardımcı" fonksiyon tanımlarlar. Örneğin [jquery](https://jquery.com) `$` adında bir fonksiyon oluşturur. [lodash](https://lodash.com) fonksiyonu `_` adında bir fonksiyon oluşturu. Ardıncan `_.clone`, `_.keyBy` gibi özellikleri ekler. [Dökümantasyon](https://lodash.com/docs)'u inceleyebilirsiniz.  Aslında, global alanda baya temiz çalışırlar. Böylece bir kütüphane bir tane global değişken vermiş olur. Bu da isimlerin birbiriyle çakışmasını engeller.
 
-They create a "main" function and attach many other "helper" functions to it. For instance, the [jquery](https://jquery.com) library creates a function named `$`. The [lodash](https://lodash.com) library creates a function `_`. And then adds `_.clone`, `_.keyBy` and other properties to (see the [docs](https://lodash.com/docs) when you want learn more about them). Actually, they do it to less pollute the global space, so that a single library gives only one global variable. That lowers the chance of possible naming conflicts.
-
-So, a function can do a useful job by itself and also carry a bunch of other functionality in properties.
+Bundan dolayı bir fonksiyon kendince bir iş yapabilir ve özellikleri vasıtasıyla başka fonksiyonalitelere de sahip olabilir.
