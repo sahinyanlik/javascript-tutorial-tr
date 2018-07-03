@@ -1,21 +1,21 @@
 
-# The "new Function" syntax
+# "new Function" yazımı
 
-There's one more way to create a function. It's rarely used, but sometimes there's no alternative.
+Çok az kullanılsa da bir çeşit daha fonksiyon yaratma şekli vardır. Çok az kullanılsa da bazen alternatifsizdirler.
 
 [cut]
 
-## The syntax
+## Yazım
 
-The syntax for creating a function:
+Fonksiyon yaratmak için:
 
 ```js
 let func = new Function('a', 'b', 'return a + b');
 ```
 
-All arguments of `new Function` are strings. Parameters go first, and the body is the last.
+`new Function`'ın tüm argümanları karakter dizisidir. Parametreler önce, en son olarak yazılır.
 
-For instance:
+Örneğin:
 
 ```js run
 let sum = new Function('arg1', 'arg2', 'return arg1 + arg2');
@@ -23,64 +23,63 @@ let sum = new Function('arg1', 'arg2', 'return arg1 + arg2');
 alert( sum(1, 2) ); // 3
 ```
 
-If there are no arguments, then there will be only body:
+Eğer argüman yok ise, sadece gövde ile fonksiyon yaratılır:
 
 ```js run
-let sayHi = new Function('alert("Hello")');
+let selamVer = new Function('alert("Selam")');
 
-sayHi(); // Hello
+selamVer(); // Selam
 ```
 
-The major difference from other ways we've seen -- the function is created literally from a string, that is passed at run time. 
+Diğer yöntemlere göre en büyük farklılık -- fonksiyon gerçektende sadece karakter dizisinden oluşuyor, bu çalışma anında gerçekleşiyor.
 
-All previous declarations required us, programmers, to write the function code in the script.
+Diğer tüm tanımlamalar programcıların kod yazmasını gerektirir.
 
-But `new Function` allows to turn any string into a function, for example we can receive a new function from the server and then execute it:
+Fakat `new Function` herhangi bir metini fonksiyona çevirebilir. Örneğin sunucudan metin olarak bir fonksiyon alıp bunu çalıştırmak mümkündür.
 
 ```js
-let str = ... receive the code from the server dynamically ...
+let str = ... Serverdan dinamik olarak gelen metin...
 
 let func = new Function(str);
 func();
 ```
 
-It is used in very specific cases, like when we receive the code from the server, or to dynamically compile a function from a template. The need for that usually arises at advanced stages of development.
+Tabi bunlar çok özel haller, örneğin sunucudan bir metini alıp çalıştırmak, veya temadan dinamik olarak derleme. Bunun gibi ihtiyaçlar genelde geliştirmenin ileriki safhalarında karşılaşılır.
 
-## The closure
+## Closure
+Fonksiyon genelde doğduğu yeri hatırlar `[[Ortam]]`. Bulunduğu Sözcüksel Ortama yaratıldığı yerden referans verir.
 
-Usually, a function remembers where it was born in the special property `[[Environment]]`. It references the Lexical Environment from where it's created.
-
-But when a function is created using `new Function`, its `[[Environment]]` references not the current Lexical Environment, but instead the global one.
+Bir fonksiyon `new Function` ile yaratıldığında `[[Ortam]]` referansı o anki bulunduğu ortamı değil de evrensel ortama referans verir.
 
 ```js run
 
-function getFunc() {
-  let value = "test";
+function FonkAl() {
+  let deger = "test";
 
 *!*
-  let func = new Function('alert(value)');
+  let func = new Function('alert(deger)');
 */!*
 
   return func;
 }
 
-getFunc()(); // error: value is not defined
+FonkAl()(); // hata: deger tanımlı değildir.
 ```
 
-Compare it with the regular behavior:
+Normal davranış şu şekildedir:
 
 ```js run 
-function getFunc() {
-  let value = "test";
+function FonkAl() {
+  let deger = "test";
 
 *!*
-  let func = function() { alert(value); };
+  let func = function() { alert(deger); };
 */!*
 
   return func;
 }
 
-getFunc()(); // *!*"test"*/!*, from the Lexical Environment of getFunc
+getFunc()(); // *!*"test"*/!*, FonkAl'ın sözcüksel ortamından.
 ```
 
 This special feature of `new Function` looks strange, but appears very useful in practice.
