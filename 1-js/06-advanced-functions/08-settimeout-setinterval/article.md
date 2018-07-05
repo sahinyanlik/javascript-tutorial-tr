@@ -1,58 +1,56 @@
-# Scheduling: setTimeout and setInterval
+#Zamanlama: setTimeout ve setInterval 
 
-We may decide to execute a function not right now, but at a certain time later. That's called "scheduling a call".
+Bir fonksiyon hemen çalıştırılmak istenmeyebilir, belirli bir zaman sonra çalışması istenebilir. Buna "çağrıyı zamanlama" denir.
 
-There are two methods for it:
+Bunun için iki metod var:
 
-- `setTimeout` allows to run a function once after the interval of time.
-- `setInterval` allows to run a function regularly with the interval between the runs.
+- `setTimeout` fonksiyonu belirli bir zaman sonra çalıştırmaya yarar.
+- `setInterval` fonksiyonun belirli aralıklar ile sürekli çalışmasını sağlar.
 
-These methods are not a part of JavaScript specification. But most environments have the internal scheduler and provide these methods. In particular, they are supported in all browsers and Node.JS.
-
+Bu metodlar JavaScript'in tanımları arasında yer almaz. Fakat çoğu ortam bu metodları sunar. Daha özele inecek olursak tüm tarayıcılar ve NodeJS bu metodları sağlar.
 
 [cut]
 
 ## setTimeout
 
-The syntax:
+Yazımı:
 
 ```js
-let timerId = setTimeout(func|code, delay[, arg1, arg2...])
+let zamanlayiciId = setTimeout(fonk|kod, bekleme[, arg1, arg2...])
 ```
 
-Parameters:
+Parametreler:
 
-`func|code`
-: Function or a string of code to execute.
-Usually, that's a function. For historical reasons, a string of code can be passed, but that's not recommended.
+`fonk|kod`
+: Fonksiyon veya çalıştırılacak kodun karakter dizisi hali. Genelde bu fonksiyon olur. Uyumluluk dolayısıyla karakter dizisi de gönderilebilir fakat önerilmez.
 
-`delay`
-: The delay before run, in milliseconds (1000 ms = 1 second).
+`bekleme`
+: Milisaniye cinsiden çalışmadan önceki bekleme süresi.(1000 ms = 1 saniye).
 
 `arg1`, `arg2`...
-: Arguments for the function (not supported in IE9-)
+: Fonksiyon için gerekli argümanlar.( IE9 öncesinde çalışmaz.)
 
-For instance, this code calls `sayHi()` after one second:
+Örneğin aşağıdaki kod `selamVer()` fonksiyonunu bir saniye sonra çalıştırır:
 
 ```js run
-function sayHi() {
-  alert('Hello');
+function selamVer() {
+  alert('Selam');
 }
 
 *!*
-setTimeout(sayHi, 1000);
+setTimeout(selamVer, 1000);
 */!*
 ```
 
-With arguments:
+Argümanlı versiyonu:
 
 ```js run
-function sayHi(phrase, who) {
-  alert( phrase + ', ' + who );
+function sayHi(ifade, kim) {
+  alert( ifade + ', ' + kim );
 }
 
 *!*
-setTimeout(sayHi, 1000, "Hello", "John"); // Hello, John
+setTimeout(sayHi, 1000, "Merhaba", "Ahmet"); // Merhaba, Ahmet
 */!*
 ```
 
