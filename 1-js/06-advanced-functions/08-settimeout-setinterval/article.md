@@ -45,37 +45,36 @@ setTimeout(selamVer, 1000);
 Argümanlı versiyonu:
 
 ```js run
-function sayHi(ifade, kim) {
+function selamVer(ifade, kim) {
   alert( ifade + ', ' + kim );
 }
 
 *!*
-setTimeout(sayHi, 1000, "Merhaba", "Ahmet"); // Merhaba, Ahmet
+setTimeout(selamVer, 1000, "Merhaba", "Ahmet"); // Merhaba, Ahmet
 */!*
 ```
 
-If the first argument is a string, then JavaScript creates a function from it.
+Eğer ilk argüman karakter dizisi ise, sonrasında JavaScript bundan fonksiyon üretir.
 
-So, this will also work:
-
-```js run no-beautify
-setTimeout("alert('Hello')", 1000);
-```
-
-But using strings is not recommended, use functions instead of them, like this:
+Aşağıdaki de aynı şekilde çalışacaktır:
 
 ```js run no-beautify
-setTimeout(() => alert('Hello'), 1000);
+setTimeout("selamVer('Merhaba')", 1000);
+```
+Karakter dizisi olarak fonksiyon göndermek aslında pek önerilmez, bunun yerine aşağıdaki gibi fonksiyon kullanılması daha doğrudur:
+
+```js run no-beautify
+setTimeout(() => alert('Merhaba'), 1000);
 ```
 
-````smart header="Pass a function, but don't run it"
-Novice developers sometimes make a mistake by adding brackets `()` after the function:
+````smart header="Fonksiyon gönder fakat çalıştırma."
+Yeni başlayan arkadaşlar bazen yanlışlıkla fonksiyonun sonuna `()` ekleyebilir:
 
 ```js
-// wrong!
-setTimeout(sayHi(), 1000);
+// yanlış!
+setTimeout(selamVer(), 1000);
 ```
-That doesn't work, because `setTimeout` expects a reference to function. And here `sayHi()` runs the function, and the *result of its execution* is passed to `setTimeout`. In our case the result of `sayHi()` is `undefined` (the function returns nothing), so nothing is scheduled.
+Bu çalışmaz, çünkü `setTimeout` referans bir fonksiyon beklemektedir. Burada `selamVer()` derseniz fonksiyonu çalıştırırsınız ve *bunun sonucu* `setTimeout` fonksiyonu tarafından kullanılır. Bizim durumumuzda `selamVer()` `undefined` döndürür. ( fonksiyon ile alakalı bir sorun yok ) bundan dolayı hiç birşey zamanlanmaz.
 ````
 
 ### Canceling with clearTimeout
