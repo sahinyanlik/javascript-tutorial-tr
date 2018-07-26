@@ -70,73 +70,77 @@ setTimeout(() => alert('Merhaba'), 1000);
 ````smart header="Fonksiyon gönder fakat çalıştırma."
 Yeni başlayan arkadaşlar bazen yanlışlıkla fonksiyonun sonuna `()` ekleyebilir:
 
+
 ```js
 // yanlış!
 setTimeout(selamVer(), 1000);
 ```
+
 Bu çalışmaz, çünkü `setTimeout` referans bir fonksiyon beklemektedir. Burada `selamVer()` derseniz fonksiyonu çalıştırırsınız ve *bunun sonucu* `setTimeout` fonksiyonu tarafından kullanılır. Bizim durumumuzda `selamVer()` `undefined` döndürür. ( fonksiyon ile alakalı bir sorun yok ) bundan dolayı hiç birşey zamanlanmaz.
 ````
 
-### Canceling with clearTimeout
+### clearTimeout fonksiyonu ile iptal etme
 
-A call to `setTimeout` returns a "timer identifier" `timerId` that we can use to cancel the execution.
+`setTimeout` çağrısı "timer identifier" döner. Bu `timerId` ile zamanlayıcıyı iptal edebiliriz.
 
-The syntax to cancel:
+Yazımı aşağıdaki gibidir:
 
 ```js
 let timerId = setTimeout(...);
 clearTimeout(timerId);
 ```
 
-In the code below we schedule the function and then cancel it (changed our mind). As a result, nothing happens:
+Aşağıdaki kodda önce bir zamanlayıcı test eder sonrasında ise bunu iptal eder. Sonuç olarak hiçbir şey olmaz:
+
 
 ```js run no-beautify
-let timerId = setTimeout(() => alert("never happens"), 1000);
+let timerId = setTimeout(() => alert("Birşey olmayacak"), 1000);
 alert(timerId); // timer identifier
 
 clearTimeout(timerId);
-alert(timerId); // same identifier (doesn't become null after canceling)
+alert(timerId); // same identifier (iptal ettikten sonra null olmaz)
 ```
 
-As we can see from `alert` output, in a browser the timer identifier is a number. In other environments, that can be something else. For instance, Node.JS returns a timer object with additional methods.
+`alert` çıktısından da göreceğiniz gibi timer bir id numarası ile tanımlanır. Diğer ortamlarda bu başka birşey olabilir. Örneğin Node.Js bir sayı yerine farklı metodları olan timer objesi döner.
 
-Again, there is no universal specification for these methods, so that's fine.
+Tekrar söylemek gerekirse üzerinde anlaşılmış bir şartname bulunmamaktadır.
 
-For browsers, timers are described in the [timers section](https://www.w3.org/TR/html5/webappapis.html#timers) of HTML5 standard.
+Tarayıcılar için zamanlayıcılar [zamanlayıcı bölümünde](https://www.w3.org/TR/html5/webappapis.html#timers) belirtilmiştir.
 
 ## setInterval
 
-Method `setInterval` has the same syntax as `setTimeout`:
+`setInterval` `setTimeout` ile aynı yazıma sahiptir:
 
 ```js
 let timerId = setInterval(func|code, delay[, arg1, arg2...])
 ```
 
-All arguments have the same meaning. But unlike `setTimeout` it runs the function not only once, but regularly after the given interval of time.
+Tüm argümanlar aynı anlama gelir. Fakat `setTimeout`'a nazaran fonksiyonu sadece bir defa değil belirtilen zamanda sürekli olarak çalıştırır.
 
-To stop further calls, we should call `clearInterval(timerId)`.
+Bu zamanyalayıcı iptal etmek için `clearInterval(timerId)` kullanılmalıdır.
 
-The following example will show the message every 2 seconds. After 5 seconds, the output is stopped:
+Aşağıdaki örnekte mesaj her iki saniyede bir gönderilecektir. 5 saniye sonunda ise durdurulur.
 
 ```js run
-// repeat with the interval of 2 seconds
+// her iki sn'de tekrar et
 let timerId = setInterval(() => alert('tick'), 2000);
 
-// after 5 seconds stop
+// 5 saniye sonunda durdur.
 setTimeout(() => { clearInterval(timerId); alert('stop'); }, 5000);
 ```
 
-```smart header="Modal windows freeze time in Chrome/Opera/Safari"
-In browsers IE and Firefox the internal timer continues "ticking" while showing `alert/confirm/prompt`, but in Chrome, Opera and Safari the internal timer becomes "frozen".
+```smart header="Popup ekranında Chrome/Opera/Safari zamanı durdurur."
 
-So if you run the code above and don't dismiss the `alert` window for some time, then in Firefox/IE next `alert` will be shown immediately as you do it (2 seconds passed from the previous invocation), and in Chrome/Opera/Safari -- after 2 more seconds (timer did not tick during the `alert`).
+IE ve Firefox tarayıcılarda ekranda `alert/confirm/prompt` olduğu sürece zamanlayıcı çalışmaya devam eder, fakat Chrome, Opera ve Safari bu zamanı durdurur.
+
+Bundan dolayı eğer yukarıdi kodu çalıştırır ve iptal'e basmazsanız Firefox/IE'de bir sonraki `alert` durmadan gösterilir. Fakat Chrome/Opera/Safari'de kapatıldıktan sonra 2 sn sonra tekrar alert gelir.
 ```
 
-## Recursive setTimeout
+## Tekrarlı setTimeout
 
-There are two ways of running something regularly.
+Bir kodu düzenli olarak çalıştırmanın iki yolu bulunmaktadır.
 
-One is `setInterval`. The other one is a recursive `setTimeout`, like this:
+İlki `setInterval` diğeri ise aşağıdaki gibi kullanılan `setTimeout`:
 
 ```js
 /** instead of:
@@ -151,21 +155,21 @@ let timerId = setTimeout(function tick() {
 }, 2000);
 ```
 
-The `setTimeout` above schedules next call right at the end of the current one `(*)`.
+`setTimeout` bir sonraki çağrıyı o anki çağrı bittiği ana planlar `(*)` 
 
-Recursive `setTimeout` is more flexible method than `setInterval`. This way the next call may be scheduled differently, depending on the results of the current one.
+Kendini tekrar eden `setTimeout` `setInterval`'den daha esnektir. Bu şekliyle kullanıldığında bir sonraki planlanan çağrı ana çağrının durumuna göre ötelebilir veya daha geriye alınabilir.
 
-For instance, we need to write a service that each 5 seconds sends a request to server asking for data, but in case the server is overloaded, it should increase the interval to 10, 20, 40 seconds...
+Örneğin, her 5 sn'de bir sunucudan veri isteyen bir servis yazmamız gerekmektedir. Fakat server'a fazladan yük binerse bunun 10,20,40 sn olarak değiştirilmesi gerekmektedir.
 
-Here's the pseudocode:
+Sözde kod aşağıdaki gibidir:
 ```js
 let delay = 5000;
 
 let timerId = setTimeout(function request() {
-  ...send request...
+  ...talep gönder...
 
-  if (request failed due to server overload) {
-    // increase the interval to the next run
+  if (sunucu yüklenmesinden dolayı eğer talep iptal olursa) {
+    // bir sonraki talep için gerekli süreyi uzat.
     delay *= 2;
   }
 
@@ -174,12 +178,12 @@ let timerId = setTimeout(function request() {
 }, delay);
 ```
 
+Eğer CPU-aç görevleriniz varsa bu görevlerin süresini ölçüp buna göre bir çalışma planı oluşturmak mümkündür.
 
-And if we regulary have CPU-hungry tasks, then we can measure the time taken by the execution and plan the next call sooner or later.
 
-**Recursive `setTimeout` guarantees a delay between the executions, `setInterval` -- does not.**
+**Kendini tekrar eden `setTimeout` iki çağrı arasındaki süreyi garanti eder fkat `setInterval` bunu garanti etmez.**
 
-Let's compare two code fragments. The first one uses `setInterval`:
+Aşağıdaki iki kod parçacığı karşılaştırılacak olursa:
 
 ```js
 let i = 1;
@@ -188,7 +192,7 @@ setInterval(function() {
 }, 100);
 ```
 
-The second one uses recursive `setTimeout`:
+İkincisi tekrarlı `setTimeout` kullanmaktadır.
 
 ```js
 let i = 1;
@@ -198,31 +202,34 @@ setTimeout(function run() {
 }, 100);
 ```
 
-For `setInterval` the internal scheduler will run `func(i)` every 100ms:
+`setInterval` `func(i)` fonksiyonunu her 100ms'de bir çalıştırır.
 
 ![](setinterval-interval.png)
 
-Did you notice?...
+Dikkatinizi çekti mi?...
 
-**The real delay between `func` calls for `setInterval` is less than in the code!**
 
-That's natural, because the time taken by `func` execution "consumes" a part of the interval.
+**`func` çağrıları arasındaki geçen süre koddan daha kısa.**
 
-It is possible that `func` execution turns out to be longer than we expected and takes more than 100ms.
+Doğal olan bu aslında çünkü `func` çalıştığında bu arlığın bir kısmını harcar.
 
-In this case the engine waits for `func` to complete, then checks the scheduler and if the time is up, then runs it again *immediately*.
+Hatta bu `func` çalışmasının bizim beklediğimiz `100ms`'den fazla olması da mümkündür.
 
-In the edge case, if the function always executes longer than `delay` ms, then the calls will happen without pause at all.
+Bu durumda JS Motoru `func` fonksiyonunun bitmesini bekler, sonra planlayıcıyı kontrol eder eğer zaman geçmişse hiç beklemeden tekrar çalıştırır.
 
-And here is the picture for recursive `setTimeout`:
+Bu durumda ile karşılaşıldığında fonksiyon hiç beklemeden sürekli çalışır.
+
+Aşağıda ise kendini çağıran `setTimeout` gösterilmiştir:
 
 ![](settimeout-interval.png)
 
-**Recursive `setTimeout` guarantees the fixed delay (here 100ms).**
+**Kendini çağıran `setTimeout` arada geçen sürenin aynı olmasını garanti eder.(burada 100ms).**
 
-That's because a new call is planned at the end of the previous one.
+Bunun nedeni yeni çağrının önceki çağrının bitiminde hesaplanmasından dolayıdır.
 
-````smart header="Garbage collection"
+````smart header="Garbage collection" ( Çöp Toplama)
+
+
 When a function is passed in `setInterval/setTimeout`, an internal reference is created to it and saved in the scheduler. It prevents the function from being garbage collected, even if there are no other references to it.
 
 ```js
