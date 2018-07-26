@@ -159,7 +159,7 @@ let timerId = setTimeout(function tick() {
 
 Kendini tekrar eden `setTimeout` `setInterval`'den daha esnektir. Bu şekliyle kullanıldığında bir sonraki planlanan çağrı ana çağrının durumuna göre ötelebilir veya daha geriye alınabilir.
 
-Örneğin, her 5 sn'de bir sunucudan veri isteyen bir servis yazmamız gerekmektedir. Fakat server'a fazladan yük binerse bunun 10,20,40 sn olarak değiştirilmesi gerekmektedir.
+Örneğin, her 5 sn'de bir sunucudan veri isteyen bir servis yazmamız gerekmektedir. Fakat sunucuya fazladan yük binerse bunun 10,20,40 sn olarak değiştirilmesi gerekmektedir.
 
 Sözde kod aşağıdaki gibidir:
 ```js
@@ -361,7 +361,7 @@ count();
 
 Şimdi ise `count()` ile başlıyoruz ve `count` fonksiyonunun birden fazla çağırılacağınız biliyoruz.
 
-Çalıştırrısanız belirgin biçimde daha kısa süreceğini göreceksiniz.
+Çalıştırırsanız belirgin biçimde daha kısa süreceğini göreceksiniz.
 
 ````smart header="Browserdaki iç içe zamanlayıcıların arasında bulunan minimum gecikmeler"
 
@@ -466,6 +466,6 @@ Tüm zamanlama metodları tam olarak gecikmeyi *garantilemez*. Zamanlayıcıda b
 Örneğin, tarayıcı zamanı birçok nedenden ötürü yavaşlayabilir:
 - İşlemcinin yükü artarsa.
 - Tarayıcının tab'ı arka plana alındıysa.
-- Laptop bataryadaysa.
+- Laptop batarya ile çalışıyorsa.
 
 Bunların hepsi tarayıcı zamanına etki eder. Aralardaki gecikme 300ms ile 1000ms arasında değişebilir. Tabi tarayıcı ve özellikleri de bu konuda etkin rol oynar.
