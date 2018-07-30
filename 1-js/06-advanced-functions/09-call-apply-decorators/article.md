@@ -1,23 +1,23 @@
-# Decorators and forwarding, call/apply
+# Dekoratörler ve iletilme, call/apply
 
-JavaScript gives exceptional flexibility when dealing with functions. They can be passed around, used as objects, and now we'll see how to *forward* calls between them and *decorate* them.
+JavaScript fonksiyonlar ile uğraşırken inanılmaz derecede esneklik sağlamaktadır. Fonksiyonlar başka fonksiyonlara gönderilebilir, obje olarak kullanılabilir. Şimdi ise bunların nasıl *iletileceği* ve nasıl *dekore* edileceğinden bahsedilecektir;
 
 [cut]
 
-## Transparent caching
+## Saydam Saklama
 
-Let's say we have a function `slow(x)` which is CPU-heavy, but its results are stable. In other words, for the same `x` it always returns the same result.
+Diyelim ki `slow(x)` diye yoğun işlemci gücüne ihtiyaç duyan bir fonksiyonunuz olsun, buna rağmen sonucları beklediğiniz şekilde vermekte.
 
-If the function is called often, we may want to cache (remember) the results for different `x` to avoid spending extra-time on recalculations.
+Eğer bu fonksiyon sık sık çağırılıyor ise farklı x'ler için sonucu saklamak bizi tekrar hesaplamadan kurtarabilir.
 
-But instead of adding that functionality into `slow()` we'll create a wrapper. As we'll see, there are many benefits of doing so.
+Fakat bunu `slow()` fonksiyonunun içine yazmak yerine yeni bir wrapper yazmak daha iyi olacaktır. Göreceğiniz üzere size oldukça fazla yardımı olacaktır.
 
-Here's the code, and explanations follow:
+Kod aşağıdaki gibidir:
 
 ```js run
 function slow(x) {
-  // there can be a heavy CPU-intensive job here
-  alert(`Called with ${x}`);
+  // burada baya yoğun işlemci gücüne ihtiyaş duyan işler yapılmaktadır.
+  alert(`${x} ile çağırıldı`);
   return x;
 }
 
@@ -25,24 +25,24 @@ function cachingDecorator(func) {
   let cache = new Map();
 
   return function(x) {
-    if (cache.has(x)) { // if the result is in the map
-      return cache.get(x); // return it
+    if (cache.has(x)) { // eğer sonuç map içerisinde ise 
+      return cache.get(x); // değeri gönder
     }
 
-    let result = func(x); // otherwise call func
+    let result = func(x); // aksi halde hesap yap
 
-    cache.set(x, result); // and cache (remember) the result
+    cache.set(x, result); // sonra sonucu sakla 
     return result;
   };
 }
 
 slow = cachingDecorator(slow);
 
-alert( slow(1) ); // slow(1) is cached
-alert( "Again: " + slow(1) ); // the same
+alert( slow(1) ); // slow(1) saklandı
+alert( "Again: " + slow(1) ); // aynısı döndü
 
-alert( slow(2) ); // slow(2) is cached
-alert( "Again: " + slow(2) ); // the same as the previous line
+alert( slow(2) ); // slow(2) saklandı
+alert( "Again: " + slow(2) ); // bir önceki ile aynısı döndü.
 ```
 
 In the code above `cachingDecorator` is a *decorator*: a special function that takes another function and alters its behavior.
