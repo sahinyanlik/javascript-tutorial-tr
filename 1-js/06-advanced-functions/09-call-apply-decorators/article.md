@@ -39,54 +39,53 @@ function cachingDecorator(func) {
 slow = cachingDecorator(slow);
 
 alert( slow(1) ); // slow(1) saklandı
-alert( "Again: " + slow(1) ); // aynısı döndü
+alert( "Tekrar: " + slow(1) ); // aynısı döndü
 
 alert( slow(2) ); // slow(2) saklandı
-alert( "Again: " + slow(2) ); // bir önceki ile aynısı döndü.
+alert( "Tekrar: " + slow(2) ); // bir önceki ile aynısı döndü.
 ```
 
-In the code above `cachingDecorator` is a *decorator*: a special function that takes another function and alters its behavior.
+Yuarkıdaki kodda `cachingDecorator` bir *dekoratör*'dür: Diğer bir fonksiyonu alan ve bunun davranışını değiştiren özel bir fonksiyon fonksiyon.
 
-The idea is that we can call `cachingDecorator` for any function, and it will return the caching wrapper. That's great, because we can have many functions that could use such a feature, and all we need to do is to apply `cachingDecorator` to them.
+Aslında her bir fonksiyon için `cachingDecorator` çağrılabilir ve o da saklama mekanizmasını kullanır. Harika, bu şekilde ihtiyacı olacak bir çok fonksiyonumuz olabilir. Tek yapmamız gereken bu fonksiyonlara `cachingDecorator` uygulamak.
 
-By separating caching from the main function code we also keep the main code simpler.
+Saklama olayını ana fonksiyonldan ayırarak aslında daha temiz bir yapıya da geçmiş olduk.
 
-Now let's get into details of how it works.
+Detayına inmeye başlayabiliriz.
 
-The result of `cachingDecorator(func)` is a "wrapper": `function(x)` that "wraps" the call of `func(x)` into caching logic:
+`cachingDecorator(func)` bir çeşit "wrapper(saklayıcı)"'dır. Bu işlem `func(x)` i "saklama" işine yarar.
 
 ![](decorator-makecaching-wrapper.png)
 
-As we can see, the wrapper returns the result of `func(x)` "as is". From an outside code, the wrapped `slow` function still does the same. It just got a caching aspect added to its behavior.
+Gördüğünüz gibi, saklayıcı `func(x)`'ı olduğu gibi dönderir. Saklayıcının dışındaki `yavaş` olan fonksiyon hala aynı şekilde çalışır. Aslında davranışın üstüne sadece saklama(caching) mekanizması gelmiştir.
 
-To summarize, there are several benefits of using a separate `cachingDecorator` instead of altering the code of `slow` itself:
+Özetlersek, ayrı bir `cachingDecorator` kullanmanın faydaları şu şekildedir:
 
-- The `cachingDecorator` is reusable. We can apply it to another function.
-- The caching logic is separate, it did not increase the complexity of `slow` itself (if there were any).
-- We can combine multiple decorators if needed (other decorators will follow).
+- `cachingDecorator` tekrar kullanılabilir. Başka bir fonksiyona da uygulanabilir.
+- Saklama(caching) mantığı ayrılmıştır böylece `yavaş` kodun içine daha fazla kod yazıp karışıklaştırılmamaktadır.
+- Eğer ihtiyaç birden fazla dekoratör birlikte kullanılabilir.
 
+## Kaynak için "func.all" kullanmak.
 
-## Using "func.call" for the context
+Yukarıda bahsettiğimiz saklama dekoratörü obje metodları ile çalışmak için müsait değildir.
 
-The caching decorator mentioned above is not suited to work with object methods.
-
-For instance, in the code below `user.format()` stops working after the decoration:
+Örneğin aşağıdaki kodda `user.format()` dekorasyondan sonra çalışmayı durdurur:
 
 ```js run
-// we'll make worker.slow caching
+//  worker.slow sakla yapılacaktır.
 let worker = {
   someMethod() {
     return 1;
   },
 
   slow(x) {
-    // actually, there can be a scary CPU-heavy task here  
+    // burada çok zorlu bir görev olabilir.  
     alert("Called with " + x);
     return x * this.someMethod(); // (*)
   }
 };
 
-// same code as before
+// eskisiyle aynı kod
 function cachingDecorator(func) {
   let cache = new Map();
   return function(x) {
@@ -101,12 +100,12 @@ function cachingDecorator(func) {
   };
 }
 
-alert( worker.slow(1) ); // the original method works
+alert( worker.slow(1) ); // orjinal metod çalışmakta
 
-worker.slow = cachingDecorator(worker.slow); // now make it caching
+worker.slow = cachingDecorator(worker.slow); // şimdi saklamaya alındı.
 
 *!*
-alert( worker.slow(2) ); // Whoops! Error: Cannot read property 'someMethod' of undefined
+alert( worker.slow(2) ); // Whoops! Error: Özellik okunamamaktadır. `someMethod` tanımsız.
 */!*
 ```
 
