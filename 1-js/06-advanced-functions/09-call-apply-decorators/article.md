@@ -108,12 +108,11 @@ worker.slow = cachingDecorator(worker.slow); // şimdi saklamaya alındı.
 alert( worker.slow(2) ); // Whoops! Error: Özellik okunamamaktadır. `someMethod` tanımsız.
 */!*
 ```
+`(*)` satırında hata olur `this.someMethod`'a erişmeye çalışır fakat başırılı olamaz. Nedeni ne olabilir ?
 
-The error occurs in the line `(*)` that tries to access `this.someMethod` and fails. Can you see why?
+Sebebi `(**)` satırında orjinal `func(x)` çağırılmıştır. Bu şekilde çağırıldığında, fonksiyon `this = undefined` alır.
 
-The reason is that the wrapper calls the original function as `func(x)` in the line `(**)`. And, when called like that, the function gets `this = undefined`.
-
-We would observe a similar symptom if we tried to run:
+Aşağıdaki kod çalıştırılırsa da aynısı görülebilir:
 
 ```js
 let func = worker.slow;
