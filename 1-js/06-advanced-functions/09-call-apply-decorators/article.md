@@ -157,7 +157,7 @@ sayHi.call( user ); // John
 sayHi.call( admin ); // Admin
 ```
 
-And here we use `call` to call `say` with the given context and phrase:
+Burada `say` metodunu çağırarak ne söyleneceğini gönderiyoruz:
 
 
 ```js run
@@ -167,7 +167,7 @@ function say(phrase) {
 
 let user = { name: "John" };
 
-// user becomes this, and "Hello" becomes the first argument
+// user `this` olmakta ve `phrase` ilk argüman olmaktadır. 
 say.call( user, "Hello" ); // John: Hello
 ```
 
