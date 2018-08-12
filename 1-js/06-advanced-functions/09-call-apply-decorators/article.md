@@ -171,8 +171,7 @@ let user = { name: "John" };
 say.call( user, "Hello" ); // John: Hello
 ```
 
-
-In our case, we can use `call` in the wrapper to pass the context to the original function:
+Bizim durumumuzda saklayıcı içinde `call` kullanarak içeriği orijinal fonksiyona aktarabiliriz:
 
 
 ```js run
@@ -182,7 +181,7 @@ let worker = {
   },
 
   slow(x) {
-    alert("Called with " + x);
+    alert(x + "ile çağırıldı");
     return x * this.someMethod(); // (*)
   }
 };
@@ -203,71 +202,66 @@ function cachingDecorator(func) {
 
 worker.slow = cachingDecorator(worker.slow); // now make it caching
 
-alert( worker.slow(2) ); // works
-alert( worker.slow(2) ); // works, doesn't call the original (cached)
+alert( worker.slow(2) ); // çalışır
+alert( worker.slow(2) ); // orjinali değilde hafızadaki çalışır.
 ```
 
-Now everything is fine.
+Şimdi her şey beklendiği gibi çalışıyor.
 
-To make it all clear, let's see more deeply how `this` is passed along:
+Daha açıklayıcı olması için `this`'in nasıl ilerlediğini inceleyebiliriz:
 
-1. After the decoration `worker.slow` is now the wrapper `function (x) { ... }`.
-2. So when `worker.slow(2)` is executed, the wrapper gets `2` as an argument and `this=worker` (it's the object before dot).
-3. Inside the wrapper, assuming the result is not yet cached, `func.call(this, x)` passes the current `this` (`=worker`) and the current argument (`=2`) to the original method.
+1. Dekorasyon işleminden sonra `worker.slow` artık `function(x){ ...}` halini almıştır.
+2. Öyleyse `worker.slow(2)` çalıştırıldığında saklayıcı `2` ve `this=worker` ( noktadan önceki obje ) argümanlarını alır.
+3. Saklayıcı(wrapper) içinde sonucun henüz belleğe alınmadığını varsayarsak `func.call(this,x)` o anki `this` (`=worker`) ve ('=2`) değerini orjinal metoda gönderir.
 
-## Going multi-argument with "func.apply"
 
-Now let's make `cachingDecorator` even more universal. Till now it was working only with single-argument functions.
+## "func.apply" ile çoklu argüman kullanımı
 
-Now how to cache the multi-argument `worker.slow` method?
+`cachingDecorator` daha evrensel yapmak için ne değişiklikler yapmalıdır?
 
 ```js
 let worker = {
   slow(min, max) {
-    return min + max; // scary CPU-hogger is assumed
+    return min + max; // CPU'ya çok yük bindiren bir işlem.
   }
 };
 
-// should remember same-argument calls
+// aynı argüman ile çağırılmalıdır.
 worker.slow = cachingDecorator(worker.slow);
 ```
 
-We have two tasks to solve here.
+Burada çözmemiz gereken iki problem bul
 
-First is how to use both arguments `min` and `max` for the key in `cache` map. Previously, for a single argument `x` we could just `cache.set(x, result)` to save the result and `cache.get(x)` to retrieve it. But now we need to remember the result for a *combination of arguments* `(min,max)`. The native `Map` takes single value only as the key.
-
-There are many solutions possible:
-
-1. Implement a new (or use a third-party) map-like data structure that is more versatile and allows multi-keys.
-2. Use nested maps: `cache.set(min)` will be a `Map` that stores the pair `(max, result)`. So we can get `result` as `cache.get(min).get(max)`.
-3. Join two values into one. In our particular case we can just use a string `"min,max"` as the `Map` key. For flexibility, we can allow to provide a *hashing function* for the decorator, that knows how to make a one value from many.
+İlki `min` ve `max` değerlerinin bu `bellek` haritasında anahtar olarak nasıl tutulacağı. Önceki konuda tek `x` argümanı için `cache.set(x,result)` şeklinde sonucu belleğe kaydetmiş ve sonra `cache.get(x)` şeklinde almıştık. Fakat şimdi sonucu *argümanların birleşimi* şeklinde hatırlamak gerekmektedir. Normalde `Map` anahtarı tek değer olarak almaktadır.
 
 
-For many practical applications, the 3rd variant is good enough, so we'll stick to it.
+Bu sorunun çözümü için bazı çözümler şu şekildedir:
 
-The second task to solve is how to pass many arguments to `func`. Currently, the wrapper `function(x)` assumes a single argument, and `func.call(this, x)` passes it.
+1. Map-benzeri bir yapı kurarak birkaç anahtarı kullanabilen bir veri yapısı oluşturmak.
+2. İç içe map kullanarak; Örneğin `cache.set(min)` aslında `(max, result)`'ı tutmaktadır. Böylece `result` `cache.get(min).get(max)` şeklinde alınabilir.
+3. İki değeri teke indirerek. Bizim durumumuzda bu `"min,max"` şeklinde bir karakter dizisini `Map`'in anahtarı yapmak olabilir. Ayrıca *hashing fonksiyonu*'u dekoratöre sağlayabiliriz. Bu fonksiyon da birçok değerden bir değer yapabilir.
 
-Here we can use another built-in method [func.apply](mdn:js/Function/apply).
+Çoğu uygulama için 3. çözüm yeterlidir. Biz de bu çözüm ile devam edeceğiz.
 
-The syntax is:
+İkinci görev ise fonksiyona birden fazla argümanın nasıl gönderileceğidir. Şu anda saklayıcı fonksiyona `function(x)` şeklinde tek argüman gönderilmektedir. Bu da `func.call(this,x)` şeklinde uygulanır.
+
+Burada kullanılacak diğer metod [func.apply](mdn:js/Function/apply)'dır.
+
+Yazımı:
 
 ```js
 func.apply(context, args)
 ```
 
-It runs the `func` setting `this=context` and using an array-like object `args` as the list of arguments.
+Bu `func`'ı `this=context` ve args için dizi benzeri bir argüman dizisi ile çalıştırır.
 
-
-For instance, these two calls are almost the same:
+Örneğin aşağıdaki iki çağrı tamamen aynıdır.
 
 ```js
 func(1, 2, 3);
 func.apply(context, [1, 2, 3])
 ```
-
-Both run `func` giving it arguments `1,2,3`. But `apply` also sets `this=context`.
-
-For instance, here `say` is called with `this=user` and `messageData` as a list of arguments:
+Her ikisi de `func`'ı `1,2,3`argümanları ile çalıştırır. Fakat `apply` ayrıca `this=context`'i ayarlar.
 
 ```js run
 function say(time, phrase) {
@@ -276,30 +270,29 @@ function say(time, phrase) {
 
 let user = { name: "John" };
 
-let messageData = ['10:00', 'Hello']; // become time and phrase
+let messageData = ['10:00', 'Hello']; // time, phrase'e dönüşür.
 
 *!*
-// user becomes this, messageData is passed as a list of arguments (time, phrase)
+// this = user olur , messageData liste olarak (time,phrase) şeklinde gönderilir.
 say.apply(user, messageData); // [10:00] John: Hello (this=user)
 */!*
 ```
+`call` argüman listesi beklerken `apply` dizi benzeri bir obje ile onları alır.
 
-The only syntax difference between `call` and `apply` is that `call` expects a list of arguments, while `apply` takes an array-like object with them.
+Yayma operatörü <info:rest-parameters-spread-operator>  konusunda `...` yayma operatörünün ne iş yaptığını işlemiştik. Dizilerin argüman listesi şeklinde gönderilebileceğinden bahsemiştik. Öyleyse `call` ile bunu kullanırsak neredeyse `apply`'ın işlevini görebiliriz.
 
-We already know the spread operator `...` from the chapter <info:rest-parameters-spread-operator> that can pass an array (or any iterable) as a list of arguments. So if we use it with `call`, we can achieve almost the same as `apply`.
-
-These two calls are almost equivalent:
+Aşağıdaki iki çağrı birbirinin aynısıdır:
 
 ```js
 let args = [1, 2, 3];
 
 *!*
-func.call(context, ...args); // pass an array as list with spread operator
-func.apply(context, args);   // is same as using apply
+func.call(context, ...args); // dizileri yayma operatörü ile liste şeklinde gönderir.
+func.apply(context, args);   // aynısını apply ile yapar.
 */!*
 ```
 
-If we look more closely, there's a minor difference between such uses of `call` and `apply`.
+İşleme daha yakından bakılacak olursa `call` ile `apply` arasında oldukça küçük bir fark vardır.
 
 - The spread operator `...` allows to pass *iterable* `args` as the list to `call`.
 - The `apply` accepts only *array-like* `args`.
