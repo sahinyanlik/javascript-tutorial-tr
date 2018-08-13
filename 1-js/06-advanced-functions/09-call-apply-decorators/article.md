@@ -294,31 +294,30 @@ func.apply(context, args);   // aynısını apply ile yapar.
 
 İşleme daha yakından bakılacak olursa `call` ile `apply` arasında oldukça küçük bir fark vardır.
 
-- The spread operator `...` allows to pass *iterable* `args` as the list to `call`.
-- The `apply` accepts only *array-like* `args`.
+- Yayma operatörü `...` list gibi *döngülenebilir* argümanları `call` edilmek üzere iletebilir.
+- `apply` ise sadece *dizi-benzeri* `args` alır.
 
-So, these calls complement each other. Where we expect an iterable, `call` works, where we expect an array-like, `apply` works.
+Öyleyse bu çağrılar birbirinin tamamlayıcısıdır. `Döngülenebilir` beklediğimizde `call`, `dizi-benzeri` beklediğimizde ise `apply` çalışır.
 
-And if `args` is both iterable and array-like, like a real array, then we technically could use any of them, but `apply` will probably be faster, because it's a single operation. Most JavaScript engines internally optimize is better than a pair `call + spread`.
+Eğer `args` hem `döngülenebilir` bende `dizi` ise teknik olarak ikisini de kullanabiliriz, fakat `apply` muhtemelen daha hızlı olacaktır. Çünkü tek bir işlemden oluşur. Çoğu JavaScript motoru bir kaç `call + spread` kullanmaktan daha iyi şekilde optimizasyon yapar.
 
-One of the most important uses of `apply` is passing the call to another function, like this:
+Apply'ın en çok  çağrıyı diğer fonksiyona iletirken işe yarar:
 
 ```js
 let wrapper = function() {
   return anotherFunction.apply(this, arguments);
 };
 ```
+Buna *çağrı iletme* denir. Saklayıcı sahip olduğu herşeyi iletir: `this` ile argümanları `anotherFunction`'a iletir ve sonucunu döner.
 
-That's called *call forwarding*. The `wrapper` passes everything it gets: the context `this` and arguments to `anotherFunction` and returns back its result.
+Böyle bir saklayıcı kod çağırıldığında içerideki orjinal fonksiyon çağıran tarafından ayrıştırılamaz.
 
-When an external code calls such `wrapper`, it is undistinguishable from the call of the original function.
-
-Now let's bake it all into the more powerful `cachingDecorator`:
+Şimdi bunları daha güçlü `cachingDecoratır`'da işleyelim:
 
 ```js run
 let worker = {
   slow(min, max) {
-    alert(`Called with ${min},${max}`);
+    alert(`${min},${max} ile çağırıldı`);
     return min + max;
   }
 };
@@ -351,18 +350,16 @@ worker.slow = cachingDecorator(worker.slow, hash);
 alert( worker.slow(3, 5) ); // works
 alert( "Again " + worker.slow(3, 5) ); // same (cached)
 ```
+Şimdi saklayıcı(wrapper) birçok argüman ile çalışabilir.
 
-Now the wrapper operates with any number of arguments.
+İki tane değişiklik oldu:
 
-There are two changes:
+- `(*)` satırında bir `has` ile argümanlardan tek bir anahtar meydana getirildi. Bunun için basit "birleştirme" fonksiyonu kullanılmıştır. `(3,5)` `"3,5"` şekline getirildi. Tabi başka hash fonksiyonları için daha karmaşık bir yapı gerekebilir. 
+- `(**)` satırında ise `func.apply` ile hem kaynak ( this ) hem de saklayıcı argümanları (ne kadar olduğu önemli değil) orjinal fonksiyona iletilmiştir.
 
-- In the line `(*)` it calls `hash` to create a single key from `arguments`. Here we use a simple "joining" function that turns arguments `(3, 5)` into the key `"3,5"`. More complex cases may require other hashing functions.
-- Then `(**)` uses `func.apply` to pass both the context and all arguments the wrapper got (no matter how many) to the original function.
+## Metod Ödünç Alma  [#method-borrowing]
 
-
-## Borrowing a method [#method-borrowing]
-
-Now let's make one more minor improvement in the hashing function:
+Hash fonksiyonunda biraz değişiklik yapalım:
 
 ```js
 function hash(args) {
@@ -370,31 +367,31 @@ function hash(args) {
 }
 ```
 
-As of now, it works only on two arguments. It would be better if it could glue any number of `args`.
+Bundan sonra bu fonksiyon sadece iki argümanla çalışacak. Bunun yerine belirsiz sayıdaki argümanla çalışsa daha iyi olur.
 
-The natural solution would be to use [arr.join](mdn:js/Array/join) method:
+Bunu kullanmanın doğal yolu [arr.join](mdn:js/Array/join) metodudur:
 
 ```js
 function hash(args) {
   return args.join();
 }
 ```
+... Malesef bu çalışmaz. Çünkü `hash(argümanlar)` çağırılmakta ve `arguments` objei hem `döngülenebilir` hemde `dizi-benzeri` olduğundan, fakat gerçek dizi olmadığından çalışmaz.
 
-...Unfortunately, that won't work. Because we are calling `hash(arguments)` and `arguments` object is both iterable and array-like, but not a real array.
-
-So calling `join` on it would fail, as we can see below:
+Öyleyse `join` bu durumda çağırılamaz, örneğin:
 
 ```js run
 function hash() {
 *!*
-  alert( arguments.join() ); // Error: arguments.join is not a function
+  alert( arguments.join() ); // Error: arguments.join fonksiyon değil.
+
 */!*
 }
 
 hash(1, 2);
 ```
 
-Still, there's an easy way to use array join:
+Fakat yine de dizi birleştirme kullanmanın kolay bir yolu vardır.
 
 ```js run
 function hash() {
@@ -406,13 +403,13 @@ function hash() {
 hash(1, 2);
 ```
 
-The trick is called *method borrowing*.
+Bu cambazlığa *metod ödünç alma* denir.
 
-We take (borrow) a join method from a regular array `[].join`. And use `[].join.call` to run it in the context of `arguments`.
+Normal diziden `[].join` join ödünç alınır. Sonrasında `arguments` contexi ile çağrı yapılır `[].join.call`
 
-Why does it work?
+Peki neden çalışır?
 
-That's because the internal algorithm of the native method `arr.join(glue)` is very simple.
+Çünkü gerçek dizinin `join` metodu oldukça basittir.
 
 Taken from the specification almost "as-is":
 
