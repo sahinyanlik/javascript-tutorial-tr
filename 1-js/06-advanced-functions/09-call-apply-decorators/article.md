@@ -411,32 +411,31 @@ Peki neden çalışır?
 
 Çünkü gerçek dizinin `join` metodu oldukça basittir.
 
-Taken from the specification almost "as-is":
+Tanımından "olduğu" gibi alındığında işlem şu şekildedir:
 
-1. Let `glue` be the first argument or, if no arguments, then a comma `","`.
-2. Let `result` be an empty string.
-3. Append `this[0]` to `result`.
-4. Append `glue` and `this[1]`.
-5. Append `glue` and `this[2]`.
-6. ...Do so until `this.length` items are glued.
+1. `yapistir` ilk argüman olsun, eğer argüman yoksa `","` ilk argüman olsun.
+2. `sonuc` boş karakter dizisi olsun
+3. `this[0]`'ı sonuca ekle.
+4. `yapistir` ve `this[1]`'i ekle
+5. `yapistir` ve `this[2]`'i ekle
+6. ... `this.length`'e kadarki tüm elemanlar yapıştırılana kadar ekle.
+7. `sonuc` dön
 7. Return `result`.
 
-So, technically it takes `this` and joins `this[0]`, `this[1]` ...etc together. It's intentionally written in a way that allows any array-like `this` (not a coincidence, many methods follow this practice). That's why it also works with `this=arguments`.
+Teknik olarak `this`'i alır ve `this[0]`, `this[1]` ...vs. şeklinde birleştirir. Bu şekilde yazılarak tüm `dizi-gibi`'lerin `this` şeklinde çalışmasını sağlar. Bundan dolayı `this=arguments` şeklinde de çalışır.
 
-## Summary
+## Özet
 
-*Decorator* is a wrapper around a function that alters its behavior. The main job is still carried out by the function.
+*Decoratör* fonksiyonun davranışını değiştiren saklayıcılardır(wrapper). İş hala ana fonksiyonda yapılır.
 
-It is generally safe to replace a function or a method with a decorated one, except for one little thing. If the original function had properties on it, like `func.calledCount` or whatever, then the decorated one will not provide them. Because that is a wrapper. So one need to be careful if one uses them. Some decorators provide their own properties.
+Genelde gerçek fonksiyonu dekoratör ile değiştirmek güvenlidir, bir olay haricinde. Eğer orjinal fonksiyon `func.calledCount` gibi bir özelliğe sahipse, dekoratör bunu sağlamayacaktır çünkü bu bir saklayıcıdır. Bundan dolayı kullanırken dikkatli olunmalıdır. Bazı dekoratörler kendine ait özellikler tutarlar.
 
-Decorators can be seen as "features" or "aspects" that can be added to a function. We can add one or add many. And all this without changing its code!
+`cachingDecorator` kullanmak için bazı metodlar denedik:
 
-To implement `cachingDecorator`, we studied methods:
+- [func.call(context, arg1, arg2...)](mdn:js/Function/call) -- `func`'ı verilen kaynak ve argümanlar ile çağırır.
+- [func.apply(context, args)](mdn:js/Function/apply) -- `kaynak`'ı `this` olarak ve `array-benzeri` argümanları liste olarak iletir.
 
-- [func.call(context, arg1, arg2...)](mdn:js/Function/call) -- calls `func` with given context and arguments.
-- [func.apply(context, args)](mdn:js/Function/apply) -- calls `func` passing `context` as `this` and array-like `args` into a list of arguments.
-
-The generic *call forwarding* is usually done with `apply`:
+*çağrı iletme* genelde `apply` ile gerçekleştirilir:
 
 ```js
 let wrapper = function() {
@@ -444,7 +443,6 @@ let wrapper = function() {
 }
 ```
 
-We also saw an example of *method borrowing* when we take a method from an object and `call` it in the context of another object. It is quite common to take array methods and apply them to arguments. The alternative is to use rest parameters object that is a real array.
+Ayrıca *metod ödünç alma*'yı da gördük. Bir metotdan obje alındığında ve bu diğer objenin kaynağında(context) `çağırıldığında` gerçekleşir. Dizi metodlarını alıp argümanlara uygulama çokça kullanılır. Bunun alternatifi `geriye kalan` parametre objelerini kullanmaktır. Bunlar gerçek dizilerdir.
 
-
-There are many decorators there in the wild. Check how well you got them by solving the tasks of this chapter.
+Araştırırsanız birçok dekoratör görebilirsiniz. Bu bölümdeki görevleri çözerekte kendinizi geliştirebilirsiniz.
