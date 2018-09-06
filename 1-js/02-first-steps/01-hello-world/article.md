@@ -71,17 +71,16 @@ Sonrasında bu dosyayı aşağıdaki gibi yol göstererek sayfanızda çalışt�
 <script src="/kod/yolu/ana.js"></script>
 ```
 
-Buraki `/kod/yolu/ana.js` kesin(absolute) yol belirtir
-Here `/path/to/script.js` is an absolute path to the file with the script (from the site root).
+Buraki `/kod/yolu/ana.js` site ana dizininden itibaren kesin(absolute) yol belirtir.
 
-Tabi göreceli(relative) yol belirtmekte mümkündür. Örneğin `src="script.js"` HTML dosyasının kayıt edildiği klasördeki `"script.js"`'yi al anlamına gelir.
+Tabi göreceli(relative) yol belirtmek de mümkündür. Örneğin `src="script.js"` HTML dosyasının kayıt edildiği klasördeki `"script.js"`'yi al anlamına gelir.
 
-Tam URL vermekte mümkündür. Örneğin:
+Tam URL vermek de mümkündür. Örneğin:
 
 ```html
 <script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/3.2.0/lodash.js"></script>
 ```
-Bir kaç kod dosyası eklemek isterseniz aşağıdaki gibi yazabilirsiniz.
+Birkaç kod dosyası eklemek isterseniz aşağıdaki gibi yazabilirsiniz.
 
 ```html
 <script src="/js/script1.js"></script>
@@ -94,7 +93,7 @@ Kural olarak en basit JavaScript kodları doğrudan HTML içerisine yazılır. D
 
 Ayrı dosyalarda taşınmasının bir diğer güzel yanı tarayıcıların bu dosyaları indirip ön belleğe almasıdır.[cache] https://tr.wikipedia.org/wiki/Web_%C3%B6nbelle%C4%9Fi).
 
-Bu olaydan sonra eğer bu kod dosyaları değişmediyse daha sonraki sayfa gösterimlerinde o dosyları tekrar indirmeyecektir. Yani kod dosyaları sadece bir defa indirilecektir. Bu da web sayfasının veri trafiğinin daha az olmasını ve sayfanın daha hızlı gösterilmesini sağlar.
+Bu olaydan sonra eğer bu kod dosyaları değişmediyse daha sonraki sayfa gösterimlerinde o dosyaları tekrar indirmeyecektir. Yani kod dosyaları sadece bir defa indirilecektir. Bu da web sayfasının veri trafiğinin daha az olmasını ve sayfanın daha hızlı gösterilmesini sağlar.
 ```
 
 ````warn header="Eğer `src`etiketi yazılmışsa sadece kod dosyası eklemeye yarar. Yani hem `scr` ekleyip hemde `<script>` tagları arasında kod çalıştıramazsınız.
@@ -108,7 +107,7 @@ Aşağıdaki kod bloğu çalışmayacaktır:
 </script>
 ```
 
-`script` tagını kullırken dışarıdan mı dosya ekleyeceksiniz ( `<script src="…">` ) yoksa dosyayı içeridemi yazacaksınız bunun kararını vermemiz gerekmektedir.
+`script` tagını kullırken dışarıdan mı dosya ekleyeceksiniz ( `<script src="…">` ) yoksa dosyayı içeride mi yazacaksınız bunun kararını vermemiz gerekmektedir.
 
 Yukarıdaki örnek iyi `<script>` etiketi içerisinde şu şekilde çalıştırılır.
 
