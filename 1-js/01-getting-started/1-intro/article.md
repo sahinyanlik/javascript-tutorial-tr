@@ -1,7 +1,6 @@
-# An Introduction to JavaScript
 # JavaScript'e Giriş
 
-Bakalım JavaScript'in özelliği ne, ne yapılır ve hangi teknolojilerle birlikte çalışır.
+Bakalım JavaScript nedir, ne yapılır ve hangi teknolojilerle birlikte çalışır.
 
 ## JavaScript  Nedir?
 
@@ -28,7 +27,7 @@ Bu JavaScript motorlarından bazıları şunlardır;
 
 - [V8](https://en.wikipedia.org/wiki/V8_(JavaScript_engine)) --  Chrome ve Opera.
 - [SpiderMonkey](https://en.wikipedia.org/wiki/SpiderMonkey) --  Firefox.
-- Internet Explorer'ın "Trident", "Chakra" takma adlı motorlarının yanında Microsoft Edge için "ChakraCore" adında ayrı bir motoru bulunmaktadır. Safari ise "Nitro","SquirrelFish" gibi takma adlara iye JavaScript motoru kullanmaktadır.
+- Internet Explorer'ın "Trident", "Chakra" takma adlı motorlarının yanında Microsoft Edge için "ChakraCore" adında ayrı bir motoru bulunmaktadır. Safari ise "Nitro", "SquirrelFish" ve "SquirrelFish Extreme" gibi takma adlarla adlandırılan JavaScript motorunu kullanmaktadır.
 
 Yukarıdaki terimleri aklınızda tutarsanız iyi olur, çünkü ileride şu tür tümcelerle karşılaşabilirsiniz: "V8'de A özelliğinin altyapısı", "Bu özelliğin altyapısının Chrome ve Opera'da bulunduğunu anlamanız gerekir.""
 
@@ -54,31 +53,31 @@ Tarayıcı içerisindeki JavaScript ise web sayfasında görsel değişikliklere
 Örneğin tarayıcı içerisindeki JavaScript şunları yapabilir:
 
 - Sayfaya yeni HTML kodları ekleme veya öncekileri değiştirme, stilleri değiştirme veya ekleme.
-- Kullanıcının eylemlerine karşılık verme. Tıklama veya sıçanın hareketine göre işlem yaptırabilme.
+- Kullanıcının eylemlerine karşılık verme. Tıklama veya fare imlecinin hareketine göre işlem yaptırabilme.
 - Ağ üzerinden talep gönderebilme. Dosya yükleme veya indirebilme ( buna [AJAX](https://en.wikipedia.org/wiki/Ajax_(programming)) ve [COMET](https://en.wikipedia.org/wiki/Comet_(programming) teknolojileri denir )
-- Tarayıcıdaki çerezleri silme, ekleme veya düzeltme işmelerinin yapılması. İleti gösterilmesi.
-- Kullanıcı yanında, tutulan verilerin saklanması ( "local storage")
+- Tarayıcıdaki çerezleri silme, ekleme veya düzeltme işlemlerinin yapılması. İleti gösterilmesi.
+- Kullanıcı tarafında verilerin saklanması ( "local storage")
 
 ## Tarayıcı içerisinde bulunan JavaScript ne yapamaz ?
 
-Tarayıcı içerisinde bulunan JavaScript kullanıcı güvenliği amacıyla sınırlandırılmıştır. Amaç zararlı web yerliklerinin özel bilgilere erişip kullanıcıya zarar vermesini engellemektir.
+Tarayıcı içerisinde bulunan JavaScript kullanıcı güvenliği amacıyla sınırlandırılmıştır. Amaç zararlı web sitelerinin özel bilgilere erişip kullanıcıya zarar vermesini engellemektir.
 
 Bu engellemeleri şu biçimde sıralayabiliriz :
 
-- Web sayfasında çalışan JavaScript dosyalara erişim sağlayamaz, saklama alanınızda bulunan programları kopyalayamaz veya çalıştıramaz. İşletim dizgenize doğrudan ulaşımı yoktur.
+- Web sayfasında çalışan JavaScript dosyalara erişim sağlayamaz, saklama alanınızda bulunan programları kopyalayamaz veya çalıştıramaz. İşletim sisteminizin fonksiyonlarına doğrudan erişimi yoktur.
 
-    Günümüz tarayıcıları dosyalarla çalışmanıza izin verebilir. Ancak bu izim oldukça sınırlıdır. Örneğin, yalnızca dosyayı tarayıcıya taşıyıp bırakabilirsiniz veya `<input>` kullanarak dosyayı seçebilirsiniz.
+    Günümüz tarayıcıları dosyalarla çalışmanıza izin verebilir. Ancak bu izin oldukça sınırlıdır. Örneğin, yalnızca dosyayı tarayıcıya taşıyıp bırakabilirsiniz veya `<input>` kullanarak dosyayı seçebilirsiniz.
 
-    Her zaman kullanıcıyla kamera veya mikrofon vasıyasıyla veya diğer aygıtlar aracılığıyla etkileşime geçebilirsiniz. Ancak kullanıcının kesin iznini almanız gerekir. Dolayısıyla JavaScript çalışan web sayfası gizliden sizin web kameranızı izleyemez veya çevrenizde bulunanlar hakkında bilgi alamaz. [NSA](https://en.wikipedia.org/wiki/National_Security_Agency)
+    Her zaman kullanıcıyla kamera veya mikrofon vasıtasıyla veya diğer aygıtlar aracılığıyla etkileşime geçebilirsiniz. Ancak kullanıcının kesin iznini almanız gerekir. Dolayısıyla bir web sayfası JavaScript ile gizliden sizin web kameranızı izleyemez veya çevrenizde bulunanlar hakkında bilgi alamaz. [NSA](https://en.wikipedia.org/wiki/National_Security_Agency)
 
-- Farklı sekmeler birbiri ile iletişime geçemez ve bilgi alış verişi yapamayabilirler. Bazen yaparlar, örneğin bir sekmeden JavaScript ile diğer sekmeyi açabilirsiniz. Bu durumda bile, bir sayfa diğerinden farklı alan adı, kural veya kapılarda ise erişemez.
+- Farklı sekmeler birbiri ile iletişime geçemez ve bilgi alışverişi yapamazlar. Bazı sitelerde aynı sekmeler iletişimde bulunabilir, örneğin bir sekmeden JavaScript ile diğer sekmeyi açabilirsiniz. Bu durumda bile, bir sayfa diğerinden farklı alan adı, kural veya kapılarda ise erişemez.
 
-    Bu olaya "Same Origin Policy" ( Aynı kaynak kuralı ) denir. Bunu çözmek için *her iki sayfa* özel bir JavaScript kodu ile birbirlerini onaylamalılar. Bu engellemeler yine kullanıcının güvenliği içindir. Kullanıcının açtığı `http://örnekyerlik.com` yerliği diğer sekmede bulunan `http://diğeryerlik.com` yerliğinden bilgi çalamamalıdır.
+    Bu olaya "Same Origin Policy" ( Aynı kaynak kuralı ) denir. Bunu çözmek için *her iki sayfa* özel bir JavaScript kodu ile birbirlerini onaylamalıdır. Bu engellemeler yine kullanıcının güvenliği içindir. Kullanıcının açtığı `http://örnekyerlik.com` sitesi diğer sekmede bulunan `http://diğeryerlik.com` sitesinden bilgi çalamamalıdır.
 - JavaScript kolayca bulunduğu sayfadan veri alabilir. Ancak başka site veya alan adlarından veri alması sorunludur. Olanaklı olmasında karşın her iki yanın onayı gereklidir. Yine, bunun nedeni güvenlik sınırlarıdır diyebiliriz.
 
 ![](limitations.png)
 
-Bu sınırlar, tarayıcı dışında kullanıldığında ortadan kalkar. Örneğin, sunucular daha geniş yetkilere iyedirler.
+Bu sınırlar, tarayıcı dışında kullanıldığında ortadan kalkar. Örneğin, sunucular daha geniş yetkilere sahiptir.
 
 
 ## JavaScript'i eşsiz yapan nedir ?
@@ -87,34 +86,35 @@ JavaScript'i eşsiz yapan en az 3 neden vardır:
 
 ```compare
 + HTML/CSS ile tamamen bütünleşik çalışması.
-+ Kolay şeylerin kolayca yapılabilmesini sağlar.
++ Basit şeyler basitçe yapılır.
 + Tüm önemli tarayıcılarda çalışır ve ön tanımlı olarak etkindir.
 ```
 
-Bu üç özelliği barındıran JavaScript dışında hiç bir tarayıcı teknolojisi yoktur.
+JavaScript'ten başka bu üç özelliği taşıyan hiçbir tarayıcı teknolojisi yoktur.
 
-JavaScript'in eşsiz olma nedeni budur. Bundan dolayı yapılan yerliklerde en fazla kullanılan teknoloji JavaScripttir.
+JavaScript'in eşsiz olma nedeni budur ve bu yüzden web sayfaları geliştirmekte kullanılan en yaygın araçtır.
 
-Yeni bir teknolojiyi öğrenirken gelecek üstüne öngörü önemlidir. Öyleyse yeni diller ve tarayıcı yetkinlikleri içeren bu yönelimlere ayak uydurmalıyız.
+Yeni bir teknolojiyi öğrenmeye başlarken, sunacağı avantajlar için öngörü önemlidir. Bu sebeptendir ki, yeni diller ve tarayıcı yetkinlikleri içeren bu yönelimlere ayak uydurmalıyız.
 
 ## JavaScript'e üstün diller
 
 JavaScript'in sözdizimi ve yazımı herkese uymayabilir. Her yiğidin yoğurt yiyişi ayrıdır.
 
-Bu olağan bir durum, çünkü tasarılar ve gereksinimler kişiden kişiye göre değişir.
+Bu olağan bir durum, çünkü tasarımlar ve gereksinimler kişiden kişiye göre değişir.
 
 Bundan dolayı yakın zamanda bir sürü yeni *transpiled* yani çevirilmiş diller türemiştir. Bu diller, çalıştırılmadan önce JavaScript'e çevriliyor. Günümüz araçları bu çeviri işini çok hızlı bir biçimde yapmaktadır. Gerçekte, doğrudan -siz yazarken bile- çevirme işini yapıp bu yeni dosyayı kullanılabilir duruma getirirler.
 
 Bu dillere örnek vermek gerekirse:
 
-- [CofeeScript](http://coffeescript.org) JavaScript için "şeker yazım" denebilecek bir dildir. Yazılımı daha kısadır ve daha temiz kod yazmaya yardımcı olur.
+- [CofeeScript](http://coffeescript.org) JavaScript için "şeker yazım" denebilecek bir dildir. Yazılımı daha kısadır ve daha temiz kod yazmaya yardımcı olur. Genellikle [Ruby](https://www.ruby-lang.org/tr/) geliştiriciler bunu sever.
 
-- [Typescript](http://www.typescriptlang.org/) durağan veri yapıları ile JavaScript yazılmasını sağlar. Karmaşık programlar geliştirmeyi kolaylaştırır. Microsoft'ta geliştirilmiştir.
-- [Dart](https://www.dartlang.org/) kendi başına ayrı bir dildir. Tarayıcı üzerinde veya telefon uygulamalarında kendi motoru üzerinden çalışılır. Google'ın tarayıcılarda JavaScript yerine Dart'ı önermiş olmasına karşın, bu günlerde JavaScript'e çeviri yapılarak kullanılmaktadır.
+- [Typescript](http://www.typescriptlang.org/) durağan veri yapıları ile JavaScript yazılmasını sağlar. Karmaşık programlar geliştirmeyi kolaylaştırır. Microsoft tarafından geliştirilmiştir.
+
+- [Dart](https://www.dartlang.org/) kendi başına ayrı bir dildir. Tarayıcı üzerinde veya telefon uygulamalarında kendi motoru üzerinden çalıştırılır. Google'ın tarayıcılarda JavaScript yerine Dart'ı önermiş olmasına karşın, bu günlerde JavaScript'e çeviri yapılarak kullanılmaktadır.
 
 Bunlara daha fazla örnek eklenebilir. Yukarıdakileri bilseniz bile ne yaptığınızı tam olarak anlamak için JavaScript bilmelisiniz.
 
 ## Özet
-- JavaScript başlangıçta yalnızca ağ tarayıcılarında kullanılmak üzere geliştirilmiş bir dildi. Ancak günümüzde, bir çok çevrede çalışabilir durumda.
+- JavaScript başlangıçta yalnızca ağ tarayıcılarında kullanılmak üzere geliştirilmiş bir dildi. Ancak günümüzde, birçok çevrede çalışabilir durumda.
 - JavaScript şu anda HTML/CSS ile bütünleşik olmasından ve geniş uyumluluğundan dolayı benzersizdir.
-- Bir çok JavaScript'e çevirici dil bulunmaktadır. JavaScript'i iyi bir biçimde öğrendikten sonra bu dillere de bir bakmanızı öneririm.
+- Bir çok JavaScript'e çevirici dil bulunmaktadır. JavaScript'i iyi bir biçimde öğrendikten sonra bu dillere de bir bakmanızı öneririz.
