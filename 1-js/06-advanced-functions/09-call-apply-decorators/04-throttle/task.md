@@ -1,20 +1,20 @@
-importance: 5
+Önem: 5
 
 ---
 
-# Throttle decorator
+# Kısma Dekoratörleri
 
-Create a "throttling" decorator `throttle(f, ms)` -- that returns a wrapper, passing the call to `f` at maximum once per `ms` milliseconds. Those calls that fall into the "cooldown" period, are ignored.
+"Sıkma" dekoratörü `throttle(f,ms)` oluşturun ve bu bir kapsayıcı döndersin, bu kapsayıcı çağrıyı `f`'e iletsin ve bu çağrıyı belirtilen `ms` içerisinde sadece bir defa yapabilsin. Geri kalan "cooldown" periyodundakiler görmezden gelinsin.
 
-**The difference with `debounce` -- if an ignored call is the last during the cooldown, then it executes at the end of the delay.**
+** `Geri sektiren` dekoratör ile `Kısma` dekoratörü arasındaki fark; görmezden gelinen çağrı eğer belirlenen süre zarfında yaşayabilirse, gecikme sonrasında çağırılır.
 
-Let's check the real-life application to better understand that requirement and to see where it comes from.
+Daha iyi anlayabilmek için günlük kullanılan bir uygulamadan yararlanabiliriz.
 
-**For instance, we want to track mouse movements.**
+**Örneğin fare olaylarını takip etmek istiyorsunuz.**
 
-In browser we can setup a function to run at every mouse micro-movement and get the pointer location as it moves. During an active mouse usage, this function usually runs very frequently, can be something like 100 times per second (every 10 ms).
+Browser üzerinde bir fonksiyon ile farenin her mikro seviyeli hareketinde gittiği yerlerin bilgileri alınabilir. Aktif fare kullanımı sırasında akıcı bir şekilde çalışacaktır. Her sn'de 100 defa ( 10ms ) çalışabilir.
 
-**The tracking function should update some information on the web-page.**
+**İzleme fonksiyonu web sayfası üzerinde bazı bilgileri güncellemeli.**
 
 Updating function `update()` is too heavy to do it on every micro-movement. There is also no sense in making it more often than once per 100ms.
 
