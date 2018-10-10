@@ -3,23 +3,23 @@ libs:
 
 ---
 
-# Currying and partials
+# Tımarlama ve kısmi fonksiyonlar
 
-Till now we were only talking about binding `this`. Now let's make a step further.
+Şimdiye kadar fonksiyon bağlar iken sadece `this` hakkında konuşmuştuk. Bunu bir adım ileri götürme vakti geldi.
 
-We can bind not only `this`, but also arguments. That's rarely done, but sometimes can be handy.
+Aslında sadece `this` değil argümanları da bağlamak mümkün. Çok nadir yapılan bir teknik fakat bilmekte fayda var.
 
 [cut]
 
-The full syntax of `bind`:
+`bind`'ın yazımı:
 
 ```js
 let bound = func.bind(context, arg1, arg2, ...);
 ```
 
-It allows to bind context as `this` and starting arguments of the function.
+Bu kaynağı `this` olarak bağlamaya ve ardından argümanları tanımlaya olanak verir.
 
-For instance, we have a multiplication function `mul(a, b)`:
+Örneğin çarpma fonksiyonu `mul(a,b)`:
 
 ```js
 function mul(a, b) {
@@ -27,7 +27,7 @@ function mul(a, b) {
 }
 ```
 
-Let's use `bind` to create a function `double` on its base:
+Bunun iki katını almak için `double` fonksiyonunu şu şekilde bağlayarak yaratabiliriz:
 
 ```js run
 *!*
@@ -39,13 +39,13 @@ alert( double(4) ); // = mul(2, 4) = 8
 alert( double(5) ); // = mul(2, 5) = 10
 ```
 
-The call to `mul.bind(null, 2)` creates a new function `double` that passes calls to `mul`, fixing `null` as the context and `2` as the first argument. Further arguments are passed "as is".
+`mul.bind(null,2)` ile `double` fonksiyonu yaratılır. Bu fonksiyon `mul`'a kaynağı `null` yaparak fakat ilk argüman 2 olacak şekilde iletilir. Bundan sonraki argümanlar da "olduğu gibi" iletilir.
 
-That's called [partial function application](https://en.wikipedia.org/wiki/Partial_application) -- we create a new function by fixing some parameters of the existing one.
+Bu olaya [kısmi fonksiyon uygulaması](https://en.wikipedia.org/wiki/Partial_application) denir -- var olan fonksiyonun parametrelerini değiştirerek yeni bir fonksiyon yaratma olayı.
 
-Please note that here we actually don't use `this` here. But `bind` requires it, so we must put in something like `null`.
+Dikkat ederseniz aslında biz burada `this`'i hiç kullanmıyoruz. Fakat `bind`'ın buna ihtiyacı var bundan dolayı `null` gibi bir değer koymak zorundayız.
 
-The function `triple` in the code below triples the value:
+Üç ile çarpma olayını ( `triple` ) ise şu şekilde yazabiliriz 
 
 ```js run
 *!*
@@ -57,23 +57,23 @@ alert( triple(4) ); // = mul(3, 4) = 12
 alert( triple(5) ); // = mul(3, 5) = 15
 ```
 
-Why do we usually make a partial function?
+Neden kısmi fonksiyon kullanıyoruz? 
 
-Here our benefit is that we created an independent function with a readable name (`double`, `triple`). We can use it and don't write the first argument of every time, cause it's fixed with `bind`.
+Burada amaç var olan fonksiyon üzerinden okunabilir bağımsız bir fonksiyon yaratmaktır ( `double`, `triple`) Böylece bunu kullanabilir ve her defasında ilk argümanı yazmak zorunda kalmayız çünkü `bind` ile bu sabitlenmiş olur.
 
-In other cases, partial application is useful when we have a very generic function, and want a less universal variant of it for convenience.
+Diğer bir durumda kısmı uygulamalar jenerik fonksiyon yaratmada oldukça yararlıdır, ayrıca daha genel fonksiyondan özele doğru inmeye yarar. Kullanışlılık böylece artar.
 
-For instance, we have a function `send(from, to, text)`. Then, inside a `user` object we may want to use a partial variant of it: `sendTo(to, text)` that sends from the current user.
+Örneğin, `send(from, to, text)` adında bir fonksiyonumuz olsun. `user` objesinin içerisinde bunun bir farklı versiyonu olan ve o anki kullanıcıyı gönderen `sendTo(to,text)` kullanmak isteyelim.
 
-## Going partial without context
+## İçerik olmadan kısmı fonksiyon kullanımı
 
-What if we'd like to fix some arguments, but not bind `this`?
+Diyelim ki bazı argümanları düzeltmek istiyorsunuz fakat `this` ile bağlamak istemiyorsunuz?
 
-The native `bind` does not allow that. We can't just omit the context and jump to arguments.
+Bildiğiniz gibi `bind` buna izin vermez. Doğrudan kaynağı atlayıp argümanları yazamazsınız.
 
-Fortunately, a `partial` function for binding only arguments can be easily implemented.
+Neyseki sadece argümanları bağlayabilen bir `kısmi` fonksiyon çok kolay bir şekilde yazılabilir.
 
-Like this:
+Şu şekilde:
 
 ```js run
 *!*
@@ -84,7 +84,7 @@ function partial(func, ...argsBound) {
 }
 */!*
 
-// Usage:
+// kullanımı:
 let user = {
   firstName: "John",
   say(time, phrase) {
@@ -92,22 +92,27 @@ let user = {
   }
 };
 
-// add a partial method that says something now by fixing the first argument
+// herhangi bir şey söyleyen kısmi bir metod ile ilk argümanı düzeltebilirsiniz.
 user.sayNow = partial(user.say, new Date().getHours() + ':' + new Date().getMinutes());
 
-user.sayNow("Hello");
-// Something like:
+user.sayNow("Hello"); // kaynak bulunmamakta 
+// Aşağıdaki gibi:
 // [10:00] Hello, John!
 ```
 
-The result of `partial(func[, arg1, arg2...])` call is a wrapper `(*)` that calls `func` with:
+`partial(func[, arg1, arg2...])` saklayıcıyı çağırıyor ve `(*)` fonksiyonu `func`'ı aşağıdaki bilgiler ile çağırıyor.
+
+- `this` burada ( `user.sayNow` , `user`'ı çağırır)
+- Sonra `...argsBound` -- `kısmi` fonksiyondan gelen değer (`"10:00"`)
+- Sonra `...args` -- saklayıcıya gönderilen argüman (`"Hello"`)
+
 - Same `this` as it gets (for `user.sayNow` call it's `user`)
 - Then gives it `...argsBound` -- arguments from the `partial` call (`"10:00"`)
 - Then gives it `...args` -- arguments given to the wrapper (`"Hello"`)
 
-So easy to do it with the spread operator, right?
+Yayma operatörü ile oldukça kolay değil mi?
 
-Also there's a ready [_.partial](https://lodash.com/docs#partial) implementation from lodash library.
+Bu olayın hazır halini [_.partial](https://lodash.com/docs#partial) lodash kütüphanesinde bulabilirsiniz.
 
 ## Currying
 
