@@ -114,13 +114,13 @@ Yayma operatörü ile oldukça kolay değil mi?
 
 Bu olayın hazır halini [_.partial](https://lodash.com/docs#partial) lodash kütüphanesinde bulabilirsiniz.
 
-## Currying
+## Tımarlamak
 
-Sometimes people mix up partial function application mentioned above with another thing named "currying". That's another interesting technique of working with functions that we just have to mention here.
+Bazen programcılar kısmı fonksiyonlar ile tımarlama olayını karıştırmaktadırlar. Tımarlama fonksiyonlar ile yapılabilecek ilginç bir tekniktir. Burada bahsetmekte fayda var.
 
-[Currying](https://en.wikipedia.org/wiki/Currying) is translating a function from callable as `f(a, b, c)` into callable as `f(a)(b)(c)`.
+[Tımarlama](https://en.wikipedia.org/wiki/Currying) `f(a, b, c)` olarak çağırılan bir fonksiyonu `f(a)(b)(c)` şeklinde çağırılabilmesini sağlayan bir tekniktir.
 
-Let's make `curry` function that performs currying for binary functions. In other words, it translates `f(a, b)` into `f(a)(b)`:
+Binary fonksiyonunu tımarlamala işlemi aşağıdaki gibi yapılır. Bu fonksiyon `f(a, b)`'yı `f(a)(b)` şekline getirir:
 
 ```js run
 *!*
@@ -133,7 +133,7 @@ function curry(func) {
 }
 */!*
 
-// usage
+// kullanımı
 function sum(a, b) {
   return a + b;
 }
@@ -142,30 +142,29 @@ let carriedSum = curry(sum);
 
 alert( carriedSum(1)(2) ); // 3
 ```
+Gördüğünüz gibi aslında birçok saklayıcının ard arda uygulanmasından meydana gelmektedir.
 
-As you can see, the implementation is a series of wrappers.
+- `curry(func)`'ın sonucu `function(a)`'nın saklanmasıdır.
+- `sum(1)` gibi bir çağrı yapıldığında arüman sözcük ortamına kaydedilir, ve yeni bir saklayıcı `function(b)` döndürürlür.
+- Sonrasında `sum(1)(2)` en sonunda `function(b)`'i `2` değeri ile çağırır,  çağrıyı argümanların hepsi ile `sum` fonksiyonuna iletir.
 
-- The result of `curry(func)` is a wrapper `function(a)`.
-- When it is called like `sum(1)`, the argument is saved in the Lexical Environment, and a new wrapper is returned `function(b)`.
-- Then `sum(1)(2)` finally calls `function(b)` providing `2`, and it passes the call to the original multi-argument `sum`.
-
-More advanced implementations of currying like [_.curry](https://lodash.com/docs#curry) from lodash library do something more sophisticated. They return a wrapper that allows a function to be called normally when all arguments are supplied *or* returns a partial otherwise.
+Tımarlamanın daha gelişmiş bir versiyonu [_.curry](https://lodash.com/docs#curry) lodash kütüpyanesinde uygulanmıştır. Bu fonksiyonlar tüm argümanlar sağlandığında bir fonksiyonun normal olarak çalışmasını sağlayan saklayıcı fonksiyonu döndürür. Eğer tüm argümanlar sağlanmaz ise kısmı fonksiyon döndürür.
 
 ```js
 function curry(f) {
   return function(..args) {
-    // if args.length == f.length (as many arguments as f has),
-    //   then pass the call to f
-    // otherwise return a partial function that fixes args as first arguments
+    // if args.length == f.length (f'in sahip olduğu kadar argüman var ise),
+    //   çağrıyı f'e ilet.
+    // diğer türlü args'ı ilk argüman olarak sabitleyen kısmı fonksiyon döndürülür.
   };
 }
 ```
 
-## Currying? What for?
+## Tımarlama? Neden yapılmalı?
 
-Advanced currying allows both to keep the function callable normally and to get partials easily. To understand the benefits we definitely need a worthy real-life example.
+Tımarlayarak hem fonksiyon normal olarak çağırılabilir  hem de kısmi olarak alınabilir. Yararını anlayabilmek için gerçekten de iyi bir örneğe gerek var.
 
-For instance, we have the logging function `log(date, importance, message)` that formats and outputs the information. In real projects such functions also have many other useful features like: sending it over the network or filtering:
+Örneğin, bir loglama fonksiyonu olsun `log(data, importance, message)` gelen veriye göre çıktıyı formatlayabilsin. Projelerde böyle fonksiyonlar bunun yanında bir çok özelliğe sahip olabilir. Örneğin bunları ağ üzerinden iletmek veya filtrelemek gibi.
 
 ```js
 function log(date, importance, message) {
@@ -173,35 +172,31 @@ function log(date, importance, message) {
 }
 ```
 
-Let's curry it!
+Hadi tımarlayalım!
 
 ```js
 log = _.curry(log);
 ```
-
-After that `log` still works the normal way:
+Bu `log` işleminden sonra hala normal olarak çalışır:
 
 ```js
 log(new Date(), "DEBUG", "some debug");
 ```
-
-...But also can be called in the curried form:
+... Bunun yanında tımarlı şekilde çağırılabilir:
 
 ```js
 log(new Date())("DEBUG")("some debug"); // log(a)(b)(c)
 ```
-
-Let's get a convenience function for today's logs:
+Bu günün loglarını daha kolay bir şekilde alabileceğimiz bir fonksiyon alalım:
 
 ```js
-// todayLog will be the partial of log with fixed first argument
+// todayLog bu günün değeri sabit olacak şekilde oluşturulmuş bir kısmi fonksiyondur
 let todayLog = log(new Date());
 
-// use it
+// kullanımı
 todayLog("INFO", "message"); // [HH:mm] INFO message
 ```
-
-And now a convenience function for today's debug messages:
+Şimdi ise bu günün Debug değerlerini alabileceğimiz diğer bir fonksiyon yapalım:
 
 ```js
 let todayDebug = todayLog("DEBUG");
@@ -209,7 +204,7 @@ let todayDebug = todayLog("DEBUG");
 todayDebug("message"); // [HH:mm] DEBUG message
 ```
 
-So:
+Sonuç olarak:
 1. We didn't lose anything after currying: `log` is still callable normally.
 2. We were able to generate partial functions that are convenient in many cases.
 
