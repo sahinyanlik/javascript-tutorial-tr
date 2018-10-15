@@ -187,7 +187,7 @@ log(new Date(), "DEBUG", "some debug");
 ```js
 log(new Date())("DEBUG")("some debug"); // log(a)(b)(c)
 ```
-Bu günün loglarını daha kolay bir şekilde alabileceğimiz bir fonksiyon alalım:
+Bu günün loglarını daha kolay bir şekilde alabileceğimiz bir fonksiyon yazalım:
 
 ```js
 // todayLog bu günün değeri sabit olacak şekilde oluşturulmuş bir kısmi fonksiyondur
@@ -205,12 +205,13 @@ todayDebug("message"); // [HH:mm] DEBUG message
 ```
 
 Sonuç olarak:
-1. We didn't lose anything after currying: `log` is still callable normally.
-2. We were able to generate partial functions that are convenient in many cases.
+1. Tımarladıktan sonra `log` fonksiyonundan birşey kaybetmedik. Hala aynı şekilde çağırabiliriz.
+2. Kısmi fonksiyonlar ile işimize yarar birçok yeni fonksiyon geliştirebiliriz.
 
-## Advanced curry implementation
 
-In case you're interested, here's the "advanced" curry implementation that we could use above.
+## İleri Tımarlama Uygulamaları
+
+Bu konuyu daha "derinlemesine" incelemek istiyorsanız aşağıda daha önceki yazdığımız kodun gelişmiş vesiyonunu bulabilirsiniz.
 
 ```js run
 function curry(func) {
@@ -233,22 +234,21 @@ function sum(a, b, c) {
 
 let curriedSum = curry(sum);
 
-// still callable normally
+// normal şekilde çağırılabilir.
 alert( curriedSum(1, 2, 3) ); // 6
 
-// get the partial with curried(1) and call it with 2 other arguments
+// önce curried(1) ile kısmı fonksiyon alınır sonra diğer iki argüman ile çağırılır.
 alert( curriedSum(1)(2,3) ); // 6
 
-// full curried form
+// tamamı tımarlanmış hali.
 alert( curriedSum(1)(2)(3) ); // 6
 ```
+Yeni yazdığımız `tımar` fonksiyonu karmaşık görünebilir, fakat aslında anlaması oldukça kolay.
 
-The new `curry` may look complicated, but it's actually pretty easy to understand.
-
-The result of `curry(func)` is the wrapper `curried` that looks like this:
+`curr(func)`'ın sonucu `curried`'ın saklayıcısıdır ve aşağıdaki gibi görünür:
 
 ```js
-// func is the function to transform
+// func dönüştürülecek fonksiyondur.
 function curried(...args) {
   if (args.length >= func.length) { // (1)
     return func.apply(this, args);
@@ -259,11 +259,10 @@ function curried(...args) {
   }
 };
 ```
+İki farklı şekilde çalışabilir:
+1. Anlık çağrı: Eğer `args` sayısı orjinal fonksiyon tanımıyla aynıysa ( `func.length` )  veya uzunsa, sadece çağrıyı ilet.
+2. Kısmi al: Diğer türlü, `func` henüz çağırılmamış olur. Bunun yerine `pass` döner. Bu tekrar bir önceki argümanları yeni fonksiyona iletirek `tımarlama` yapar. Yeni bir çağrıda yeniden (yeteri kadar argüman yoksa ) kısmı fonksiyon alır veya ( argüman tam ise ) sonucu alır
 
-When we run it, there are two branches:
-
-1. Call now: if passed `args` count is the same as the original function has in its definition (`func.length`) or longer, then just pass the call to it.
-2. Get a partial: otherwise, `func` is not called yet. Instead, another wrapper `pass` is returned, that will re-apply `curried` providing previous arguments together with the new ones. Then on a new call, again, we'll get either a new partial (if not enough arguments) or, finally, the result.
 
 For instance, let's see what happens in the case of `sum(a, b, c)`. Three arguments, so `sum.length = 3`.
 
