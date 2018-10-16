@@ -49,7 +49,7 @@ Eğer kullanıcı değer girdiyse bunu dönderir, eğer girmediyse ve o ekrandan
 ```js run
 let age = prompt('Kaç yaşındasın?', 100);
 
-alert(`Sen ${yas} yaşındasın!`); // Sen 100 yaşındasın!
+alert(`Sen ${age} yaşındasın!`); // Sen 100 yaşındasın!
 ```
 
 ````warn header="IE: her zaman  `varsayılan` değeri kullanın"
