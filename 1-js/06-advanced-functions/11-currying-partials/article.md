@@ -106,10 +106,6 @@ user.sayNow("Hello"); // kaynak bulunmamakta
 - Sonra `...argsBound` -- `kısmi` fonksiyondan gelen değer (`"10:00"`)
 - Sonra `...args` -- saklayıcıya gönderilen argüman (`"Hello"`)
 
-- Same `this` as it gets (for `user.sayNow` call it's `user`)
-- Then gives it `...argsBound` -- arguments from the `partial` call (`"10:00"`)
-- Then gives it `...args` -- arguments given to the wrapper (`"Hello"`)
-
 Yayma operatörü ile oldukça kolay değil mi?
 
 Bu olayın hazır halini [_.partial](https://lodash.com/docs#partial) lodash kütüphanesinde bulabilirsiniz.
