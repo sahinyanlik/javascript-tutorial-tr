@@ -263,35 +263,34 @@ function curried(...args) {
 1. Anlık çağrı: Eğer `args` sayısı orjinal fonksiyon tanımıyla aynıysa ( `func.length` )  veya uzunsa, sadece çağrıyı ilet.
 2. Kısmi al: Diğer türlü, `func` henüz çağırılmamış olur. Bunun yerine `pass` döner. Bu tekrar bir önceki argümanları yeni fonksiyona iletirek `tımarlama` yapar. Yeni bir çağrıda yeniden (yeteri kadar argüman yoksa ) kısmı fonksiyon alır veya ( argüman tam ise ) sonucu alır
 
+`sum(a, b, c)` şeklinde üç argümanlı bir çağrı durumunda nasıl çalışacağına bakalım:
 
-For instance, let's see what happens in the case of `sum(a, b, c)`. Three arguments, so `sum.length = 3`.
+`curried(1)(2)(3)` çağrısı için:
 
-For the call `curried(1)(2)(3)`:
+1. İlk `curried(1)` çağrısı `1`'i kendi sözcük çevresinde hatırlar ve `pass` adında bir saklayıcı döner.
+2. `pass` saklayıcısı `(2)` ile çağırılır: bir önceki argüman ( `1`)'i alır ve `(2)` ile birleştirir. Böylece çağrı `curred(1,2)` şeklini alır.
 
-1. The first call `curried(1)` remembers `1` in its Lexical Environment, and returns a wrapper `pass`.
-2. The wrapper `pass` is called with `(2)`: it takes previous args (`1`), concatenates them with what it got `(2)` and calls `curried(1, 2)` with them together.
+    Argüman sayısı hala 3'den az olduğundan `curry` yine `pass` döndürür.
+3. `pass` bu defa `(3)` ile tekrar çağırılır, bir sonraki çağrıda `pass(3)` bir önceki argümanları (`1`,`2`) alır ve bunlara `3` ekler. Böylece çağrı `curried(1, 2, 3)` şeklini alır. En sonunda 3 tane değişken oldu ve artık bu değerler orjinal fonksiyona gönderilir.
 
-    As the argument count is still less than 3, `curry` returns `pass`.
-3. The wrapper `pass` is called again with `(3)`,  for the next call `pass(3)` takes previous args (`1`, `2`) and adds `3` to them, making the call `curried(1, 2, 3)` -- there are `3` arguments at last, they are given to the original function.
+Eğer hala açık değil ise çağrıları bir kağıt üzerinde veya kafanızda sıralı şekilde takip edin.
 
-If that's still not obvious, just trace the calls sequence in your mind or on the paper.
-
-```smart header="Fixed-length functions only"
-The currying requires the function to have a known fixed number of arguments.
+```smart header="Sadece belirli uzunluktaki fonksiyonlar"
+Tımarlama için fonksiyonların belirli bir sayıda argümanı olması gerekir.
 ```
 
-```smart header="A little more than currying"
-By definition, currying should convert `sum(a, b, c)` into `sum(a)(b)(c)`.
+```smart header="Tımarlamanın biraz ötesi"
+Tanım olarak tımarlama `sum(a, b, c)` yi `sum(a)(b)(c)` şekline sokmalıdır.
 
-But most implementations of currying in JavaScript are advanced, as described: they also keep the function callable in the multi-argument variant.
+Fakat tımarlamanın çoğu uygulaması daha önce anlatıldığı gibi ileri seviyedir: Fonksiyonların birkaç farklı argüman çeşidi ile çağırılabilir olması.
 ```
 
-## Summary
+## Özet
 
-- When we fix some arguments of an existing function, the resulting (less universal) function is called *a partial*. We can use `bind` to get a partial, but there are other ways also.
+- Var olan bir fonksiyonun argümanlarını düzeltirsek, sonuçtaki fonksiyon *kısmi* fonksiyon olur. `bind` kullanarak kısmi bölüm alınabilir, fakat farklı yolları da vardır.
 
-    Partials are convenient when we don't want to repeat the same argument over and over again. Like if we have a `send(from, to)` function, and `from` should always be the same for our task, we can get a partial and go on with it.
+    Kısmi fonksiyonlar aynı argümanın defalarca tekrarlanması istenmediğinde kullanışlı olur. Örneğin `send(from, to)` diye bir fonksiyonumuz olsun ve bizim yapacağımız işte `from`'un her zaman aynı olduğunu varsayarsak bunun için fonksiyonun kısmi bölümünü alıp bunun ile devam edebiliriz.
+    
+- *Tımarlama* `f(a, b, c)`'yi çağırılabilir `f(a)(b)(c)` şekline getirmektir. Javascript versiyonu hem fonksiyonu normal şekilde çağırılabilir tutarken hep de argüman sayısı yeterli olmadığında kısmi olarak geri dönderir.
 
-- *Currying* is a transform that makes `f(a,b,c)` callable as `f(a)(b)(c)`. JavaScript implementations usually both keep the function callable normally and return the partial if arguments count is not enough.
-
-    Currying is great when we want easy partials. As we've seen in the logging example: the universal function `log(date, importance, message)` after currying gives us partials when called with one argument like `log(date)` or two arguments `log(date, importance)`.  
+    Tımarlama kolay bir şekilde kısmileştirmek istediğimizde harikadır. Loglama örneğinde gördüğünüz gibi: `log(date, importance, message)` gibi bir global fonksiyon tek bir argüman ile `log(date)` veya iki argüman ile `log(date, importance) çağırıldığında kısmilerini döner.
