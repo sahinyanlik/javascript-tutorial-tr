@@ -1,40 +1,40 @@
 
-# Property flags and descriptors
+# Özellik bayrakları ve tanımlayıcılar
 
-As we know, objects can store properties.
+Objelerin özellikleri saklayabildiğini biliyorsunuz.
 
-Till now, a property was a simple "key-value" pair to us. But an object property is actually more complex and tunable thing.
+Şimdiye kadar özellik basit "anahtar-değer" ikilisiydi. Fakat objenin özelliği aslında bundan daha karmaşık ve daha farklılaştırılabilir özellikler taşımaktadır.
 
 [cut]
 
-## Property flags
+## Özellik Bayrakları
 
-Object properties, besides a **`value`**, have three special attributes (so-called "flags"):
+Obje özellikleri **`değer`** dışında, 3 özelliğe sahiptir ( bunlara "bayraklar" denir. )
 
-- **`writable`** -- if `true`, can be changed, otherwise it's read-only.
-- **`enumerable`** -- if `true`, then listed in loops, otherwise not listed.
-- **`configurable`** -- if `true`, the property can be deleted and these attributes can be modified, otherwise not.
+- **`yazılabilir`** -- eğer `true` ise değiştirilebilir aksi halde sadece okunabilir.
+- **`sayılabilir`** -- eğer `true` ise döngü içinde listelenmiştir, aksi halde listelenmemiştir.
+- **`ayarlanabilir`** -- eğer `true` ise özellik silinebilir ve nitelikler ( attributes ) değiştirilebilir, diğer türlü değiştirilemez.
 
-We didn't see them yet, because generally they do not show up. When we create a property "the usual way", all of them are `true`. But we also can change them any time.
+Bunları henüz görmediniz, genel olarak da zaten pek gösterilmezler. Bir özellik yarattığınızda "normal yolla" bu değerlerin tümü `true` olarak ayarlanır. Fakat biz bunları istediğimiz zaman değiştirebiliriz.
 
-First, let's see how to get those flags.
+İlk önce bu bayraklar nasıl alınır buna bakalım:
 
-The method [Object.getOwnPropertyDescriptor](mdn:js/Object/getOwnPropertyDescriptor) allows to query the *full* information about a property.
+[Object.getOwnPropertyDescriptor](mdn:js/Object/getOwnPropertyDescriptor) metodu bir özellik hakkındaki *tüm* bilgilerin sorgulanabilmesini sağlar.
 
-The syntax is:
+Yazımı:
 ```js
 let descriptor = Object.getOwnPropertyDescriptor(obj, propertyName);
 ```
 
 `obj`
-: The object to get information from.
+: Bilgi alınacak obje
 
 `propertyName`
-: The name of the property.
+: Özelliğin ismi
 
-The returned value is a so-called "property descriptor" object: it contains the value and all the flags.
+Buradan dönen bir değer döner buna "özellik tanımlayıcısı" denir. Bu obje tüm bayrak bilgilerini içerir.
 
-For instance:
+Örneğin:
 
 ```js run
 let user = {
@@ -53,24 +53,24 @@ alert( JSON.stringify(descriptor, null, 2 ) );
 }
 */
 ```
+Bayrakları değiştirmek için [Object.defineProperty](mdn:js/Object/defineProperty) kullanılabilir.
 
-To change the flags, we can use [Object.defineProperty](mdn:js/Object/defineProperty).
+Yazımı:
 
-The syntax is:
 
 ```js
 Object.defineProperty(obj, propertyName, descriptor)
 ```
 
 `obj`, `propertyName`
-: The object and property to work on.
+: Üzerinde çalışılacak obje ve özellik.
 
 `descriptor`
-: Property descriptor to apply.
+: Uygulanacak özellik tanımlayıcı
 
-If the property exists, `defineProperty` updates its flags. Otherwise, it creates the property with the given value and flags; in that case, if a flag is not supplied, it is assumed `false`.
+Eğer özellik var ise `defineProperty` bu özelliğin bayraklarını günceller. Diğer türlü, bu özelliği yaratır ve verilen bayrakları ayarlar. Bu durumda eğer bayrak verilmemiş ise `false` kabul edilir.
 
-For instance, here a property `name` is created with all falsy flags:
+Örneğin, aşağıda tüm bayrakları `false` olarak tanımlanmış bir `name` özelliğini görmektesiniz.
 
 ```js run
 let user = {};
@@ -95,14 +95,13 @@ alert( JSON.stringify(descriptor, null, 2 ) );
 }
  */
 ```
+Bunu "normal yoll" yaratılmış `user.name` ile karşılaştırdığınızda tüm bayrakların `false` olduğunu görebilirsiniz. Eğer bizim istediğimiz bu değilse bunları `true` yapmakta fayda var.
 
-Compare it with "normally created" `user.name` above: now all flags are falsy. If that's not what we want then we'd better set them to `true` in `descriptor`.
+Şimdi bu bayrakların etkilerini inceleyebiliriz.
 
-Now let's see effects of the flags by example.
+## Salt Oku
 
-## Read-only
-
-Let's make `user.name` read-only by changing `writable` flag:
+`user.name`'i sadece okunabilir yapmak için `writable` bayrağının değiştirilmesi gerekir.
 
 ```js run
 let user = {
@@ -116,7 +115,7 @@ Object.defineProperty(user, "name", {
 });
 
 *!*
-user.name = "Pete"; // Error: Cannot assign to read only property 'name'...
+user.name = "Pete"; // Error: Salt okunur özelliğe değer atanamaz.
 */!*
 ```
 
