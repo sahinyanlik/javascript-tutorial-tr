@@ -95,20 +95,19 @@ Bazen sadece ayarlayıcı veya alıcı olabilir. Fakat böyle bir durumda özell
 ```
 
 
-## Accessor descriptors
+## Erişim Tanımlayıcıları
 
-Descriptors for accessor properties are different -- as compared with data properties.
+Erişim tanımlayıcıları normal veri özelliklerine göre daha farklıdır.
+Erişim özellikleri için `deger` ve `yazılabilir` yoktur, bunun yerine `get` ve `set` fonksiyonları vardır.
 
-For accessor properties, there is no `value` and `writable`, but instead there are `get` and `set` functions.
+Öyleyse erişim tanımlayıcıları şunlara sahiptir:
 
-So an accessor descriptor may have:
+- **`get`** -- parametresi olmayan fonksiyon, sadece özellik okunduğunda çalışır.
+- **`set`** -- bir parametreli fonksiyon, özellik ayarlanmak istendiğinde çalışır.
+- **`enumerable`** -- bu veri özellikleri ile aynıdır.
+- **`configurable`** -- bu veri özellikleri ile aynıdır.
 
-- **`get`** -- a function without arguments, that works when a property is read,
-- **`set`** -- a function with one argument, that is called when the property is set,
-- **`enumerable`** -- same as for data properties,
-- **`configurable`** -- same as for data properties.
-
-For instance, to create an accessor `fullName` with `defineProperty`, we can pass a descriptor with `get` and `set`:
+Örneğin `fullName` ve `definePropery` erişim tanımlayıcıları için `get` ve `set`'i iletebiliriz.
 
 ```js run
 let user = {
@@ -132,10 +131,9 @@ alert(user.fullName); // John Smith
 
 for(let key in user) alert(key);
 ```
+Tekrar hatırlatmakta fayda var, bir özelliklik ya erişim özelliği veya veri özelliği olabilir, ikisi aynı anda olamaz.
 
-Please note once again that a property can be either an accessor or a data property, not both.
-
-If we try to supply both `get` and `value` in the same descriptor, there will be an error:
+Aynı tanımlayıcıda eğer hem `get` hem de `value` değerini kullanırsak aşağıdaki hata meydana gelir:
 
 ```js run
 *!*
@@ -150,11 +148,11 @@ Object.defineProperty({}, 'prop', {
 });
 ```
 
-## Smarter getters/setters
+## Akıllı getters/setters
 
-Getters/setters can be used as wrappers over "real" property values to gain more control over them.
+Getter/Setter "gerçek" özelliklerin üzerinde daha iyi kontrol amacıyla kurulabilir.
 
-For instance, if we want to forbid too short names for `user`, we can store `name` in a special property `_name`. And filter assignments in the setter:
+Örneğin, `user` gibi çok kısa isimler için `name` özelliğini `_name` içerisinde tutabilirsiniz. Sonrasında atamaları setter'da filteleyebilirsiniz:
 
 ```js run
 let user = {
@@ -164,7 +162,7 @@ let user = {
 
   set name(value) {
     if (value.length < 4) {
-      alert("Name is too short, need at least 4 characters");
+      alert("İsim çok kısa, en az 4 karakter olmalıdır.");
       return;
     }
     this._name = value;
@@ -174,10 +172,9 @@ let user = {
 user.name = "Pete";
 alert(user.name); // Pete
 
-user.name = ""; // Name is too short...
+user.name = ""; // İsim çok kısa...
 ```
-
-Technically, the external code may still access the name directly by using `user._name`. But there is a widely known agreement that properties starting with an underscore `"_"` are internal and should not be touched from outside the object.
+Teknik olarak, dışarıdan hala `user._name` ile erişilebilir. Fakat genel bir kural olarak `"_"` ile başlayan özellikler içte kullanılan değişkenlerdir ve dışarıdan hiç bir zaman erişilmemelidir.
 
 
 ## Using for compatibility
