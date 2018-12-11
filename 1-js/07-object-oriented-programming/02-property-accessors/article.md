@@ -177,11 +177,10 @@ user.name = ""; // İsim çok kısa...
 Teknik olarak, dışarıdan hala `user._name` ile erişilebilir. Fakat genel bir kural olarak `"_"` ile başlayan özellikler içte kullanılan değişkenlerdir ve dışarıdan hiç bir zaman erişilmemelidir.
 
 
-## Using for compatibility
+## Uyumluluk için kullanma
+Getter/setter fikrinin amacı aslında "normal" veri özelliklerinin kontrolünü her an elde tutabilmektir.
 
-One of the great ideas behind getters and setters -- they allow to take control over a "normal" data property and tweak it at any moment.
-
-For instance, we started implementing user objects using data properties `name` and `age`:
+Örneğin, kullanıcı objesini `name` ve `age` özellikleri ekleyelim:
 
 ```js
 function User(name, age) {
@@ -194,7 +193,7 @@ let john = new User("John", 25);
 alert( john.age ); // 25
 ```
 
-...But sooner or later, things may change. Instead of `age` we may decide to store `birthday`, because it's more precise and convenient:
+... Bu ilerde muhtemeldir değişebilir. Örneğin `age` yerine ileride `birthday` verisi tutmak istebiliriz, böylece daha kesin yaş bilgisi tutulabilir:
 
 ```js
 function User(name, birthday) {
@@ -204,12 +203,11 @@ function User(name, birthday) {
 
 let john = new User("John", new Date(1992, 6, 1));
 ```
+Peki eski `age` özelliği ne olacak ?
 
-Now what to do with the old code that still uses `age` property?
+Her yerde bunu arayıp düzeltebiliriz, fakat bu zaman alır ve kod başkaları tarafından yazıldıysa zor olur. Ayrıca `user` objesinin içinde `age` özelliği pek de fena bir fikir sayılmaz, değil mi?  Aslında bazı yerlerde tam da istediğimiz `age`'dir.
 
-We can try to find all such places and fix them, but that takes time and can be hard to do if that code is written by other people. And besides, `age` is a nice thing to have in `user`, right? In some places it's just what we want.
-
-Adding a getter for `age` mitigates the problem:
+`age` için bir getter yazmak aslında bu problemi ortadan kaldırır.
 
 ```js run no-beautify
 function User(name, birthday) {
@@ -229,8 +227,7 @@ function User(name, birthday) {
 
 let john = new User("John", new Date(1992, 6, 1));
 
-alert( john.birthday ); // birthday is available
-alert( john.age );      // ...as well as the age
+alert( john.birthday ); // birthday'e
+alert( john.age );      // ... ve yaşa aynı anda erişilebilir.
 ```
-
-Now the old code works too and we've got a nice additional property.
+Şimdi eski kod da çalışır, ayrıca yeni bir özelliğe de sahip olmuş oluruz.
