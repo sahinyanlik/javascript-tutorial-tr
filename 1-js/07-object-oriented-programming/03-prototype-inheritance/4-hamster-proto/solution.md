@@ -6,7 +6,7 @@
 
 3. Sonra prototip bağını takip ederek `hamster` içinde `stomach`'i bulur.
 
-4. Bunun içindeki `push` u çalıştırır. Böylece *prototip'in `stomach`'i*
+4. Bunun içindeki `push` u çalıştırır. Böylece *prototip'in `stomach`'i çalışmış olur*
 
 Böylece tüm hamsterlar'ın bir tane `stomach`'i oluyor.
 
@@ -14,14 +14,13 @@ Her defaında prototip'ten `stomach` alındığında ve sonra `stomach.push` ile
 
 Aklınızda bulunsun basit bir atamada `this.stomach=` gibi basit atamada gerçekleşmez.
 
-
 ```js run
 let hamster = {
   stomach: [],
 
   eat(food) {
 *!*
-    // assign to this.stomach instead of this.stomach.push
+    // this.stomach.push yerine this.stomach'i ata.
     this.stomach = [food];
 */!*
   }
@@ -35,11 +34,11 @@ let lazy = {
   __proto__: hamster
 };
 
-// Speedy one found the food
+// Speedy yemeği buldu
 speedy.eat("apple");
 alert( speedy.stomach ); // apple
 
-// Lazy one's stomach is empty
+// Lazy'nin stomach'i boş kaldı
 alert( lazy.stomach ); // <nothing>
 ```
 
