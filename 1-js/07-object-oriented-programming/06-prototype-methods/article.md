@@ -72,13 +72,13 @@ Artık bunların hepsi bizim kullanımımızdadır.
 
 Teknik olarak `[[Prototype]]`'ı istediğimiz an alma/ayarlama işi yapabiliriz. Fakat genelde bunu sadece obje yaratırken kullanır ve daha sonra düzenleme yapmayız: `rabbit`, `animal`dan kalıtım alır fakat onu değiştirmez. JavaScript motorları da bunu yüksek derecede optimize edebilir. Prototipi `Object.setPrototypeOf` veya `obj.__proto__` ile sonradan değiştirmek oldukça yavaş bir operasyondur. Ama mümkündür.
 
-## "Very plain" objects
+## "En basit" Objeler
 
-As we know, objects can be used as associative arrays to store key/value pairs.
+Bildiğiniz gibi objeler anahtar/değer ikilisini tutan ilişkisel dizi şeklinde kullanılabilir.
 
-...But if we try to store *user-provided* keys in it (for instance, a user-entered dictionary), we can see an interesting glitch: all keys work fine except `"__proto__"`.
+...Eğer içerisinde *kullanıcı-kaynaklı*  anahtarlar ( örneğin kullanıcının girdiği sözlük tipi veriler) var ise, ilginç bir aksaklık meydana gelir: `"__proto_"` haricinde tüm anahtarlar doğru çalışır.
 
-Check out the example:
+Örneğin:
 
 ```js run
 let obj = {};
@@ -86,34 +86,33 @@ let obj = {};
 let key = prompt("What's the key?", "__proto__");
 obj[key] = "some value";
 
-alert(obj[key]); // [object Object], not "some value"!
+alert(obj[key]); // [object Object] olarak döner ,  "some value" değil!
 ```
+Eğer kullanıcı tipleri `__proto__` içerisinde ise atama görmezden gelinir!
 
-Here if the user types in `__proto__`, the assignment is ignored!
+Bu aslında çok da sürpriz olmasa gerek. `__proto__` farklı bir özelliktir: Ya obje olur veya `null`,  mesela bir karakter dizisi prototip olamaz.
 
-That shouldn't surprise us. The `__proto__` property is special: it must be either an object or `null`, a string can not become a prototype.
+Fakat buradaki amacımız böyle bir davranışı uygulamak değildi, değil mi? Biz key/value ikililerini kaydetmekti. `"__proto__"` anahtarı düzgün bir şekilde kaydedilmedi. Bundan dolayı bu bir bugdır. Burada etkisi berbat değildir fakat diğer durumlarda prototip gerçekten değişebilir ve çalışma tamamen istenmeyen bir sonuca varabilir.
 
-But we did not intend to implement such behavior, right? We want to store key/value pairs, and the key named `"__proto__"` was not properly saved. So that's a bug. Here the consequences are not terrible. But in other cases the prototype may indeed be changed, so the execution may go wrong in totally unexpected ways.
+Daha kötüsü -- genelde geliştiriciler böyle bir ihtimali düşünmezler bile. Bundan dolayı böyle bir bug'lar fark edilebilir ve saldırıya açık hale gelirler, özellikle JavaScript server tarafında kullanıldıysa.
 
-What's worst -- usually developers do not think about such possibility at all. That makes such bugs hard to notice and even turn them into vulnerabilities, especially when JavaScript is used on server-side.
+Böyle bir olay sadece `__proto__`'da meydana gelir diğer tüm özellikler normalde "atanabilir"'dir.
 
-Such thing happens only with `__proto__`. All other properties are "assignable" normally.
+Bu problemden nasıl kaçınılabilir?
 
-How to evade the problem?
+Öncelikle `Map` kullanılabilir, herşey doğru çalışır.
 
-First, we can just switch to using `Map`, then everything's fine.
+Fakat burada bize `Obje` yardımcı olabilir, çünkü dili yaratıcılar bu konuları uzun zaman önce düşünmüşler.
 
-But `Object` also can serve us well here, because language creators gave a thought to that problem long ago.
-
-The `__proto__` is not a property of an object, but an accessor property of `Object.prototype`:
+`__proto__` objenin bir özelliği değildir. Fakat `Object.prototype`'a erişimsağlar( accessor ):
 
 ![](object-prototype-2.png)
 
-So, if `obj.__proto__` is read or assigned, the corresponding getter/setter is called from its prototype, and it gets/sets `[[Prototype]]`.
+Bundan dolayı, Eğer `obj.__proto__` okunur veya atanırsa, ilgili alıcı/ayarlayıcı prototipten çağırılır, böylece `[[Prototoy]]` alınır/ayarlanır.
 
-As it was said in the beginning: `__proto__` is a way to access `[[Prototype]]`, it is not `[[Prototype]]` itself.
+Başlangıçta `__proto__` , `[[Prototype]]`a erişmek için bir yol olarak tanımlanmıştır, `[[Prototype]]` değil.
 
-Now, if we want to use an object as an associative array, we can do it with a little trick:
+Eğer, eğer objeyi ilişkisel dizi olarak kullanmak istiyorsanız şu şekilde yapabilirsiniz:
 
 ```js run
 *!*
@@ -126,15 +125,15 @@ obj[key] = "some value";
 alert(obj[key]); // "some value"
 ```
 
-`Object.create(null)` creates an empty object without a prototype (`[[Prototype]]` is `null`):
+`Object.create(null)`  prototip'i olmayan boş bir obje yaratır.(`[[Prototype]]` null'dur):
 
 ![](object-prototype-null.png)
 
-So, there is no inherited getter/setter for `__proto__`. Now it is processed as a regular data property, so the example above works right.
+Bundan dolayı `__proto__`  için atadan kalan alıcı/ayarlayıcı bulunmamaktadır. Artık sıradan bir veri özelliği olarak işlenir, bundan dolayı yukarıdaki örnek doğru bir şekilde çalışır.
 
-We can call such object "very plain" or "pure dictionary objects", because they are even simpler than regular plain object `{...}`.
+Böyle objelere "en basit" veya "saf sözlük objeleri" denir, Çünkü bunlar sıradan objelerden `{...}` bile daha basittirler.
 
-A downside is that such objects lack any built-in object methods, e.g. `toString`:
+Bu objelerin kötü tarafı ise, içind hiç bir varsayılan metod bulunmaz, Örneğin: `toString`:
 
 ```js run
 *!*
