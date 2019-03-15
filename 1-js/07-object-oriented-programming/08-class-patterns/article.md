@@ -1,22 +1,22 @@
 
-# Class patterns
+# Sınıf Desenleri
 
 ```quote author="Wikipedia"
-In object-oriented programming, a *class* is an extensible program-code-template for creating objects, providing initial values for state (member variables) and implementations of behavior (member functions or methods).
+Sınıf, nesne yönelimli programlama dillerinde nesnelerin özelliklerini, davranışlarını ve başlangıç durumlarını tanımlamak için kullanılan şablonlara verilen addır. Bir sınıftan türetilmiş bir nesne ise o sınıfın örneği olarak tanımlanır.
 ```
 
-There's a special syntax construct and a keyword `class` in JavaScript. But before studying it, we should consider that the term "class" comes from the theory of object-oriented programming. The definition is cited above, and it's language-independant.
+JavaScript dilinde yapıcı `class` sözcüğü bulunmaktadır. Fakat bunu çalışmadan önce, "class" sözcüğünün Nesne Yönelimli Programlamadan geldiğini söylemek gerekir. Tanım yukarıda alıntılanmıştır, dil bağımsızdır.
 
-In JavaScript there are several well-known programming patterns to make classes even without using the `class` keyword. And here we'll talk about them first.
+JavaScript dilinde bilinen birkaç programlama deseni bulunmaktadır, bu şekilde `class` anahtarını kullanmadan bile sınıflar yapılabilir. Öncelikle bunlardan bahsedelim.
 
-The `class` construct will be described in the next chapter, but in JavaScript it's a "syntax sugar" and an extension of one of the patterns that we'll study here.
+`class` yapıcısı bir sonraki bölümde anlatılacaktır. Aslında class yapısı JavaScript'te bu "syntax sugar"'dır yani bir desenin uzantısıdır. 
 
 [cut]
 
 
-## Functional class pattern
+## Fonksiyonel Sınıf Deseni
 
-The constructor function below can be considered a "class" according to the definition:
+Tanıma göre aşağıdaki kurucu fonksiyon bir "sınıf"'tır:
 
 ```js run
 function User(name) {
@@ -28,24 +28,23 @@ function User(name) {
 let user = new User("John");
 user.sayHi(); // John
 ```
+Tüm gerekli özellikleri taşımaktadır:
 
-It follows all parts of the definition:
+1. Obje yaratmak için "Program-kod-teması"'dır. `new` ile çağırılabilir.
+2. Durum için gerekli değerleri sağlar ( parametre'den `name` argümanın alınabilir olması)
+3. Metodlar sağlaması ( `sayHi` ).
 
-1. It is a "program-code-template" for creating objects (callable with `new`).
-2. It provides initial values for the state (`name` from parameters).
-3. It provides methods (`sayHi`).
+Buna *Fonksiyonel Sınıf Deseni* denir.
 
-This is called *functional class pattern*.
+Fonksiyonel desende, `user` içindeki yerel değişkenler ve fonksiyonlar, `this` ile atanmasalar, içeriden görünür fakat dışarıdan erişilemez olurlar.
 
-In the functional class pattern, local variables and nested functions inside `User`, that are not assigned to `this`, are visible from inside, but not accessible by the outer code.
-
-So we can easily add internal functions and variables, like `calcAge()` here:
+Bundan dolayı kolayca `calcAge()` gibi iç fonksiyonları ekleyebiliriz:
 
 ```js run
 function User(name, birthday) {
 
 *!*
-  // only visible from other methods inside User
+  // Sadece User içerisindeki diğer metodlar tarafından kullanılabilir.
   function calcAge() {
     return new Date().getFullYear() - birthday.getFullYear();
   }
@@ -60,17 +59,18 @@ let user = new User("John", new Date(2000,0,1));
 user.sayHi(); // John
 ```
 
-In this code variables `name`, `birthday` and the function `calcAge()` are internal, *private* to the object. They are only visible from inside of it.
+Yukarıdaki kodda `name`, `birthda` ve `calcAge()` fonksiyonları iç fonksiyonlardır objeye *private*(özel)'dir. Sadece kendi içerisinden çağırılabilir.
 
+Diğer taraftan `sayHi` dış *public* bir metoddur. `user`'ı oluşturan kod buna erişebilir.
 From the other hand, `sayHi` is the external, *public* method. The external code that creates `user` can access it.
 
-This way we can hide internal implementation details and helper methods from the outer code. Only what's assigned to `this` becomes visible outside.
+Böylece yardımcı metodları ve başka sınıflar tarafından kullanılmasını istemediğimiz kodları gizleyebiliriz. Bunlar sadece `this`'e atanırsa görünür olurlar.
 
-## Factory class pattern
+## Factory Sınıf Deseni
 
-We can create a class without using `new` at all.
+`new` kullanmadan da aslında sınıf yaratmak mümkündür.
 
-Like this:
+Şu şekilde:
 
 ```js run
 function User(name, birthday) {
@@ -92,7 +92,7 @@ let user = User("John", new Date(2000,0,1));
 user.sayHi(); // John
 ```
 
-As we can see, the function `User` returns an object with public properties and methods. The only benefit of this method is that we can omit `new`: write `let user = User(...)` instead of `let user = new User(...)`. In other aspects it's almost the same as the functional pattern.
+Gördüğünüz gibi, `User` bir obje döner ve buna ait kamusal özellikler ve metodlar mevcuttur. Bunun en büyük artısı `new` yazmamıza gerek kalmamasıdır;  `let user = new User(...)` yerin  `let user = User(...)` şeklinde yazabiliriz. Diğer bir deyişle fonksiyonel desen ile neredeyse aynıdır.
 
 ## Prototype-based classes
 
