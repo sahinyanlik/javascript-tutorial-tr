@@ -1,15 +1,15 @@
 
-# Classes
+# Sınıflar
 
-The "class" construct allows to define prototype-based classes with a clean, nice-looking syntax.
+"class" yapısı prototip-tabanlı sınıfların temiz ve güzel bir yazıma sahip olmasını sağlar.
 
 [cut]
 
-## The "class" syntax
+## "class" Yazımı 
 
-The `class` syntax is versatile, we'll start from a simple example first.
+`class` yazımı oldukça değişkendir. Öncelikle en basit olanıyla başlayalım
 
-Here's a prototype-based class `User`:
+Aşağıda prototip-bazlı `User` sınıfını görmektesiniz:
 
 ```js run
 function User(name) {
@@ -24,7 +24,7 @@ let user = new User("John");
 user.sayHi();
 ```
 
-...And that's the same using `class` syntax:
+...Aşağıda ise bunun `class` yazımıyla tekrar yazılmış hali bulunmaktadır:
 
 ```js run
 class User {
@@ -42,17 +42,16 @@ class User {
 let user = new User("John");
 user.sayHi();
 ```
+İkisinin de aynı olduğu kolayca görülmektedir. Dikakat ederseniz class içerisindeki metodların arasında virgül yoktur. Bazen bunu unutabilirsiniz bu durumda `class` çalışmayackatır. Bu normal obje değildir, sadece  `class` yazımıdır.
 
-It's easy to see that the two examples are alike. Just please note that methods in a class do not have a comma between them. Notice developers sometimes forget it and put a comma between class methods, and things don't work. That's not a literal object, but a class syntax.
+Peki `class` tam olarak ne işe yarar? Eğer dil-seviyesinde yeni bir varlık olarak algılarsanız yanlış olur.
 
-So, what exactly does `class` do? We may think that it defines a new language-level entity, but that would be wrong.
+Burada `class User{....}` aslında iki şey yapıyor:
 
-The `class User {...}` here actually does two things:
+1. `"constructor"` fonksiyonunu referens alan veren bir `User` değişkeni oluşturur.
+2. Tanımındakileri `User.prototype`'a koyar. Burada `sayHi` ve `constructor`'u içerir.
 
-1. Declares a variable `User` that references the function named `"constructor"`.
-2. Puts into `User.prototype` methods listed in the definition. Here it includes `sayHi` and the `constructor`.
-
-Here's the code to dig into the class and see that:
+Sınıf daha derinlemesine incelenirse aslında şu şekildedir:
 
 ```js run
 class User {
@@ -61,28 +60,26 @@ class User {
 }
 
 *!*
-// proof: User is the "constructor" function
+// kanır: User constructor(yapıcı) fonksiyondur.
 */!*
 alert(User == User.prototype.constructor); // true
 
 *!*
-// proof: there are two methods in its "prototype"
+// Kanıt: "prototipte" iki tane metod vardır.
 */!*
 alert(Object.getOwnPropertyNames(User.prototype)); // constructor, sayHi
 ```
 
-Here's the illustration of what `class User` creates:
+Aşağıda `class User` in yarattıkları hakkında bir görsel bulunmaktadır:
 
 ![](class-user.png)
 
 
+`class` demekki yapıcı metod ve prototip metodlarını tanımlayan özel bir yazımdır.
 
-So `class` is a special syntax to define a constructor together with its prototype methods.
+...Sadece bu değil. Küçük bazı farklılıkları da vardır:
 
-...But not only that. There are minor tweaks here and there:
-
-Constructors require `new`
-: Unlike a regular function, a class `constructor` can't be called without `new`:
+Yapıcılar `new`'e ihtiyaç duyarlar. Normal fonksiyonların aksine bir sınıfın `constructor`'(yapıcı)u `new` olmadan çağırılamaz:
 
 ```js run
 class User {
@@ -90,7 +87,7 @@ class User {
 }
 
 alert(typeof User); // function
-User(); // Error: Class constructor User cannot be invoked without 'new'
+User(); // Hata: Sınıf yapıcı User `new` olmadan uyarılamaz.
 ```
 
 Different string output
