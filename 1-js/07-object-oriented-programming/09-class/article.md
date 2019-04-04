@@ -90,23 +90,23 @@ alert(typeof User); // function
 User(); // Hata: Sınıf yapıcı User `new` olmadan uyarılamaz.
 ```
 
-Different string output
-: If we output it like `alert(User)`, some engines show `"class User..."`, while others show `"function User..."`.
+Farklı karakter dizisi çıktıları
+: Eğer `alert(User)` gibi çıktı verirsek, bazı javascript motorları bunu `"class User..."`, bazıları ise `"function User..."` şeklinde gösterir.
 
-Please don't be confused: the string representation may vary, but that's still a function, there is no separate "class" entity in JavaScript language.
+Karakter dizisi gösterimleri farklılık gösterse bile bunlar hala fonksiyondur ve JavaScript dilinde "class" diye varlık(entity) yoktur.
 
-Class methods are non-enumerable
-: A class definition sets `enumerable` flag to `false` for all methods in the `"prototype"`. That's good, because if we `for..in` over an object, we usually don't want its class methods.
+Sınıf metodları döngülenemezler
+: Bir Class tanımı  `"prototype"`'da bulunan tüm metodların `enumerable`(döngülenebilir) bayrağını `false` yapar. Bu iyidir çünkü eğer objeyi `for..in` ile dönersek aslında sınıf metodlarını istemeyiz.
 
-Classes have a default `constructor() {}`
-: If there's no `constructor` in the `class` construct, then an empty function is generated, same as if we had written `constructor() {}`.
+Sınıflar varsayılan olarak `constructor(){}`'a sahiptirler.
+: Eğer `class` içerisinde `constructor` bulunmazsa, boş bir ofnksiyon üretilir ve sanki biz `constructor(){}` yazmışız gibi çalışır.
 
-Classes always `use strict`
-: All code inside the class construct is automatically in strict mode.
+Sınıflar her zaman `use strict` kullanır.
+: Sınıf içerisindeki tüm kodlar otomatik olarak `sıkı` moda tabidir.
 
-### Getters/setters
+### Alıcı/ayarlayıcılar
 
-Classes may also include getters/setters. Here's an example with `user.name` implemented using them:
+Sınıflar alıcı/ayarlayıcıları da içerebilirler. Aşağıdaki `user.name` bunun uygulamasını gösterir:
 
 ```js run
 class User {
@@ -139,8 +139,7 @@ alert(user.name); // John
 
 user = new User(""); // Name too short.
 ```
-
-Internally, getters and setters are also created on the `User` prototype, like this:
+İçindeki alıcı/ayarlayıcılar aslında `User` prototipinde yaratılırlar, aşağıdaki gibi:
 
 ```js
 Object.defineProperty(User.prototype, {
@@ -154,12 +153,11 @@ Object.defineProperty(User.prototype, {
   }
 });
 ```
+### Sadece metodlar
 
-### Only methods
+Obje değişmezlerinden farklı olarak `özellik:değer` sınıf içerisinde tanımlanamaz. Sadece metodlar ve alıcı/ayarlayıcılar. Şartnamede bu sınırlamayı kaldırmak için bazı çalışmalar bulunmakla beraber henüz bitirilmemiştir.
 
-Unlike object literals, no `property:value` assignments are allowed inside `class`. There may be only methods and getters/setters. There is some work going on in the specification to lift that limitation, but it's not yet there.
-
-If we really need to put a non-function value into the prototype, then we can alter `prototype` manually, like this:
+Eğer gerçekten fonksiyon olmayan değerleri prototip'e koymak istiyorsanız, `prototype`'ı açağıdaki gibi değiştirmeniz gerekmektedir:
 
 ```js run
 class User { }
@@ -168,10 +166,9 @@ User.prototype.test = 5;
 
 alert( new User().test ); // 5
 ```
+Yani teknik olarak bu mümkündür, fakat bunu neden yaptığınıza emin olmalısınız. Çünkü böyle özellikler bu sınıfın tüm objelerinde paylaşılacaktır.
 
-So, technically that's possible, but we should know why we're doing it. Such properties will be shared among all objects of the class.
-
-An "in-class" alternative is to use a getter:
+Sınıf içerisinde bunun alternatifi ise alıcı kullanmaktır:
 
 ```js run
 class User {
@@ -182,8 +179,7 @@ class User {
 
 alert( new User().test ); // 5
 ```
-
-From the external code, the usage is the same. But the getter variant is a bit slower.
+Dışta ise kullanımı aynıdır. Fakat alıcı ile yazılan varyasyonu biraz daha yavaştır.
 
 ## Class Expression
 
