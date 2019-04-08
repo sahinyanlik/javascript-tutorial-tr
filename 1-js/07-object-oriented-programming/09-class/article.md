@@ -181,16 +181,16 @@ alert( new User().test ); // 5
 ```
 Dışta ise kullanımı aynıdır. Fakat alıcı ile yazılan varyasyonu biraz daha yavaştır.
 
-## Class Expression
+## Sınıf İfadeleri
 
-Just like functions, classes can be defined inside another expression, passed around, returned etc.
+Sınıflar da fonksiyonlar gibi diğer ifadelerin içerisinde tanımlanabilir, başka yerlere gönderilebilir, döndürülebilir vs.
 
-Here's a class-returning function ("class factory"):
+Aşağıdaki sınıf fonksiyon döndürmektedir:
 
 ```js run
 function makeClass(phrase) {
 *!*
-  // declare a class and return it
+  // sınıf tanıma ve bunu döndür.
   return class {
     sayHi() {
       alert(phrase);
@@ -203,29 +203,28 @@ let User = makeClass("Hello");
 
 new User().sayHi(); // Hello
 ```
+Aslında `sınıf`'ın sadece prototipe sahip fonksiyonun özel bir yazımı olduğunu hatırlarsanız bunun çok normal olduğu bellidir.
 
-That's quite normal if we recall that `class` is just a special form of a function-with-prototype definition.
-
-And, like Named Function Expressions, such classes also may have a name, that is visible inside that class only:
+Ayrıca, isimli fonksiyon ifadeleri gibi, sınıfların da isimleri olabilir ve bunlar sadece sınıf içerisinden erişilebilir.
 
 ```js run
-// "Named Class Expression" (alas, no such term, but that's what's going on)
+// "İsimli Sınıf tanımı" (böyle bir tanım yok ama bundan sonra bu şekliyle devam edeceğiz.)
 let User = class *!*MyClass*/!* {
   sayHi() {
-    alert(MyClass); // MyClass is visible only inside the class
+    alert(MyClass); //MyClass sadece sınıf içerisinden erişilebilir.
   }
 };
 
-new User().sayHi(); // works, shows MyClass definition
+new User().sayHi(); // Çalışır ve MyClass tanımını gösterir.
 
-alert(MyClass); // error, MyClass not visible outside of the class
+alert(MyClass); // hata, MyClass sınıfın dışarından erişilemez.
 ```
 
-## Static methods
+## Statik metodlar
 
-We can also assign methods to the class function, not to its `"prototype"`. Such methods are called *static*.
+Sınıf fonksiyonlarına ayrıca metodlar atamak da mümkündür. Ama bu `"prototipine" atanmaz. Bu tür metodlar *static* olarak adlandırılır.
 
-An example:
+Örneğin:
 
 ```js run
 class User {
@@ -238,8 +237,7 @@ class User {
 
 User.staticMethod(); // true
 ```
-
-That actually does the same as assigning it as a function property:
+Aslında fonksiyon özelliği atamak ile aynı işi yapar.
 
 ```js
 function User() { }
@@ -249,11 +247,11 @@ User.staticMethod = function() {
 };
 ```
 
-The value of `this` inside `User.staticMethod()` is the class constructor `User` itself (the "object before dot" rule).
+`User.staticMethod()` içerindeki `this` sınıf yapıcı `User`'dır yani kendisi.
 
-Usually, static methods are used to implement functions that belong to the class, but not to any particular object of it.
+Genelde statik metodlar sınıfa ait olan fonksiyonların uygulamasında kullanılır, fakat bunun herhangi bir objesinde kullanılmaz.
 
-For instance, we have `Article` objects and need a function to compare them. The natural choice would be `Article.compare`, like this:
+Örneğin `Article` objelerimiz olsun ve bunların karşılaştırılması için bir fonksiyon yazalım. Bunun doğal çözümü `Article.compare` diye bir metod yazmaktır:
 
 ```js run
 class Article {
@@ -283,17 +281,17 @@ articles.sort(Article.compare);
 alert( articles[0].title ); // Body
 ```
 
-Here `Article.compare` stands "over" the articles, as a means to compare them. It's not a method of an article, but rather of the whole class.
+Burada `Article.compare` `Article`'ların üzerinde bunları karşılaştırmak için gerekmektedir. Article`ın bir metodu olmaktan ziyada tüm sınıfındır.
 
-Another example would be a so-called "factory" method. Imagine, we need few ways to create an article:
+Diğer bir örnek ise çokça dile getirilen "factory" sınıflarıdır. Article üretmek için bir kaç yol bulunmaktadır:
 
-1. Create by given parameters (`title`, `date` etc).
-2. Create an empty article with today's date.
+1. Verilen parametrelerle (`title`, `date` etc).
+2. Bu günün tarihi ile boş bir obje üret.
 3. ...
 
-The first way can be implemented by the constructor. And for the second one we can make a static method of the class.
+Birincisi yapıcı metodu uygulamaktır. İkincisi ise metodun bir statik metoduyla çözülebilir.
 
-Like `Article.createTodays()` here:
+Örneğin `Article.createTodays()`:
 
 ```js run
 class Article {
@@ -314,20 +312,19 @@ let article = Article.createTodays();
 
 alert( article.title ); // Todays digest
 ```
+Artık ne zaman bugünün makalelerini istesrek sadece `Article.createTodays()` çağırmamız yeterlidir. Tekrardan bu metod article'ın değil aslında tüm sınıfın bir metodudur.
 
-Now every time we need to create a todays digest, we can call `Article.createTodays()`. Once again, that's not a method of an article, but a method of the whole class.
-
-Static methods are also used in database-related classes to search/save/remove entries from the database, like this:
+Statik metodlar ayrıca veritabanı-ilintili sınıflarda arama/kaydetme/silme gibi işlerde kullanılabilir.
 
 ```js
-// assuming Article is a special class for managing articles
-// static method to remove the article:
+// Article'ın article'ları düzenleyen bir sınıf olduğunu varsayalım.
+// Article'ları silen statik metod şu şekildedir.
 Article.remove({id: 12345});
 ```
 
-## Summary
+## Özet
 
-The basic class syntax looks like this:
+Basit sınıf yazımı şu şekildedir:
 
 ```js
 class MyClass {
@@ -342,9 +339,8 @@ class MyClass {
   // ...
 }
 ```
+`MyClass`'ın değeri yapıcı olarak sağlanır. Eğer `yapıcı` yoksa, boş fonksiyon döner.
 
-The value of `MyClass` is a function provided as `constructor`. If there's no `constructor`, then an empty function.
+Her durumda, sınıf tanımında yer alan methodlar `prototip`'in bir üyesi olur, bunun bir istisnası statik sınıflardır. Statik sınıflar doğrudan `MyClass.staticMetod()` olarak çağrılabilir. Statik metodlar sınıfın fonksiyona bağlanmak istediğinde kullanılır. Objelerinde kullanılmaz.
 
-In any case, methods listed in the class declaration become members of its `prototype`, with the exception of static methods that are written into the function itself and callable as `MyClass.staticMethod()`. Static methods are used when we need a function bound to a class, but not to any object of that class.
-
-In the next chapter we'll learn more about classes, including inheritance.
+Bir sonraki bölümde kalıtım ve sınıflar hakkında daha geniş bilgi verilecektir
