@@ -1,13 +1,13 @@
 
-# Class inheritance, super
+# Sınıf kalıtımı, super
 
-Classes can extend one another. There's a nice syntax, technically based on the prototypal inheritance.
+Sınıflar başka sınıfları genişletebilirler. Bunun için prototip kalıtımı tabanlı güzel bir yazılışı bulunmaktadır.
 
-To inherit from another class, we should specify `"extends"` and the parent class before the brackets `{..}`.
+Diğer bir sınıftan kalıtım sağlamak için `"extends"` ile belirtmek gerekmektedir. 
 
 [cut]
 
-Here `Rabbit` inherits from `Animal`:
+Aşağıda `Animal`'dan kalıtım alan `Rabbit` sınıfı gösterilmektedir:
 
 ```js run
 class Animal {
@@ -44,16 +44,17 @@ rabbit.run(5); // White Rabbit runs with speed 5.
 rabbit.hide(); // White Rabbit hides!
 ```
 
-The `extends` keyword actually adds a `[[Prototype]]` reference from `Rabbit.prototype` to `Animal.prototype`, just as you expect it to be, and as we've seen before.
+`extends` kelimesi aslında  `Rabbit.prototype`'dan referans alıp bunun  `[[Prototype]]`'ını `Animal.prototype`'a ekler. Aynen daha önce de gördüğümüz gibi.
 
 ![](animal-rabbit-extends.png)
 
-So now `rabbit` has access both to its own methods and to methods of `Animal`.
+Artık `rabbit` hem kendi metodlarına hem de `Animal` metodlarına erişebilir.
 
-````smart header="Any expression is allowed after `extends`"
-Class syntax allows to specify not just a class, but any expression after `extends`.
+````smart header="`extends`'ten sonra her türlü ifade kullanılabilir."
 
-For instance, a function call that generates the parent class:
+`Extends`'ten sonra sadece sınıf değil her türlü ifade kullanılabilir.
+
+Örneğin, üst sınıfı yaratan yeni bir fonksiyon çağrısı:
 
 ```js run
 function f(phrase) {
@@ -68,34 +69,35 @@ class User extends f("Hello") {}
 
 new User().sayHi(); // Hello
 ```
-Here `class User` inherits from the result of `f("Hello")`.
+Burada `class User` `f("Hello")`'nun sonucunu kalıtır.
 
-That may be useful for advanced programming patterns when we use functions to generate classes depending on many conditions and can inherit from them.
+Bu belki çok ileri teknik programlama kalıpları için  kullanışlı olabilir. Böylece birçok koşula göre fonksiyonları kullanarak farklı sınıflar oluşturabilir ve bunlardan kalıtım alınabilir. 
 ````
 
-## Overriding a method
+## Bir metodu geçersiz kılma, üstüne yazma.
 
-Now let's move forward and override a method. As of now, `Rabbit` inherits the `stop` method that sets `this.speed = 0` from `Animal`.
+Şimdi biraz daha ileri gidelim ve metodun üstüne yazalım. Şimdiden sonra `Rabbit` `stop` metodunu kalıtım alır, bu metod `this.speed=0`'ı `Animal` sınıfında ayarlamaya yarar.
 
-If we specify our own `stop` in `Rabbit`, then it will be used instead:
+Eğer `Rabbit` içerisinde kendi `stop` metodunuzu yazarsanız buna üstüne yazma denir ve `Animal`'da yazılmış `stop` metodu kullanılmaz.
 
 ```js
 class Rabbit extends Animal {
   stop() {
-    // ...this will be used for rabbit.stop()
+    // ... rabbit.stop() için artık bu kullanılacak.
   }
 }
 ```
 
+...Fakat genelde üst metodun üzerine yazmak istenmez, bunun yerine küçük değişiklikler yapmak veya fonksiyonliteyi genişletmek daha fazla tercih edilen yöntemdir. Metodda birçeyler yapar ve genelde bundan önce/sonra veya işlerken üst metodu çağırırız.
 
-...But usually we don't want to totally replace a parent method, but rather to build on top of it, tweak or extend its functionality. We do something in our method, but call the parent method before/after it or in the process.
+Sınıflar bunun için `"super"` anahtar kelimesini sağlarlar.
 
-Classes provide `"super"` keyword for that.
 
-- `super.method(...)` to call a parent method.
-- `super(...)` to call a parent constructor (inside our constructor only).
+- `super.method(...)` üst class'ın metodunu çağırmak için.
 
-For instance, let our rabbit autohide when stopped:
+- `super(...)` üst metodun yapıcısını ( constructor) çağırmak için kullanılır.
+
+Örneğin, Rabbit otomatik olarak durduğunda gizlensin.
 
 ```js run
 class Animal {
@@ -124,8 +126,8 @@ class Rabbit extends Animal {
 
 *!*
   stop() {
-    super.stop(); // call parent stop
-    this.hide(); // and then hide
+    super.stop(); // üst sınıfın stop metodunu çağır.
+    this.hide(); // sonra gizle
   }
 */!*
 }
@@ -135,8 +137,7 @@ let rabbit = new Rabbit("White Rabbit");
 rabbit.run(5); // White Rabbit runs with speed 5.
 rabbit.stop(); // White Rabbit stopped. White rabbit hides!
 ```
-
-Now `Rabbit` has the `stop` method that calls the parent `super.stop()` in the process.
+Artık `Rabbit`, `stop` metodunda üst sınıfın `super.stop()`'unu çağırmaktadır.
 
 ````smart header="Arrow functions have no `super`"
 As was mentioned in the chapter <info:arrow-functions>, arrow functions do not have `super`.
