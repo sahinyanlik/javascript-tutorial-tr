@@ -258,20 +258,19 @@ alert(rabbit.earLength); // 10
 */!*
 ```
 
+## Super: dahililer, [[HomeObject]]
 
-## Super: internals, [[HomeObject]]
+Artık `super`'in derinliklerine dalma vakti geldi. Altında yatan ilginç şeyler nelermiş bunları göreceğiz.
 
-Let's get a little deeper under the hood of `super`. We'll see some interesting things by the way.
+Öncelikle, şimdiye kadar öğrendiklerimizle `super` ile çalışmak mümkün değil.
 
-First to say, from all that we've learned till now, it's impossible for `super` to work.
+Ever gerçekten, kendimize soralım, nasıl teknik olarak böyle birşey çalışabilir? Bir obje metodu çalıştığında var olan objeyi `this` olarak alır. Eğer biz `super.method()`'u çağırırsak `metod`'u nasıl alabilir? Doğal olarak `method`'u var olan objenin prototipinden almak gerekmektedir. Peki teknik olarak bunu JavaScript motoru nasıl halledebilir?
 
-Yeah, indeed, let's ask ourselves, how it could technically work? When an object method runs, it gets the current object as `this`. If we call `super.method()` then, how to retrieve the `method`? Naturally, we need to take the `method` from the prototype of the current object. How, technically, we (or a JavaScript engine) can do it?
+Belki `this`in `[[Prototype]]`'ını `this.__proto__.method` olarak alıyordur? Malesef böyle çalışmıyor.
 
-Maybe we can get the method from `[[Prototype]]` of `this`, as `this.__proto__.method`? Unfortunately, that doesn't work.
+Bunu test edelim. Sınıflar olmadan basit objelerle, fazladan karmaşıklaştırmadan deneyelim.
 
-Let's try to do it. Without classes, using plain objects for the sake of simplicity.
-
-Here, `rabbit.eat()` should call `animal.eat()` method of the parent object:
+Aşağıda `rabbit.eat()`, kendisinin üst metodu `animal.eat()`'i çağırmalıdır:
 
 ```js run
 let animal = {
@@ -286,7 +285,7 @@ let rabbit = {
   name: "Rabbit",
   eat() {
 *!*
-    // that's how super.eat() could presumably work
+    // bizim tahminimze göre super.eat() bu şekilde çalışabilir.
     this.__proto__.eat.call(this); // (*)
 */!*
   }
@@ -294,12 +293,11 @@ let rabbit = {
 
 rabbit.eat(); // Rabbit eats.
 ```
+`(*)` satırında `animal` prototipinden `eat`'i almakta ve var olan obje kaynağından çağırmaktayız. Dikkat edin burada `.call(this)` oldukça önemlidir. Çünkü basit `this.__proto__.eat()` üst `eat`'i prototipin kaynağı ile çağırır, var olan objenin değil.
 
-At the line `(*)` we take `eat` from the prototype (`animal`) and call it in the context of the current object. Please note that `.call(this)` is important here, because a simple `this.__proto__.eat()` would execute parent `eat` in the context of the prototype, not the current object.
+Yukarıdaki kod beklendiği gibi çalışmaktadır. Doğru `alert` vermektedir.
 
-And in the code above it actually works as intended: we have the correct `alert`.
-
-Now let's add one more object to the chain. We'll see how things break:
+Şimdi bu zincire bir tane daha obje ekleyelim. İşler nasıl bozuluyor görelim:
 
 ```js run
 let animal = {
@@ -312,7 +310,7 @@ let animal = {
 let rabbit = {
   __proto__: animal,
   eat() {
-    // ...bounce around rabbit-style and call parent (animal) method
+    // ...tavşan-stili ayla ve üst sınıfı çağır.
     this.__proto__.eat.call(this); // (*)
   }
 };
@@ -320,7 +318,7 @@ let rabbit = {
 let longEar = {
   __proto__: rabbit,
   eat() {
-    // ...do something with long ears and call parent (rabbit) method
+    // ...uzun kulaklar ile birşeyler yap ve üst sınıfı çağır.
     this.__proto__.eat.call(this); // (**)
   }
 };
@@ -329,40 +327,39 @@ let longEar = {
 longEar.eat(); // Error: Maximum call stack size exceeded
 */!*
 ```
+Yazdığınız kod artık çalışmıyor! `longEar.eat()`'i çağırırken hata olduğunu görebilirsiniz.
 
-The code doesn't work any more! We can see the error trying to call `longEar.eat()`.
+Bu çok açık olmayabilir, fakat `longEar.eat()` in hata kodlarını takip ederseniz nedenini anlayabilirsiniz. `(*)` ve `(**)` satırlarında `this` var olan (`longEar`) objesidir. Hatırlayın: Tüm objeclerin metodları `this` olarak var olan objeyi alır, prototipini değil.
 
-It may be not that obvious, but if we trace `longEar.eat()` call, then we can see why. In both lines `(*)` and `(**)` the value of `this` is the current object (`longEar`). That's essential: all object methods get the current object as `this`, not a prototype or something.
+Öyleyse, `(*)`,`(**)` ve `this.__proto__` tamamen aynıdır: `rabbit`. Hepsi `rabbit.eat`'i sonsuz zincire çıkmadan çağırır.
 
-So, in both lines `(*)` and `(**)` the value of `this.__proto__` is exactly the same: `rabbit`. They both call `rabbit.eat` without going up the chain in the endless loop.
-
-Here's the picture of what happens:
+Aşağıda ne olduğunu daha iyi anlatan bir görsel bulunmakta:
 
 ![](this-super-loop.png)
 
-1. Inside `longEar.eat()`, the line `(**)` calls `rabbit.eat` providing it with `this=longEar`.
+1. `longEar.eat()` içerisinde `(**)` satırı `rabbit.eat`'i `this=longEar` olarak çağırmakta.
     ```js
-    // inside longEar.eat() we have this = longEar
+    // longEar.eat() içerisinde this = longEar şeklinde kullanmaktayız.
     this.__proto__.eat.call(this) // (**)
-    // becomes
+    // olur
     longEar.__proto__.eat.call(this)
-    // that is
+    // bu da 
     rabbit.eat.call(this);
     ```
-2. Then in the line `(*)` of `rabbit.eat`, we'd like to pass the call even higher in the chain, but `this=longEar`, so `this.__proto__.eat` is again `rabbit.eat`!
+2. Sonra `rabbit.eat`'in `(*)` satırı içerisinde bu zinciri daha üstlere çıkarmaya çalışıyoruz, fakat `this=longEar`, yani `this.__proto__.eat` yine `rabbit.eat`!
 
     ```js
-    // inside rabbit.eat() we also have this = longEar
+    // rabbit.eat() içerisinde thiss= longEar bulunmakta
     this.__proto__.eat.call(this) // (*)
-    // becomes
+    // olur
     longEar.__proto__.eat.call(this)
-    // or (again)
+    // veya (yine)
     rabbit.eat.call(this);
     ```
 
-3. ...So `rabbit.eat` calls itself in the endless loop, because it can't ascend any further.
+3. ... Artık `rabbit.eat` 'in kendisini neden sonsuz defa çağırdığını görmüş olduk.
 
-The problem can't be solved by using `this` alone.
+Problem sadece `this` kullanılarak çözülemez.
 
 ### `[[HomeObject]]`
 
