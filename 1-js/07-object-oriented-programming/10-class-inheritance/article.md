@@ -426,11 +426,11 @@ rabbit.eat();  // super'i çalıştırırken hata oldu çünkü [[HomeObject]] b
 */!*
 ```
 
-## Static methods and inheritance
+## Statik metod kalıtımı
 
-The `class` syntax supports inheritance for static properties too.
+`class` yazımı statik özellikler için de kalıtımı desteklemektedir.
 
-For instance:
+Örneğin:
 
 ```js run
 class Animal {
@@ -451,7 +451,7 @@ class Animal {
 
 }
 
-// Inherit from Animal
+// Animal'dan kalıtım al
 class Rabbit extends Animal {
   hide() {
     alert(`${this.name} hides!`);
@@ -467,33 +467,30 @@ rabbits.sort(Rabbit.compare);
 
 rabbits[0].run(); // Black Rabbit runs with speed 5.
 ```
+Artık `Rabbit.compare`'i `Animal.compare`'den kalıtım aldığını varsayarak çağırabiliriz.
 
-Now we can call `Rabbit.compare` assuming that the inherited `Animal.compare` will be called.
-
-How does it work? Again, using prototypes. As you might have already guessed, extends also gives `Rabbit` the `[[Prototype]]` reference to `Animal`.
-
+Peki nasıl çalışıyor? Tekrar söylemek gerekirse prototipler vasıtası ile. Tahmin ettiğiniz gibi, extends yazdığınızda bu `Rabbit`'e `Animal`'ın `[[Prototype]]`'ını vermektedir.
 
 ![](animal-rabbit-static.png)
 
-So, `Rabbit` function now inherits from `Animal` function. And `Animal` function normally has `[[Prototype]]` referencing `Function.prototype`, because it doesn't `extend` anything.
+Bundan dolayı `Rabbit` fonsiyonu artık `Animal` fonksiyonundan kalıtım almaktadır. Ve `Animal` fonksiyonu normalde `Function.prototype`'a referans eden `[[Prototype]]`'a sahiptir, çünkü birşeyden kalıtılmış değildir.
 
-Here, let's check that:
+Kontrol edecek olursak:
 
 ```js run
 class Animal {}
 class Rabbit extends Animal {}
 
-// for static propertites and methods
+// statik özellikler ve metodlar için
 alert(Rabbit.__proto__ == Animal); // true
 
-// and the next step is Function.prototype
+// bir sonraki adım Function.prototype
 alert(Animal.__proto__ == Function.prototype); // true
 
-// that's in addition to the "normal" prototype chain for object methods
+// bu "normal" obje metodları prototip zincirine yeni bir ektir.
 alert(Rabbit.prototype.__proto__ === Animal.prototype);
 ```
-
-This way `Rabbit` has access to all static methods of `Animal`.
+Bu yolla `Rabbit` artık `Animal`'ın tüm statik metodlarına erişebilir.
 
 ### No static inheritance in built-ins
 
