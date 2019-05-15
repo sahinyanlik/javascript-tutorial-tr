@@ -139,19 +139,18 @@ rabbit.stop(); // White Rabbit stopped. White rabbit hides!
 ```
 Artık `Rabbit`, `stop` metodunda üst sınıfın `super.stop()`'unu çağırmaktadır.
 
-````smart header="Arrow functions have no `super`"
-As was mentioned in the chapter <info:arrow-functions>, arrow functions do not have `super`.
+````smart header="Ok fonksiyonlarının `super`'i bulunmamaktadır."
+<info:arrow-functions> bölümünde bahsedildiği gibi, ok fonksiyonlarının `super`'i bulunmamaktadır.
 
-If accessed, it's taken from the outer function. For instance:
+Eğer erişim olursa bu `super` dışarıdaki fonksiyonundur. Örneğin:
 ```js
 class Rabbit extends Animal {
   stop() {
-    setTimeout(() => super.stop(), 1000); // call parent stop after 1sec
+    setTimeout(() => super.stop(), 1000); // üst'ün stop'unu 1 sn sonra çağır. 
   }
 }
 ```
-
-The `super` in the arrow function is the same as in `stop()`, so it works as intended. If we specified a "regular" function here, there would be an error:
+Ok fonksiyonu içerisindeki `super` ile `stop()` içerisine yazılan `super` aynıdır. Eğer "sıradan" bir fonksiyon tanımlarsak bu hataya neden olabilir:
 
 ```js
 // Unexpected super
@@ -160,17 +159,17 @@ setTimeout(function() { super.stop() }, 1000);
 ````
 
 
-## Overriding constructor
+## Yapıcı metodu ezmek.
 
-With constructors, things are is a little bit tricky.
+Yapıcı metodlar ile yapılan şeyler biraz çetrefillidir.
 
-Till now, `Rabbit` did not have its own `constructor`.
+Şimdiye kadar `Rabbit` kendisine ait `yapıcı`'ya sahipti.
 
-According to the [specification](https://tc39.github.io/ecma262/#sec-runtime-semantics-classdefinitionevaluation), if a class extends another class and has no `constructor`, then the following `constructor` is generated:
+[Şartname](https://tc39.github.io/ecma262/#sec-runtime-semantics-classdefinitionevaluation)'ye göre eğer bir sınıf diğer başka bir sınıftan türer ve `constructor`'a sahip değil ise aşağıdaki `yapıcı` otomatik olarak oluşturulur.
 
 ```js
 class Rabbit extends Animal {
-  // generated for extending classes without own constructors
+  // yapıcısı olmayan ve türetilen sınıf için oluşturulur.
 *!*
   constructor(...args) {
     super(...args);
@@ -178,10 +177,9 @@ class Rabbit extends Animal {
 */!*
 }
 ```
+Gördüğünüz gibi aslında üst sınıfın `yapıcı`'sını tüm argümanları göndererek çağırır. Eğer kendimiz bir yapıcı yazmazsak bu meydana gelir.
 
-As we can see, it basically calls the parent `constructor` passing it all the arguments. That happens if we don't write a constructor of our own.
-
-Now let's add a custom constructor to `Rabbit`. It will specify the `earLength` in addition to `name`:
+Özel olarak uyarlanmış bir yapıcı oluşturalım. Bu isim ile birlikte `earLength`'i de tanımlasın:
 
 ```js run
 class Animal {
@@ -206,29 +204,28 @@ class Rabbit extends Animal {
 }
 
 *!*
-// Doesn't work!
+// Çalışmaz!
 let rabbit = new Rabbit("White Rabbit", 10); // Error: this is not defined.
 */!*
 ```
+Nasıl ya! Hata aldık. Şimdi de rabbit oluşturamıyoruz. Neden peki?
 
-Whoops! We've got an error. Now we can't create rabbits. What went wrong?
+Kısa cevap: Türemiş sınıftaki yapıcı kesinlikle `super(...)` i çağırmalıdır. Bu `this`'den önce olmalıdır.
 
-The short answer is: constructors in inheriting classes must call `super(...)`, and (!) do it before using `this`.
+...Peki neden? Çok garip değilmi?
 
-...But why? What's going on here? Indeed, the requirement seems strange.
+Tabi bu açıklanabilir bir olay. Detayına girdikçe daha iyi anlayacaksınız.
 
-Of course, there's an explanation. Let's get into details, so you'd really understand what's going on.
+JavaScript'te "türeyen sınıfın yapıcı fonksiyonu" ve diğerleri arasında farklılıklar mevcuttur. Türemiş sınıflarda eş yapcıı fonksiyonlar içsel olarak `[[ConstructorKind]]:"derived"` şeklinde etiketlenir. 
 
-In JavaScript, there's a distinction between a "constructor function of an inheriting class" and all others. In an inheriting class, the corresponding constructor function is labelled with a special internal property `[[ConstructorKind]]:"derived"`.
+Farklılık:
 
-The difference is:
+- Normal yapıcı çalıştığında boş bir objeyi `this` olarak yaratır ve bunun ile devam eder.
+- Fakat türemiş sınıfın yapıcısı çalıştığında bunu yapmaz. Üst fonksiyonun yapıcısının bunu yapmasını bekler.
 
-- When a normal constructor runs, it creates an empty object as `this` and continues with it.
-- But when a derived constructor runs, it doesn't do it. It expects the parent constructor to do this job.
+Eğer kendimiz bir yapıcı yazarsak bundan dolayı `super` i çağırmamız gerekmektedir. Aksi halde `this` referansı oluşturulmaz ve biz de hata alırız.
 
-So if we're making a constructor of our own, then we must call `super`, because otherwise the object with `this` reference to it won't be created. And we'll get an error.
-
-For `Rabbit` to work, we need to call `super()` before using `this`, like here:
+`Rabbit`'in çalışabilmesi için `this`'den önce `super()` çağırılmalıdır.
 
 ```js run
 class Animal {
@@ -254,7 +251,7 @@ class Rabbit extends Animal {
 }
 
 *!*
-// now fine
+// Şimdi düzgün bir şekilde çalışır.
 let rabbit = new Rabbit("White Rabbit", 10);
 alert(rabbit.name); // White Rabbit
 alert(rabbit.earLength); // 10
