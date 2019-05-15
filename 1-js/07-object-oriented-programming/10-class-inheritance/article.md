@@ -363,15 +363,15 @@ Problem sadece `this` kullanılarak çözülemez.
 
 ### `[[HomeObject]]`
 
-To provide the solution, JavaScript adds one more special internal property for functions: `[[HomeObject]]`.
+Buna bir çözüm sağlamak için, JavaScript fonksiyonlar için bir tane dahili özellik eklemiştir: `[[HomeObject]]`
 
-**When a function is specified as a class or object method, its `[[HomeObject]]` property becomes that object.**
+**Bir fonksiyon sınıf veya obje metodu olarak tanımlandığında, bunun `[[HomeObject]]`'i kendisi olur**
 
-This actually violates the idea of "unbound" functions, because methods remember their objects. And `[[HomeObject]]` can't be changed, so this bound is forever. So that's a very important change in the language.
+Bu aslında bağımsız fonksiyonlar fikrini bozmaktadır, çünkü metodlar kendi objelerini hatırlamaktadır. Ayrıca `[[HomeObject]]` değiştirilemez, yani bu bağ sonsuza kadardır. Aslında bu dilde yapılan oldukça büyük bir değişiklik.
 
-But this change is safe. `[[HomeObject]]` is used only for calling parent methods in `super`, to resolve the prototype. So it doesn't break compatibility.
+Fakat bu değişiklik güvenlidir. `[[HomeObject]]` sadece üst sınıfın metodlarını `super`'de çağırmaya yarar. Bundan dolayı uyumluluğu bozmaz.
 
-Let's see how it works for `super` -- again, using plain objects:
+Şimdi `super` ile nasıl çalışıyor bunu inceleyelim --tekrardan, sade objeleri kullanalım:
 
 ```js run
 let animal = {
@@ -401,16 +401,15 @@ let longEar = {
 longEar.eat();  // Long Ear eats.
 */!*
 ```
+Her metod kendi objesinin `[[HomeObject]]` özelliğini hatırlamakta. Sonra `super`bunu üst objenin prototipini çözerken kullanır.
 
-Every method remembers its object in the internal `[[HomeObject]]` property. Then `super` uses it to resolve the parent prototype.
+`[[HomeObject]]` sınıflar veya sade objeler'de tanımlanan metodlar için tanımlanır. Fakat objeler için, metodlar aynen şu şekilde tanımlanmalıdır: `method()`,  `"method:function()"` şeklinde değil.
 
-`[[HomeObject]]` is defined for methods defined both in classes and in plain objects. But for objects, methods must be specified exactly the given way: as `method()`, not as `"method: function()"`.
-
-In the example below a non-method syntax is used for comparison. `[[HomeObject]]` property is not set and the inheritance doesn't work:
+Aşağıdaki örnekte karşılaştırma için metod-olmayan yazım kullanılmıştır. `[[HomeObject]]` özelliği tanımlanmadı bundan dolayı da kalıtım çalışmayacaktır.
 
 ```js run
 let animal = {
-  eat: function() { // should be the short syntax: eat() {...}
+  eat: function() { // kısa yazım: eat() {...} olmalıdır.
     // ...
   }
 };
@@ -423,7 +422,7 @@ let rabbit = {
 };
 
 *!*
-rabbit.eat();  // Error calling super (because there's no [[HomeObject]])
+rabbit.eat();  // super'i çalıştırırken hata oldu çünkü [[HomeObject]] bulunmamakta.
 */!*
 ```
 
