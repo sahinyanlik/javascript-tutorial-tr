@@ -492,17 +492,17 @@ alert(Rabbit.prototype.__proto__ === Animal.prototype);
 ```
 Bu yolla `Rabbit` artık `Animal`'ın tüm statik metodlarına erişebilir.
 
-### No static inheritance in built-ins
+### Gömülülerde statik kalıtım bulunmamaktadır.
 
-Please note that built-in classes don't have such static `[[Prototype]]` reference. For instance, `Object` has `Object.defineProperty`, `Object.keys` and so on, but `Array`, `Date` etc do not inherit them.
+Bölümü sınıflar statik `[[Prototype]]` referansına sahip değildirler. Örneğin `Object`, `Object.defineProperty` ve `Object.keys` gibi özelliklere sahiptir, fakat `Array`, `Date` vs. bunları kalıtım alamaz.
 
-Here's the picture structure for `Date` and `Object`:
+Aşağıda `Date` ve `Object`'in yapısı verilmiştir.
 
 ![](object-date-inheritance.png)
 
-Note, there's no link between `Date` and `Object`. Both `Object` and `Date` exist independently. `Date.prototype` inherits from `Object.prototype`, but that's all.
+Dikkat ederseniz `Date` ile `Object` arasında bir bağ yok. İkisi de birbirinden ayrı şekilde varolmakta. `Date.prototype`, `Object.prototype`'tan kalıtılmakta fakat tamamı bu.
 
-Such difference exists for historical reasons: there was no thought about class syntax and inheriting static methods at the dawn of JavaScript language.
+Bu ayrılıklar aslında JavaScript'e başlangıçta sınıf yapısı veya statik metodların kalıtımı gibi yazımların düşünülmemesinden dolayıdır.
 
 ## Natives are extendable
 
