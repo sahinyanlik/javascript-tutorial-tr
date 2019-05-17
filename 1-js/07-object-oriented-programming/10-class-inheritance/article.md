@@ -504,14 +504,14 @@ Dikkat ederseniz `Date` ile `Object` arasında bir bağ yok. İkisi de birbirind
 
 Bu ayrılıklar aslında JavaScript'e başlangıçta sınıf yapısı veya statik metodların kalıtımı gibi yazımların düşünülmemesinden dolayıdır.
 
-## Natives are extendable
+## Yereller genişletilebilir.
 
-Built-in classes like Array, Map and others are extendable also.
+Array, Map ve bunun gibi gömülü olarak gelen sınıflar da genişletilebilir.
 
-For instance, here `PowerArray` inherits from the native `Array`:
+Örneğin aşağıda `Array`'den kalıtım almış `PowerArray`'i görebilirsiniz:
 
 ```js run
-// add one more method to it (can do more)
+// fazladan bir tane daha metod ekledik
 class PowerArray extends Array {
   isEmpty() {
     return this.length == 0;
@@ -525,19 +525,18 @@ let filteredArr = arr.filter(item => item >= 10);
 alert(filteredArr); // 10, 50
 alert(filteredArr.isEmpty()); // false
 ```
+Burada ilginç birşey var. `filter`, `map` ve bunun gibi gömülü sınıflar kalıtılan objenin aynı tipinde obje dönderirler. Bunun için yapıcıdaki özelliklere bakarlar.
 
-Please note one very interesting thing. Built-in methods like `filter`, `map` and others -- return new objects of exactly the inherited type. They rely on the `constructor` property to do so.
-
-In the example above,
+Örneğin:
 ```js
 arr.constructor === PowerArray
 ```
+Ne zaman `arr.filter()` çağırılırsa, sonuç olarak `new PowerArray` ile aynı olacak şekilde bir array üretir. Böylece metodlarını kullanıp, zincirin altlarına doğru inebiliriz.
 
-So when `arr.filter()` is called, it internally creates the new array of results exactly as `new PowerArray`. And we can keep using its methods further down the chain.
+Dahası, bu davranışı değiştirebiliriz. Statik alıcılar `Symbol.species`, eğer varsa, böyle bir durumda yapıcılarını döner.
 
-Even more, we can customize that behavior. The static getter `Symbol.species`, if exists, returns the constructor to use in such cases.
+Örneğin, aşağıda `map`, `filter` gibi gömülü metodlar `Symbol.species`'ten dolayı "normal" dizi dönderirler:
 
-For example, here due to `Symbol.species` built-in methods like `map`, `filter` will return "normal" arrays:
 
 ```js run
 class PowerArray extends Array {
@@ -546,7 +545,7 @@ class PowerArray extends Array {
   }
 
 *!*
-  // built-in methods will use this as the constructor
+  // gömülü metodlar bunu yapıcı olarak kullanılar.
   static get [Symbol.species]() {
     return Array;
   }
@@ -556,13 +555,12 @@ class PowerArray extends Array {
 let arr = new PowerArray(1, 2, 5, 10, 50);
 alert(arr.isEmpty()); // false
 
-// filter creates new array using arr.constructor[Symbol.species] as constructor
+// filter arr.constructor[Symbol.species]'i yapıcı olarak kullanıp yeni bir dizi üretir.
 let filteredArr = arr.filter(item => item >= 10);
 
 *!*
-// filteredArr is not PowerArray, but Array
+// filteredArr , PowerArray değil normal Array'dir.
 */!*
-alert(filteredArr.isEmpty()); // Error: filteredArr.isEmpty is not a function
+alert(filteredArr.isEmpty()); // Error: filteredArr.isEmpty is fonksiyon değildir.
 ```
-
-We can use it in more advanced keys to strip extended functionality from resulting values if not needed. Or, maybe, to extend it even further.
+Daha ileri seviye anahtarlarda eğer fonksiyonalite gerekli değilse bunları böylece ayırabiliriz. İsterseniz, geliştirebilirsiniz.
