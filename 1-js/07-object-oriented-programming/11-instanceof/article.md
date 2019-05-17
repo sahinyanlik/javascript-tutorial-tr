@@ -1,8 +1,8 @@
-# Class checking: "instanceof"
+# Sınıf kontrolü: "instanceof"
 
-The `instanceof` operator allows to check whether an object belongs to a certain class. It also takes inheritance into account.
+`instanceof` operatörü bir objenin belirli bir sınıfa ait olup olmadığını kontrol eder. Kalıtımı da hesaba kadar.
 
-Such a check may be necessary in many cases, here we'll use it for building a *polymorphic* function, the one that treats arguments differently depending on their type.
+Böyle bir kontrole bir çok durumda ihtiyacımız olabilir. Aşağıda *polymorphic* fonksiyon inşa etmek için, argümanların tipine göre farklı davranış sergileyen bir yapı yer almaktadır.
 
 [cut]
 
