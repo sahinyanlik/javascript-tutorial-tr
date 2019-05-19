@@ -6,28 +6,29 @@ Böyle bir kontrole bir çok durumda ihtiyacımız olabilir. Aşağıda *polymor
 
 [cut]
 
-## The instanceof operator [#ref-instanceof]
+## instanceof operatorü [#ref-instanceof]
 
-The syntax is:
+
+Yazımı şu şekildedir:
 ```js
 obj instanceof Class
 ```
 
-It returns `true` if `obj` belongs to the `Class` (or a class inheriting from it).
+Eğer `obj`'e `Class`'a aitse `true` döner. ( Veya `Class`'tan türüyorsa)
 
-For instance:
+Örneğin:
 
 ```js run
 class Rabbit {}
 let rabbit = new Rabbit();
 
-// is it an object of Rabbit class?
+// `Rabbit` sınıfının bir objesimidir?
 *!*
 alert( rabbit instanceof Rabbit ); // true
 */!*
 ```
 
-It also works with constructor functions:
+Bu yapıcı fonksiyonlar için de çalışır:
 
 ```js run
 *!*
@@ -38,7 +39,7 @@ function Rabbit() {}
 alert( new Rabbit() instanceof Rabbit ); // true
 ```
 
-...And with built-in classes like `Array`:
+...`Array` gibi gömülü sınıflar için de
 
 ```js run
 let arr = [1, 2, 3];
@@ -46,16 +47,16 @@ alert( arr instanceof Array ); // true
 alert( arr instanceof Object ); // true
 ```
 
-Please note that `arr` also belongs to the `Object` class. That's because `Array` prototypally inherits from `Object`.
+Dikkat edin `arr` ayrıca `Object` sınıfına da aittir. Çünkü `Array` prototipi `Object`'ten kalıtım alır.
 
-The `instanceof` operator examines the prototype chain for the check, and is also fine-tunable using the static method `Symbol.hasInstance`.
+`instanceof` operatörü prototip zincirini kontrol eder. `Symbol.hasInstance` statik metodu ile daha performanslı yapılabilir.
 
-The algorithm of `obj instanceof Class` works roughly as follows:
+`obj instanceof Class` algoritması kabaca aşağıdaki gibi çalışır:
 
-1. If there's a static method `Symbol.hasInstance`, then use it. Like this:
+1. Eğer `Symbol.hasInstance` statik metodu var ise onu kullan. Şu şekilde:
 
     ```js run
-    // assume anything that canEat is an animal
+    // canEat yapabilen herşeyi animal varsayalım.
     class Animal {
       static [Symbol.hasInstance](obj) {
         if (obj.canEat) return true;
@@ -63,12 +64,12 @@ The algorithm of `obj instanceof Class` works roughly as follows:
     }
 
     let obj = { canEat: true };
-    alert(obj instanceof Animal); // true: Animal[Symbol.hasInstance](obj) is called
+    alert(obj instanceof Animal); // true: Animal[Symbol.hasInstance](obj) çağırıldı.
     ```
 
-2. Most classes do not have `Symbol.hasInstance`. In that case, check if `Class.prototype` equals to one of prototypes in the `obj` prototype chain.
+2. Çoğu sınıf `Symbol.hasInstance`'a sahip değildir. Bu durumda eğer `Class.prototype` `obj`'nin bir prototipine zincirde olup olmadığını kontrol eder.
 
-    In other words, compare:
+    Diğer bir deyişle:
     ```js
     obj.__proto__ == Class.prototype
     obj.__proto__.__proto__ == Class.prototype
@@ -76,10 +77,10 @@ The algorithm of `obj instanceof Class` works roughly as follows:
     ...
     ```
 
-    In the example above `Rabbit.prototype == rabbit.__proto__`, so that gives the answer immediately.
-
-    In the case of an inheritance, `rabbit` is an instance of the parent class as well:
-
+    Yukarıdaki örnekte `Rabbit.prototype == rabbit.__proto__`, cevabı doğrudan verir.
+    
+    Kalıtım yönünden ise `rabbit` üst sınıfın da instanceof'u dur.
+    
     ```js run
     class Animal {}
     class Rabbit extends Animal {}
@@ -92,32 +93,33 @@ The algorithm of `obj instanceof Class` works roughly as follows:
     // rabbit.__proto__.__proto__ == Animal.prototype (match!)
     ```
 
-Here's the illustration of what `rabbit instanceof Animal` compares with `Animal.prototype`:
+Aşağıda `rabbit instanceof Animal`'ın `Animal.prototype`a karşılaştırılmasıgösterilmiştir.
 
 ![](instanceof.png)
 
-By the way, there's also a method [objA.isPrototypeOf(objB)](mdn:js/object/isPrototypeOf), that returns `true` if `objA` is somewhere in the chain of prototypes for `objB`. So the test of `obj instanceof Class` can be rephrased as `Class.prototype.isPrototypeOf(obj)`.
+Ayrıca [objA.isPrototypeOf(objB)](mdn:js/object/isPrototypeOf) metodu ile eğer `objA` `objB`'nin prototip zincirinin herhangi bir yerindeyse `true` döner. `obj instanceof Class` şu şekilde de yazılabilir `Class.prototype.isPrototypeOf(obj)`
 
-That's funny, but the `Class` constructor itself does not participate in the check! Only the chain of prototypes and `Class.prototype` matters.
+`Class` yapıcısının kendisi bu kontrolde yer almaz, garip değil mi? Sadece `Class.prototype` ve prototiplerin zinciri önemlidir.
 
-That can lead to interesting consequences when `prototype` is changed.
+Bu `prototip` değiştiğinde farklı sonuçlara yol açabilir.
 
-Like here:
+Aşağıdaki gibi:
+
 
 ```js run
 function Rabbit() {}
 let rabbit = new Rabbit();
 
-// changed the prototype
+// prototip değişti
 Rabbit.prototype = {};
 
-// ...not a rabbit any more!
+// ...artık rabbit değil!
 *!*
 alert( rabbit instanceof Rabbit ); // false
 */!*
 ```
 
-That's one of reasons to avoid changing `prototype`. Just to keep safe.
+Prototip'i değiştirmemeniz ve daha güvenli tutmanız için bir diğer neden daha olmuş oldu. 
 
 ## Bonus: Object toString for the type
 
