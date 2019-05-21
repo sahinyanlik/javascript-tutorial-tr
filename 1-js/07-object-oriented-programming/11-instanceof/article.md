@@ -93,7 +93,7 @@ Dikkat edin `arr` ayrıca `Object` sınıfına da aittir. Çünkü `Array` proto
     // rabbit.__proto__.__proto__ == Animal.prototype (match!)
     ```
 
-Aşağıda `rabbit instanceof Animal`'ın `Animal.prototype`a karşılaştırılmasıgösterilmiştir.
+Aşağıda `rabbit instanceof Animal`'ın `Animal.prototype`a karşılaştırılması gösterilmiştir.
 
 ![](instanceof.png)
 
@@ -121,9 +121,9 @@ alert( rabbit instanceof Rabbit ); // false
 
 Prototip'i değiştirmemeniz ve daha güvenli tutmanız için bir diğer neden daha olmuş oldu. 
 
-## Bonus: Object toString for the type
+## Bonus: Tip için Object toString
 
-We already know that plain objects are converted to string as `[object Object]`:
+Bildiğiniz gibi basit objeler karakter dizisine `[object Object]` şeklinde çevrilir.
 
 ```js run
 let obj = {};
@@ -131,35 +131,33 @@ let obj = {};
 alert(obj); // [object Object]
 alert(obj.toString()); // the same
 ```
+Bu `toString`'i bu şekilde tanımlamalarından dolayıdır. Fakat görünenden daha güçlü bir `toString` yazmak için gizli özellikler bulunmaktadır. Bunu `typeof`'un daha genişi ve `instanceof`'un alternatifi olarak görmek mümkün.
 
-That's their implementation of `toString`. But there's a hidden feature thank makes `toString` actually much more powerful than that. We can use it as an extended `typeof` and an alternative for `instanceof`.
+Garip geliyor değilmi. Bakalım neymiş
 
-Sounds strange? Indeed. Let's demistify.
+[Şartname](https://tc39.github.io/ecma262/#sec-object.prototype.tostring), incelendiğinde gömülü gelen `toString` metodunun objeden çıkarılabileceği ve başka bir değerin kaynağında çalıştırabileceği görülmektedir. Sonucu da bu değere göre gelir.
 
-By [specification](https://tc39.github.io/ecma262/#sec-object.prototype.tostring), the built-in `toString` can be extracted from the object and executed in the context of any other value. And its result depends on that value.
+- Sayı için `[object Number]`
+- Boolean değerler için `[object Boolean]`
+- `null` için: `[object Null]`
+- `undefined` için: `[object Undefined]`
+- Diziler için: `[object Array]`
+- ...vs (düzenlenebilir).
 
-- For a number, it will be `[object Number]`
-- For a boolean, it will be `[object Boolean]`
-- For `null`: `[object Null]`
-- For `undefined`: `[object Undefined]`
-- For arrays: `[object Array]`
-- ...etc (customizable).
-
-Let's demonstrate:
+Bir örnekle gösterelim:
 
 ```js run
-// copy toString method into a variable for convenience
+// kolaylık olması için `toString` metodunu bir değişkene kopyalayalım
 let objectToString = Object.prototype.toString;
 
-// what type is this?
+// Bu hangi tipte?
 let arr = [];
 
 alert( objectToString.call(arr) ); // [object Array]
 ```
+Burada [call](mdn:js/function/call)'i kullandık ve [](info:call-apply-decorators) bölümünde `objectToString` fonksiyonunun nasıl `this=arr` kaynağında kullanılacağı gösterilmişti.
 
-Here we used [call](mdn:js/function/call) as described in the chapter [](info:call-apply-decorators) to execute the function `objectToString` in the context `this=arr`.
-
-Internally, the `toString` algorithm examines `this` and returns the corresponding result. More examples:
+Dahili olarak `toString` algoritması `this`'i kontrol eder ve buna denk gelen sonucu döner. Örneğin:
 
 ```js run
 let s = Object.prototype.toString;
