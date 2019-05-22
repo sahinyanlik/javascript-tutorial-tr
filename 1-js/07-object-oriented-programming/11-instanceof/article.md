@@ -197,16 +197,15 @@ Sonunda daha güçlü bir typeof'a sahip olduk. Artık sadece ilkel datalar içi
 
 Gömülü gelen objeler için tipi karakter dizi olarak almak istediğimizde `instanceof` yerine bunu kullanabiliriz. Instanceof sadece kontrol işlemi yapmaktaydı.
 
-## Summary
+## Özet
+Bildiğimiz tip kontrol metodlarının üzerinden geçecek olursak:
 
-Let's recap the type-checking methods that we know:
-
-|               | works for   |  returns      |
+|               | çalışır   |  döner      |
 |---------------|-------------|---------------|
-| `typeof`      | primitives  |  string       |
-| `{}.toString` | primitives, built-in objects, objects with `Symbol.toStringTag`   |       string |
-| `instanceof`  | objects     |  true/false   |
+| `typeof`      | ilkellerde  |  string       |
+| `{}.toString` | ilkellerde, gömülü ve `Symbol.toStringTag`'li objelerde   |       string |
+| `instanceof`  | objelerde     |  true/false   |
 
-As we can see, `{}.toString` is technically a "more advanced" `typeof`.
+Gördüğünüz gibi `{}.toString` teknik olarak "en gelişmiş" `typeof`'tur denebilir.
 
-And `instanceof` operator really shines when we are working with a class hierarchy and want to check for the class taking into account inheritance.
+`instanceof` operatörü sınıf hiyerarşilerileri ve bu hiyerarşiyi göz önüne alacak sınıf için bulunmaz bir kaynaktır.
