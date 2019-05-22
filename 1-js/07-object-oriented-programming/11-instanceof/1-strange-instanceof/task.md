@@ -1,4 +1,4 @@
-önem: 5
+importance: 5
 
 
 ---
