@@ -169,9 +169,9 @@ alert( s.call(alert) ); // [object Function]
 
 ### Symbol.toStringTag
 
-The behavior of Object `toString` can be customized using a special object property `Symbol.toStringTag`.
+Objenin `toString` metodu özel bir özellikle `Symbol.toStringTag` düzenlenebilir.
 
-For instance:
+Örneğin:
 
 ```js run
 let user = {
@@ -181,22 +181,21 @@ let user = {
 alert( {}.toString.call(user) ); // [object User]
 ```
 
-For most environment-specific objects, there is such a property. Here are few browser specific examples:
+Çoğu çevre-özel objelerde böyle özellikler bulunur. Aşağıda tarayıcı tabanlılar yer almaktadır:
 
 ```js run
-// toStringTag for the envinronment-specific object and class:
+// Çevre-özel objeler ve sınıflar için toStringTag 
 alert( window[Symbol.toStringTag]); // window
 alert( XMLHttpRequest.prototype[Symbol.toStringTag] ); // XMLHttpRequest
 
 alert( {}.toString.call(window) ); // [object Window]
 alert( {}.toString.call(new XMLHttpRequest()) ); // [object XMLHttpRequest]
 ```
+Gördüğünüz gibi, sonuç kesinlikle `Symbol.toStringTag`'dır ve varsa `[object ...]` içerisinde saklanır.
 
-As you can see, the result is exactly `Symbol.toStringTag` (if exists), wrapped into `[object ...]`.
+Sonunda daha güçlü bir typeof'a sahip olduk. Artık sadece ilkel datalar için değil, gömülü gelen objeler için bile çalışabilir durumdadır.
 
-At the end we have "typeof on steroids" that not only works for primitive data types, but also for built-in objects and even can be customized.
-
-It can be used instead of `instanceof` for built-in objects when we want to get the type as a string rather than just to check.
+Gömülü gelen objeler için tipi karakter dizi olarak almak istediğimizde `instanceof` yerine bunu kullanabiliriz. Instanceof sadece kontrol işlemi yapmaktaydı.
 
 ## Summary
 
