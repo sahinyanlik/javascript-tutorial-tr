@@ -1,16 +1,16 @@
-# Mixins
+# Mixinler
 
-In JavaScript we can only inherit from a single object. There can be only one `[[Prototype]]` for an object. And a class may extend only one other class.
+JavaScript sadece bir objeden kalıtım yapmaya izin verir. Bir obje için sadece bir tane `[[Prototype]]` olabilir. Ayrıca bir sınıf sadece bir sınıfı genişletebilir.
 
-But sometimes that feels limiting. For instance, I have a class `StreetSweeper` and a class `Bycicle`, and want to make a `StreetSweepingBycicle`.
+Bu bizi sınırlandırabilir. Örneğin, `StreetSweeper` ve `Bycicle` adında iki tane sınıfınız var ve bunlardan `StreetSweepingBycicle` adında bir sınıf yaratmak istiyorsunuz.
 
-Or, talking about programming, we have a class `Renderer` that implements templating and a class `EventEmitter` that implements event handling, and want to merge these functionalities together with a class `Page`, to make a page that can use templates and emit events.
+Veya programlama hakkında konuşacak olursak, `Renderer`adında şablonu uygulayan ve `EventEmitter` adında olayları işleyen bir sınıfımız olsun, ve bu fonksiyonaliteyi birlikte `Page` adında bir sınıfta kullanmak istiyoruz. Böylece page hem şabloları kullanabiliecek hemde hemde olayları yayacak(emit).
 
-There's a concept that can help here, called "mixins".
+Burada bize `mixin` konsepti yardımcı olabilir.
 
-As defined in Wikipedia, a [mixin](https://en.wikipedia.org/wiki/Mixin) is a class that contains methods for use by other classes without having to be the parent class of those other classes.
+Wikipedia'da şu şekilde tanımlanmıştır: [mixin](https://en.wikipedia.org/wiki/Mixin) sınıfı diğer sınıflar tarafından kullanılacak metodları olan ve bunun için bir üst sınıfa ihtiyaç duymayan yapıdır.
 
-In other words, a *mixin* provides methods that implement a certain behavior, but we do not use it alone, we use it to add the behavior to other classes.
+Diğer bir deyişle *mixin* belirli davranışları uygulayan metodları sağlar, fakat bunu tek başına kullanmayız, bunu diğer sınıflara başka davranışlar eklemek için kullanırız.
 
 ## A mixin example
 
