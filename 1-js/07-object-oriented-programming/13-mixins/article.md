@@ -102,24 +102,24 @@ Dikkat ederseniz `sayHiMixin` içinde `super.say() çağırıldığında o mixin
 
 ## EventMixin
 
-Now let's make a mixin for real life.
+Artık gerçek olaylar için mixin yapabiliriz.
 
-The important feature of many objects is working with events.
+Çoğu objenin en önemli özelliği olaylar(event) çalışabilmesidir.
 
-That is: an object should have a method to "generate an event" when something important happens to it, and other objects should be able to "listen" to such events.
+Bir obje önemli bir olay olduğunda "olay" yaratacak metoda sahip olmalıdır. Diğer objeler ise böyle bir olayı "dinlemeli"'dir.
 
-An event must have a name and, optionally, bundle some additional data.
+Bir olay isme sahip olmalıdır, bunun ile birlikte ek verileri de barındırabilir.
 
-For instance, an object `user` can generate an event `"login"` when the visitor logs in. And another object `calendar` may want to receive such events to load the calendar for the logged-in person.
+Örneğin `user` objesi kullanıcı giriş yapacağı zaman `"login"` olayını oluşturabilir. Diğer bir `calendar` objesi ise bu olayı alıp giriş yapan kullanıcı için takvimi doldurabilir.
 
-Or, a `menu` can generate the event `"select"` when a menu item is selected, and other objects may want to get that information and react on that event.
+Veya bir `menu` `"select"` adında menüden seçim yapıldığında oluşturulan bir olay yaratabilir, diğer objeler bilgi alabilir ve bu olaya göre işlem yapabilir.
 
-Events is a way to "share information" with anyone who wants it. They can be useful in any class, so let's make a mixin for them:
+Olaylar "bilgileri paylaşmak" için bir yöntemdir. Bunlar her sınıfta kullanışlı olabilir, bir örnek yapalım:
 
 ```js run
 let eventMixin = {
   /**
-   * Subscribe to event, usage:
+   * Olaya kayıt olma, kullanımı:
    *  menu.on('select', function(item) { ... }
   */
   on(eventName, handler) {
@@ -131,7 +131,7 @@ let eventMixin = {
   },
 
   /**
-   * Cancel the subscription, usage:
+   * Olaydan kaydı silme, kullanımı:
    *  menu.off('select', handler)
    */
   off(eventName, handler) {
@@ -145,53 +145,52 @@ let eventMixin = {
   },
 
   /**
-   * Generate the event and attach the data to it
+   * Olay yarat ve buna veri ekle
    *  this.trigger('select', data1, data2);
    */
   trigger(eventName, ...args) {
     if (!this._eventHandlers || !this._eventHandlers[eventName]) {
-      return; // no handlers for that event name
+      return; // Bu olayın ismi ile başka kotarıcı yok.
     }
 
-    // call the handlers
+    // kotarıcıyı çağır.
     this._eventHandlers[eventName].forEach(handler => handler.apply(this, args));
   }
 };
 ```
 
-There are 3 methods here:
+Burada 3 tane metod var:
 
-1. `.on(eventName, handler)` -- assigns function `handler` to run when the event with that name happens. The handlers are stored in the `_eventHandlers` property.
-2. `.off(eventName, handler)` -- removes the function from the handlers list.
-3. `.trigger(eventName, ...args)` -- generates the event: all assigned handlers are called and `args` are passed as arguments to them.
+1. `.on(eventName, handler)` `handler`(kotarıcı)'da belirtilen isimle bir olay çalışırsa kotarıcıyı ata. Kotarıcılar `_eventHandlers` özelliğinde saklanır.
+2. `.off(eventName, handler)` -- kotarıcı listesinden fonksiyon siler.
+3. `.trigger(eventName, ...args)` -- olay yaratır; tüm kotarıcılar çağırılır ve `args` bunlara argüman olarak iletilir.
 
-
-Usage:
+Kullanım:
 
 ```js run
-// Make a class
+// Sınıf yap
 class Menu {
   choose(value) {
     this.trigger("select", value);
   }
 }
-// Add the mixin
+// mixin ekle
 Object.assign(Menu.prototype, eventMixin);
 
 let menu = new Menu();
 
-// call the handler on selection:
+// seçildiğinde kotarıcıyı çağır.
 *!*
 menu.on("select", value => alert("Value selected: " + value));
 */!*
 
-// triggers the event => shows Value selected: 123
+// olayı çalıştır ->  Value selected: 123 gösterilir
 menu.choose("123"); // value selected
 ```
 
-Now if we have the code interested to react on user selection, we can bind it with `menu.on(...)`.
+Artık kullanıcının seçimine farklılık gösteren bir kodumuz var ise bunu `menu.on(...)` ile kullanabiliriz.
 
-And the `eventMixin` can add such behavior to as many classes as we'd like, without interfering with the inheritance chain.
+`eventMix` böyle bir davranışa istediğimiz kadar sınıfa eklenebilir bunu yaparken de kalıtım zincirine dokunulmamış olur.
 
 ## Summary
 
