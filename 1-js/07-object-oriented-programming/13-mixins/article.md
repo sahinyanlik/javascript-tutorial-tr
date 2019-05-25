@@ -12,11 +12,11 @@ Wikipedia'da şu şekilde tanımlanmıştır: [mixin](https://en.wikipedia.org/w
 
 Diğer bir deyişle *mixin* belirli davranışları uygulayan metodları sağlar, fakat bunu tek başına kullanmayız, bunu diğer sınıflara başka davranışlar eklemek için kullanırız.
 
-## A mixin example
+## Mixin örneği
 
-The simplest way to make a mixin in JavaScript is to make an object with useful methods, so that we can easily merge them into a prototype of any class.
+JavaScript mixini yapmak için en kolay yol kullanışlı metodlarla donatılmış bir objedir. Böylece kolayca birleştirebilir ve herhangi bir sınıfın prototipine koyabiliriz.
 
-For instance here the mixin `sayHiMixin` is used to add some "speech" for `User`:
+Örneğin aşağoda `sayHiMixin`, `User` için "speech" metodunu ekler:
 
 ```js run
 *!*
@@ -43,11 +43,11 @@ class User {
 // copy the methods
 Object.assign(User.prototype, sayHiMixin);
 
-// now User can say hi
+// Artık User sayHi metodunu çağırabilir
 new User("Dude").sayHi(); // Hi Dude!
 ```
 
-There's no inheritance, but a simple method copying. So `User` may extend some other class and also include the mixin to "mix-in" the additional methods, like this:
+Burada gördüğünüz gibi kalıtım yoktur. Yapılan sadece basit metod kopyalamadır. `User` diğer sınıfları genişletebilir, hatta bu sınıflar da kendi içerilerinde mixin'lere sahip olabilirler. Örnek vermek gerekirse:
 
 ```js
 class User extends Person {
@@ -56,10 +56,9 @@ class User extends Person {
 
 Object.assign(User.prototype, sayHiMixin);
 ```
+Mixinler kendi içlerinde kalıtım benzeri yapılar oluşturabilirler.
 
-Mixins can make use of inheritance inside themselves.
-
-For instance, here `sayHiMixin` inherits from `sayMixin`:
+Örneğin `sayHiMixin`, `sayMixin`'ten kalıtılmıştır:
 
 ```js run
 let sayMixin = {
@@ -69,7 +68,7 @@ let sayMixin = {
 };
 
 let sayHiMixin = {
-  __proto__: sayMixin, // (or we could use Object.create to set the prototype here)
+  __proto__: sayMixin, // (veya Object.create ile de prototipi ayarlayabilirdik)
 
   sayHi() {
     *!*
@@ -88,18 +87,18 @@ class User {
   }
 }
 
-// copy the methods
+// metodları kopyala
 Object.assign(User.prototype, sayHiMixin);
 
-// now User can say hi
+// artık kullanıcı sayHi'yi çağırabilir.
 new User("Dude").sayHi(); // Hello Dude!
 ```
 
-Please note that the call to the parent method `super.say()` from `sayHiMixin` looks for the method in the prototype of that mixin, not the class.
+Dikkat ederseniz `sayHiMixin` içinde `super.say() çağırıldığında o mixin'in prototipindeki metoduna bakar, sınıfın değil.
 
 ![](mixin-inheritance.png)
 
-That's because methods from `sayHiMixin` have `[[HomeObject]]` set to it. So `super` actually means `sayHiMixin.__proto__`, not `User.__proto__`.
+Çünkü `sayHiMixin` metodları `[[HomeObject]]`'e ayarlanmıştır. Bundan dolayı `super` aslında `User.__proto__` değil de `sayHiMixin.__proto__` anlamına gelir.
 
 ## EventMixin
 
