@@ -2,7 +2,7 @@
 
 Bakalım JavaScript nedir, ne yapılır ve hangi teknolojilerle birlikte çalışır.
 
-## JavaScript  Nedir?
+## JavaScript Nedir?
 
 *JavaScript*, ilk başta  *"web belgelerine canlılık"* getirmek için oluşturulmuştur.
 
@@ -10,13 +10,13 @@ Bu dilde yazılan kod kümelerine betik denir. Doğrudan HTML kodu içerisine ya
 
 Komutlar herhangi bir derleme ve hazırlığa gereksinim duymadan doğrudan çalışırlar.
 
-Bu yönden bakınca JavaScript diğer dillere kıyasla oldukça farklıdır.Bkz: [Java](http://en.wikipedia.org/wiki/Java).
+Bu yönden bakınca JavaScript diğer dillere kıyasla oldukça farklıdır. Bkz: [Java](http://en.wikipedia.org/wiki/Java).
 
 
 ```smart header="Neden <u>Java</u>Script?"
 JavaScript ilk yazıldığında, başka bir adı vardı: "LiveScript". Ancak Java dili o dönemlerde çok ünlü olduğundan dolayı yeni bir dil ve "küçük kardeş" gibi görünmesi açısından JavaScript olarak değiştirildi.
 
-Ancak JavaScript gelişerek kendince yönergeleri [ECMAScript](http://en.wikipedia.org/wiki/ECMAScript) olan bağımsız bir dil haline geldi. Şu anda Java ile hiç bir ilgisi bulunmamaktadır.
+Ancak JavaScript gelişerek kendince yönergeleri [ECMAScript](http://en.wikipedia.org/wiki/ECMAScript) olan bağımsız bir dil haline geldi. Şu anda Java ile hiçbir ilgisi bulunmamaktadır.
 ```
 Günümüzde JavaScript yalnızca ağ tarayıcıda değil, sunucuda veya
 [ JavaScript motoru](https://en.wikipedia.org/wiki/JavaScript_engine) olan her yerde çalışmaktadır.
@@ -29,7 +29,7 @@ Bu JavaScript motorlarından bazıları şunlardır;
 - [SpiderMonkey](https://en.wikipedia.org/wiki/SpiderMonkey) --  Firefox.
 - Internet Explorer'ın "Trident", "Chakra" takma adlı motorlarının yanında Microsoft Edge için "ChakraCore" adında ayrı bir motoru bulunmaktadır. Safari ise "Nitro", "SquirrelFish" ve "SquirrelFish Extreme" gibi takma adlarla adlandırılan JavaScript motorunu kullanmaktadır.
 
-Yukarıdaki terimleri aklınızda tutarsanız iyi olur, çünkü ileride şu tür tümcelerle karşılaşabilirsiniz: "V8'de A özelliğinin altyapısı", "Bu özelliğin altyapısının Chrome ve Opera'da bulunduğunu anlamanız gerekir.""
+Yukarıdaki terimleri aklınızda tutarsanız iyi olur, çünkü ileride şu tür tümcelerle karşılaşabilirsiniz: "V8'de A özelliğinin altyapısı", "Bu özelliğin altyapısının Chrome ve Opera'da bulunduğunu anlamanız gerekir."
 
 ```smart header="JavaScript Motoru Nasıl Çalışır?"
 
@@ -54,11 +54,11 @@ Tarayıcı içerisindeki JavaScript ise web sayfasında görsel değişikliklere
 
 - Sayfaya yeni HTML kodları ekleme veya öncekileri değiştirme, stilleri değiştirme veya ekleme.
 - Kullanıcının eylemlerine karşılık verme. Tıklama veya fare imlecinin hareketine göre işlem yaptırabilme.
-- Ağ üzerinden talep gönderebilme. Dosya yükleme veya indirebilme ( buna [AJAX](https://en.wikipedia.org/wiki/Ajax_(programming)) ve [COMET](https://en.wikipedia.org/wiki/Comet_(programming) teknolojileri denir )
+- Ağ üzerinden talep gönderebilme. Dosya yükleme veya indirebilme ( buna [AJAX](https://en.wikipedia.org/wiki/Ajax_(programming)) ve [COMET](https://en.wikipedia.org/wiki/Comet_(programming)) teknolojileri denir )
 - Tarayıcıdaki çerezleri silme, ekleme veya düzeltme işlemlerinin yapılması. İleti gösterilmesi.
-- Kullanıcı tarafında verilerin saklanması ( "local storage")
+- Kullanıcı tarafında verilerin saklanması ("local storage")
 
-## Tarayıcı içerisinde bulunan JavaScript ne yapamaz ?
+## Tarayıcı içerisinde bulunan JavaScript ne yapamaz?
 
 Tarayıcı içerisinde bulunan JavaScript kullanıcı güvenliği amacıyla sınırlandırılmıştır. Amaç zararlı web sitelerinin özel bilgilere erişip kullanıcıya zarar vermesini engellemektir.
 
@@ -72,8 +72,8 @@ Bu engellemeleri şu biçimde sıralayabiliriz :
 
 - Farklı sekmeler birbiri ile iletişime geçemez ve bilgi alışverişi yapamazlar. Bazı sitelerde aynı sekmeler iletişimde bulunabilir, örneğin bir sekmeden JavaScript ile diğer sekmeyi açabilirsiniz. Bu durumda bile, bir sayfa diğerinden farklı alan adı, kural veya kapılarda ise erişemez.
 
-    Bu olaya "Same Origin Policy" ( Aynı kaynak kuralı ) denir. Bunu çözmek için *her iki sayfa* özel bir JavaScript kodu ile birbirlerini onaylamalıdır. Bu engellemeler yine kullanıcının güvenliği içindir. Kullanıcının açtığı `http://örnekyerlik.com` sitesi diğer sekmede bulunan `http://diğeryerlik.com` sitesinden bilgi çalamamalıdır.
-- JavaScript kolayca bulunduğu sayfadan veri alabilir. Ancak başka site veya alan adlarından veri alması sorunludur. Olanaklı olmasında karşın her iki yanın onayı gereklidir. Yine, bunun nedeni güvenlik sınırlarıdır diyebiliriz.
+    Bu olaya "Same Origin Policy" (Aynı kaynak kuralı) denir. Bunu çözmek için *her iki sayfa* özel bir JavaScript kodu ile birbirlerini onaylamalıdır. Bu engellemeler yine kullanıcının güvenliği içindir. Kullanıcının açtığı `http://örnekyerlik.com` sitesi diğer sekmede bulunan `http://diğeryerlik.com` sitesinden bilgi çalamamalıdır.
+- JavaScript kolayca bulunduğu sayfadan veri alabilir. Ancak başka site veya alan adlarından veri alması sorunludur. Olanaklı olmasına karşın her iki yanın onayı gereklidir. Yine, bunun nedeni güvenlik sınırlarıdır diyebiliriz.
 
 ![](limitations.png)
 
