@@ -1,124 +1,126 @@
-# Error handling, "try..catch"
+# Hataları idare etme, "try..catch"
 
-No matter how great we are at programming, sometimes our scripts have errors. They may occur because of our mistakes, an unexpected user input, an erroneous server response and for a thousand of other reasons.
+Programlarken ne kadar mükemmel olmaya çalışsak da bazen kodumuzda hatalar olabilir. Bu bizim hatalarımızdan dolayı olabileceği gibi, kullanıcı girişlerinden, beklenmeyen server cevaplarından veya binlerce farklı nedenden dolayı oluşabilir.
 
-Usually, a script "dies" (immediately stops) in case of an error, printing it to console.
+Genelde kodda bir hata olduğunda yazdığımız kod bir adım ileriye gidemeden sona erer ve konsola bunun nedenini yazar.
 
-But there's a syntax construct `try..catch` that allows to "catch" errors and, instead of dying, do something more reasonable.
+Hataları "yakalamak" için "try..catch" kullanarak doğrudan kodun ölmesine aman vermek yerine daha mantıklı şeyler yaptırabiliriz.
 
 [cut]
 
-## The "try..catch" syntax
+## "try..catch" yazımı
 
-The `try..catch` construct has two main blocks: `try`, and then `catch`:
+`try..catch` yapısı iki ana bloktan oluşur: `try` ( dene ) ve sonrasında `catch` ( yakala ):
 
 ```js
 try {
 
-  // code...
+  // kod...
 
 } catch (err) {
 
-  // error handling
+  // hataları idare et.
 
 }
 ```
 
-It works like this:
+Çalışması aşağıdaki gibidir:
 
-1. First, the code in `try {...}` is executed.
-2. If there were no errors, then `catch(err)` is ignored: the execution reaches the end of `try` and then jumps over `catch`.
-3. If an error occurs, then `try` execution is stopped, and the control flows to the beginning of `catch(err)`. The `err` variable (can use any name for it) contains an error object with details about what's happened.
+1. Önce `try {...}` içerisindekiler çalıştırılır.
+2. Eğer hata yoksa `catch(err)` görmezden gelinir: çalışma try'ın sonuna ulaşır ve sonra `catch`'i atlar.
+3. Eğer hata meydana gelirse, `try`'ın çalışması durdurulur ve `catch(err)` çalışmaya başlar. Buradaki `err` değişkeni ne olduda hata meydana geldiye dair detayları tutan bir objedir.
 
 ![](try-catch-flow.png)
 
-So, an error inside the `try {…}` block does not kill the script: we have a chance to handle it in `catch`.
+Öyleyse `try {...}` içerisindeki kod doğrudan sona eremez, bize `catch` içerisinde bunu idare etmemiz için olanak sağlar.
 
-Let's see more examples.
+Bir kaç örnek ile daha da pekiştirelim:
 
-- An errorless example: shows `alert` `(1)` and `(2)`:
+
+- Hatasız örnek:  `alert` `(1)` ve `(2)`'yi gösterir:
 
     ```js run
     try {
 
-      alert('Start of try runs');  // *!*(1) <--*/!*
+      alert('try başladı');  // *!*(1) <--*/!*
 
       // ...no errors here
 
-      alert('End of try runs');   // *!*(2) <--*/!*
+      alert('try bitti');   // *!*(2) <--*/!*
 
     } catch(err) {
 
-      alert('Catch is ignored, because there are no errors'); // (3)
+      alert('Catch görmezden gelindi çünkü bir hata meydana gelmedi.'); // (3)
 
     }
 
-    alert("...Then the execution continues");
+    alert("...Kod normal çalışmasına devam etti.");
     ```
-- An example with an error: shows `(1)` and `(3)`:
+
+- Hatalı örnek: `(1)` ve `(3)`'ü gösterir:
 
     ```js run
     try {
 
-      alert('Start of try runs');  // *!*(1) <--*/!*
+      alert('try başladı');  // *!*(1) <--*/!*
 
     *!*
-      lalala; // error, variable is not defined!
+      lalala; // hata,  değişken tanımlı değil!
     */!*
 
-      alert('End of try (never reached)');  // (2)
+      alert('try bitti (hiç erişilemedi)');  // (2)
 
     } catch(err) {
 
-      alert(`Error has occured!`); // *!*(3) <--*/!*
+      alert(`Hata meydana geldi!`); // *!*(3) <--*/!*
 
     }
 
-    alert("...Then the execution continues");
+    alert("...Kod normal çalışmasına devam etti.");
     ```
 
 
-````warn header="`try..catch` only works for runtime errors"
-For `try..catch` to work, the code must be runnable. In other words, it should be valid JavaScript.
+````warn header="`try..catch` sadece çalışma zamanlı hatalar içindir"
+`try..catch`'in çalışabilmesi için kod çalışabilir olmalıdır. Diğer bir deyişle geçerli bir JavaScript kodu olmalıdır.
 
-It won't work if the code is syntactically wrong, for instance it has unmatched figure brackets:
+Eğer kod yazımsal olarak hatalıysa çalışmayacaktır, örneğin süslü parantezler açılmış ama kapatılmamışsa:
 
 ```js run
 try {
   {{{{{{{{{{{{
 } catch(e) {
-  alert("The engine can't understand this code, it's invalid");
+  alert("JavaScript motoru bunu anlayamaz, çünkü geçerli bir kod değildir.");
 }
 ```
 
-The JavaScript engine first reads the code, and then runs it. The errors that occur on the reading phrase are called "parse-time" errors and are unrecoverable (from inside that code). That's because the engine can't understand the code.
+JavaScript motoru önce kodu okur, sonra çalıştırır. Eğer hata okuma safhasında meydana gelirse bunlara "ayrıştırma-zamanı" hataları denir ve kurtarılamaz hatalardır. Bundan dolayı JavaScript motoru bunları anlayamaz.
 
-So, `try..catch` can only handle errors that occur in the valid code. Such errors are called "runtime errors" or, sometimes, "exceptions".
+Bundan dolayı `try..catch` ancak ve ancak gerçerli kodlarda oluşacak hataları idare edebilir. Bu hatalara "çalışma zamanı hataları" veya bazen "istisnalar"(Exception) denilmektedir.
 ````
 
 
-````warn header="`try..catch` works synchronously"
-If an exception happens in a "scheduled" code, like in `setTimeout`, then `try..catch` won't catch it:
+````warn header="`try..catch` Senkronize olarak çalışmaktadır"
+Eğer "zamanlanmış" bir kodda, `setTimeout` gibi, bir hata meydana gelirse `try..catch` bunu yakalayamaz:
 
 ```js run
 try {
   setTimeout(function() {
-    noSuchVariable; // script will die here
+    noSuchVariable; // kod burada ölecektir.
   }, 1000);
 } catch (e) {
-  alert( "won't work" );
+  alert( "çalışmaz" );
 }
 ```
+Bunun nedeni `try..catch`'in aslında fonksiyonu zamanlayan `setTimeout`'u kapsamasıdan dolayıdır. Fakat fonksiyon daha sonra çlışır. O anda aslında motor `try..catch`i geçmiş olur.
 
-That's because `try..catch` actually wraps the `setTimeout` call that schedules the function. But the function itself is executed later, when the engine has already have left the `try..catch` construct.
+Eğer zamanlanmış fonksiyon içerisinde bu hatayı yakalamak istiyorsanız, `try..catch` bloğunu fonksiyonun içerisine yazmalısınız:
 
-To catch an exception inside a scheduled function, `try..catch` must be inside that function:
 ```js run
 setTimeout(function() {
   try {    
-    noSuchVariable; // try..catch handles the error!
+    noSuchVariable; // try..catch hataları yakalayacaktır.
   } catch (e) {
-    alert( "error is caught here!" );
+    alert( "hata burada yakalandı!" );
   }
 }, 1000);
 ```
