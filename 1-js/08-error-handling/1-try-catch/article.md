@@ -126,9 +126,9 @@ setTimeout(function() {
 ```
 ````
 
-## Error object
+## Hata Objesi
 
-When an error occurs, JavaScript generates an object containing the details about it. The object is then passed as an argument to `catch`:
+Hata meydana geldiğinde, JavaScript bu hata ile ilgili bir obje yaratır. Sonrasında bu obje `catch`'e argüman olarak gönderilir:
 
 ```js
 try {
@@ -137,35 +137,34 @@ try {
   // ...
 }
 ```
+Tüm varsayılan hatalar için, `catch` içerisinde hata objesi iki ana özelliği taşır:
 
-For all built-in errors, the error object inside `catch` block has two main properties:
+`isim` (name)
+: Hata ismi. Tanımsız değerler için bu `"ReferenceError"`'dur.
 
-`name`
-: Error name. For an undefined variable that's `"ReferenceError"`.
+`mesaj` (message)
+: Hatanın detayları hakkında anlaşılır bilgi verir.
 
-`message`
-: Textual message about error details.
-
-There are other non-standard properties available in most environments. One of most widely used and supported is:
+Çoğu ortamda standart olmayan başka özellikler de bulunmaktadır. Bunlardan en fazla kullanılan ve desteklenen:
 
 `stack`
-: Current call stack: a string with information about the sequence of nested calls that led to the error. Used for debugging purposes.
+: O anki çağrı yığını: Hataya neden olan fonksiyon zincirini belirtir. Genelde hata ayıklama amacıyla kullanılır.
 
-For instance:
+Örneğin:
 
 ```js run untrusted
 try {
 *!*
-  lalala; // error, variable is not defined!
+  lalala; // hata, değişken tanımlı değil!
 */!*
 } catch(err) {
   alert(err.name); // ReferenceError
-  alert(err.message); // lalala is not defined
-  alert(err.stack); // ReferenceError: lalala is not defined at ...
+  alert(err.message); // lalala tanımlı değil
+  alert(err.stack); // ReferenceError: lalala şurada tanımlanmadı ...
 
-  // Can also show an error as a whole
-  // The error is converted to string as "name: message"
-  alert(err); // ReferenceError: lalala is not defined
+  // ayrıca hatayı tümüyle göstermek de mümkündür.
+  // hata karakter dizisine "name:message" gibi çevirildi.
+  alert(err); // ReferenceError: lalala tanımlı değil
 }
 ```
 
