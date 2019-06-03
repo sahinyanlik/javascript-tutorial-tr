@@ -221,30 +221,29 @@ try {
 ```
 Burada `catch` bloğu sadece mesajı göstermek için kullanılmıştır. Fakat burada ağ talebi, kullanıcıya başka bir yöntem sunma, loglama için hata loginin tutulması gibi işlemler yapılabilir.
 
-## Throwing our own errors
+## Kendi hatalarımızı atma
 
-What if `json` is syntactically correct... But doesn't have a required `"name"` property?
+Diyelim ki `json` yazım olarak doğru da `"name"` özelliğini olması gerekirken yoksa ?
 
-Like this:
+Aşağıdaki gibi:
 
 ```js run
-let json = '{ "age": 30 }'; // incomplete data
+let json = '{ "age": 30 }'; // verinin bütünlüğünde problem var.
 
 try {
 
-  let user = JSON.parse(json); // <-- no errors
+  let user = JSON.parse(json); // <-- hata yok
 *!*
-  alert( user.name ); // no name!
+  alert( user.name ); // ama isim de yok!
 */!*
 
 } catch (e) {
-  alert( "doesn't execute" );
+  alert( "çalışmaz" );
 }
 ```
+Burada `JSON.parse` doğru bir şekilde çalışır, `"name"`'in olmaması aslında bir sorundur.
 
-Here `JSON.parse` runs normally, but the absence of `"name"` is actually an error for us.
-
-To unify error handling, we'll use the `throw` operator.
+Hata idaresini birleştirmek adına burada `throw` operatörü kullanılacaktır.
 
 ### "Throw" operator
 
