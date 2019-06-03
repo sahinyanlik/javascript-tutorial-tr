@@ -245,21 +245,20 @@ Burada `JSON.parse` doğru bir şekilde çalışır, `"name"`'in olmaması aslı
 
 Hata idaresini birleştirmek adına burada `throw` operatörü kullanılacaktır.
 
-### "Throw" operator
+### "Throw" operatörü
 
-The `throw` operator generates an error.
+`throw` operatörü hata oluşturur.
 
-The syntax is:
+Yazımı şu şekildedir:
 
 ```js
 throw <error object>
 ```
+Teknik olarak herşeyi hata objesi olarak kullanmak mümküdür. Hatta bu ilkel tipler olan sayı, karakter dizisi gibi yapılar da olabilir. Fakat obje kullanmak, daha sı `name` ve `message` özelliklerine sahip obje kullanmak daha iyidir. ( Böylece gömülü gelen hatalar ile uyumlu olacaktır.)
 
-Technically, we can use anything as an error object. That may be even a primitive, like a number or a string, but it's better to use objects, preferrably with `name` and `message` properties (to stay somewhat compatible with built-in errors).
+JavaScript bir çok standart hataya sahitir:`Error`, `SyntaxError`, `ReferenceError`, `TypeError` vs. Bunları kullanarak da hata objesiyaratmak mümkündür.
 
-JavaScript has many built-in constructors for standard errors: `Error`, `SyntaxError`, `ReferenceError`, `TypeError` and others. We can use them to create error objects as well.
-
-Their syntax is:
+Yazımı:
 
 ```js
 let error = new Error(message);
@@ -269,18 +268,17 @@ let error = new ReferenceError(message);
 // ...
 ```
 
-For built-in errors (not for any objects, just for errors), the `name` property is exactly the name of the constructor. And `message` is taken from the argument.
+Gömülü hatalar ( objeler değil sadece hatalar ) `name` özelliği yapıcının aynı isme sahip özelliğindne meydana gelir. `message` ise argümandan alınır.
 
-For instance:
+Örneğin:
 
 ```js run
-let error = new Error("Things happen o_O");
+let error = new Error("Birşeyler oldu o_O");
 
 alert(error.name); // Error
-alert(error.message); // Things happen o_O
+alert(error.message); // Birşeyler oldu o_O
 ```
-
-Let's see what kind of error `JSON.parse` generates:
+`JSON.parse` ne tarz hatalar üretti bakalım:
 
 ```js run
 try {
@@ -293,35 +291,36 @@ try {
 }
 ```
 
-As we can see, that's a `SyntaxError`.
+Gördüğünüz gibi bu `SyntaxError` yani yazım yanlışıdır.
 
-...And in our case, the absense of `name` could be treated as a syntax error also, assuming that users must have a `"name"`.
+Bizim durumumuzda ise `name`'in olmaması yazım hatası olarak tanımlanabilir. 
+Bunu isimsiz öğretmen olmayacağından yazı  hatası olarak tanımlayabiliri.
 
-So let's throw it:
+atacak olursak:
 
 ```js run
-let json = '{ "age": 30 }'; // incomplete data
+let json = '{ "yaş": 30 }'; // incomplete data
 
 try {
 
-  let user = JSON.parse(json); // <-- no errors
+  let user = JSON.parse(json); // <-- hata yok
 
   if (!user.name) {
 *!*
-    throw new SyntaxError("Incomplete data: no name"); // (*)
+    throw new SyntaxError("Tanımlanmamış veri:isim yok"); // (*)
 */!*
   }
 
   alert( user.name );
 
 } catch(e) {
-  alert( "JSON Error: " + e.message ); // JSON Error: Incomplete data: no name
+  alert( "JSON Error: " + e.message ); // JSON Error: Tanımlanmamış veri:isim yok
 }
 ```
 
-In the line `(*)` the `throw` operator generates `SyntaxError` with the given `message`, the same way as JavaScript would generate itself. The execution of `try` immediately stops and the control flow jumps into `catch`.
+`(*)` satırında `throw` operatörü verilen `message` ile bir `SyntaxError` hatası verir. Bu JavaScript'in hata oluşturmasına benzemektedir. `try`'ın çalışması akışta anında durur ve `catch` bölümüne atlar.
 
-Now `catch` became a single place for all error handling: both for `JSON.parse` and other cases.
+Artık `catch` tüm hata idaresinin yapılacağı yerdir: Buna `JSON.parse` ve diğer durumlar dahildir.
 
 ## Rethrowing
 
