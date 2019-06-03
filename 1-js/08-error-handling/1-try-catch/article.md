@@ -169,37 +169,36 @@ try {
 ```
 
 
-## Using "try..catch"
+## `try..catch` kullanımı
 
-Let's explore a real-life use case of `try..catch`.
+Gerçek hayatta `try..catch`'ın nasıl kullanılabileceğine bakalım.
 
-As we already know, JavaScript supports method [JSON.parse(str)](mdn:js/JSON/parse) to read JSON-encoded values.
+Bildiğiniz gibi, JavaScript [JSON.parse(str)](mdn:js/JSON/parse) metodu sayesinde JSON olarak tanımlanmış değerlerin okunmasına olanak tanır.
 
-Usually it's used to decode the data received over the network, from the server or another source.
+Genelde ağ üzerinden başka bir serverdan veya kaynaktan gelen verinin okunmasında kullanılır.
 
-We receive it and call `JSON.parse`, like this:
+Bu veriyi aldıktan sonra `JSON.parse` ile şu şekilde okuyabiliriz:
 
 ```js run
-let json = '{"name":"John", "age": 30}'; // data from the server
+let json = '{"name":"John", "age": 30}'; // sunucudan gelen veri.
 
 *!*
-let user = JSON.parse(json); // convert the text representation to JS object
+let user = JSON.parse(json); // bu veriyi JS objesine dönüştür.
 */!*
 
-// now user is an object with properties from the string
+//Artık user karakter dizisinden oluşan objelere sahiptir.
 alert( user.name ); // John
 alert( user.age );  // 30
 ```
+JSON hakkında daha derin bilgiyi <info:json> bölümünden öğrenebilirsiniz.
 
-More detailed information about JSON you can find in the chapter <info:json>.
+**Eğer `json` düzgün gelmiyorsa `JSON.parse` hata üretir ve kod anında "ölür".**
 
-**If `json` is malformed, `JSON.parse` generates an error, so the script "dies".**
+Bunun ile yetinmeli miyiz? Elbette hayır
 
-Should we be satisfied with that? Of course, not!
+Bu şekliyle eğer gelen veride bir hata varsa ziyaretçi nerede yanlış olduğunu bilemeyecektir. İnsanlar hata olduğunda herhangi bir hata mesajı almadan öylece ölen bir şeyden nefret ederler.
 
-This way if something's wrong with the data, the visitor will never know that (unless he opens developer console). And people really really don't like when something "just dies" without any error message.
-
-Let's use `try..catch` to handle the error:
+Bunun çözümü için `try..catch` kullanılabilir:
 
 ```js run
 let json = "{ bad json }";
@@ -213,15 +212,14 @@ try {
 
 } catch (e) {
 *!*
-  // ...the execution jumps here
-  alert( "Our apologies, the data has errors, we'll try to request it one more time." );
+  // ...çalışma buradan devam eder.
+  alert( "Kusura bakmayın, veride hata var.Talep tekrar yapacaktır" );
   alert( e.name );
   alert( e.message );
 */!*
 }
 ```
-
-Here we use `catch` block only to show the message, but we can do much more: a new network request, suggest an alternative to the visitor, send the information about the error to a logging facility... All much better than just dying.
+Burada `catch` bloğu sadece mesajı göstermek için kullanılmıştır. Fakat burada ağ talebi, kullanıcıya başka bir yöntem sunma, loglama için hata loginin tutulması gibi işlemler yapılabilir.
 
 ## Throwing our own errors
 
