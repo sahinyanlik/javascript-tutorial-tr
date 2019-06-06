@@ -322,65 +322,64 @@ try {
 
 Artık `catch` tüm hata idaresinin yapılacağı yerdir: Buna `JSON.parse` ve diğer durumlar dahildir.
 
-## Rethrowing
+## Tekrar atma ( Rethrowing )
 
-In the example above we use `try..catch` to handle incorrect data. But is it possible that *another unexpected error* occurs within the `try {...}` block? Like a variable is undefined or something else, not just that "incorrect data" thing.
+Yukarıdaki örnekte yanlış veri ile başa çıkmak için `try..catch` kullandık. Peki başka beklenmeyen hata varsa ne yapacağız? Mesela değişken tanımsız olabilir veya bilmediğimiz bir hata ile de karşılaşabiliriz.
 
-Like this:
+Şu şekilde:
 
 ```js run
-let json = '{ "age": 30 }'; // incomplete data
+let json = '{ "age": 30 }'; // tamamlanmamış veri
 
 try {
-  user = JSON.parse(json); // <-- forgot to put "let" before user
+  user = JSON.parse(json); // <-- user'dan önce  "let" kullanmayı unuttuysak
 
   // ...
 } catch(err) {
   alert("JSON Error: " + err); // JSON Error: ReferenceError: user is not defined
-  // (not JSON Error actually)
+  // (hata aslında JSON ile alakalı değil)
 }
 ```
+Tabiki herşey mümkün! Programcılar da hata yapar. Yıllardır milyonlarca kişinin kullandığı open-source projelerde bile hata vardır. Hatta öyle hatalar vardır ki bulunduğunda çok büyük belaya neden olabilir ( `ssh`'ta bulunan hata)
 
-Of course, everything's possible! Programmers do make mistakes. Even in open-source utilities used by millions for decades -- suddenly a crazy bug may be discovered that leads to terrible hacks (like it happened with the `ssh` tool).
+Biz denemelerimizde `try..catch`i "doğru olmayan veri"'yi yakalamak için kullandık. Fakat aslında `catch` `try`'da olabilecek *tüm* hataları alır.Yukarıdaki örnekte beklenmeyecen bir hata almasına rağmen bundan dolayı `"JSON Error" mesajı verir. Bu aslında kod ayıklamayı zorlaştıran birşeydir ve yanlış kullanımdır.
 
-In our case, `try..catch` is meant to catch "incorrect data" errors. But by its nature, `catch` gets *all* errors from `try`. Here it gets an unexpected error, but still shows the same `"JSON Error"` message. That's wrong and also makes the code more difficult to debug.
-
-Fortunately, we can find out which error we get, for instance from its `name`:
+Yine de ne hatası olduğunu `name`'den çıkarmak mümkündür.
 
 ```js run
 try {
   user = { /*...*/ };
 } catch(e) {
 *!*
-  alert(e.name); // "ReferenceError" for accessing an undefined variable
+  alert(e.name); // "ReferenceError" tanımsız değişkene erişim hatası
 */!*
 }
 ```
 
-The rule is simple:
+Kural basit:
 
-**Catch should only process errors that it knows and "rethrow" all others.**
+**Catch sadece bildiği hataları işlemeli diğerlerini ise tekrar hata olarak atmalı**
 
-The "rethrowing" technique can be explained in more detail as:
+"tekrar atma" tekniği şu şekilde detaylandırılabilir:
 
-1. Catch gets all errors.
-2. In `catch(err) {...}` block we analyze the error object `err`.
-2. If we don't know how to handle it, then we do `throw err`.
+1. Catch tüm mesajları alır
+2. `catch(err){...}` bloğunda tüm error objesi analiz edilir.
+3. Eğer beklemediğimiz bir hata ise bu `throw err` ile tekrar atılır.
 
-In the code below, we use rethrowing so that `catch` only handles `SyntaxError`:
+Aşağıdaki kodda `catch` sadece `SyntaxError`'ü idare etmektedir:
 
 ```js run
-let json = '{ "age": 30 }'; // incomplete data
+let json = '{ "age": 30 }'; // tamamlanmamış veri
 try {
 
   let user = JSON.parse(json);
 
   if (!user.name) {
-    throw new SyntaxError("Incomplete data: no name");
+    throw new SyntaxError("tamamlanmamış veri: isim yok");
   }
 
 *!*
-  blabla(); // unexpected error
+  blabla(); // beklenmeyen hata
 */!*
 
   alert( user.name );
@@ -389,20 +388,19 @@ try {
 
 *!*
   if (e.name == "SyntaxError") {
-    alert( "JSON Error: " + e.message );
+    alert( "JSON Hatası: " + e.message );
   } else {
-    throw e; // rethrow (*)
+    throw e; // tekrar at (*)
   }
 */!*
 
 }
 ```
+`try..catch` içerisinde eğer `(*)` hata tekrar atılırsa bu `try..catch` in dışına taşar. Bu daha üstte bulunan başka bir `try..catch` tarafından yakalanması gerekmektedir. Böyle bir ihtimal yoksa kod burada sona ermelidir.
 
-The error throwing on line `(*)` from inside `catch` block "falls out" of `try..catch` and can be either caught by an outer `try..catch` construct (if it exists), or it kills the script.
+Böylece `catch` bloğu aslında sadece bildiği hataları idare eder ve diğerlerini hiç kontrol etmeden paslar diyebiliriz.
 
-So the `catch` block actually handles only errors that it knows how to deal with and "skips" all others.
-
-The example below demonstrates how such errors can be caught by one more level of `try..catch`:
+Aşağıdaki örnekte bu hatalar nasıl bir `try..catch` seviyesi daha eklenerek idare edilebilir bunu göreceğiz:
 
 ```js run
 function readData() {
@@ -417,7 +415,7 @@ function readData() {
     // ...
     if (e.name != 'SyntaxError') {
 *!*
-      throw e; // rethrow (don't know how to deal with it)
+      throw e; // tekrar at! Nasıl idare edileceğini bilmiyor.
 */!*
     }
   }
@@ -427,12 +425,11 @@ try {
   readData();
 } catch (e) {
 *!*
-  alert( "External catch got: " + e ); // caught it!
+  alert( "External catch got: " + e ); // burada yakala!
 */!*
 }
 ```
-
-Here `readData` only knows how to handle `SyntaxError`, while the outer `try..catch` knows how to handle everything.
+Burada `readData` sadece `SyntaxError` ile nasıl başa çıkacağını biliyor. Bunun yanında dıştaki `try..catch` ise geri kalan herşeyi idare ediyor.
 
 ## try..catch..finally
 
