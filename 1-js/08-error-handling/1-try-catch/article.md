@@ -433,16 +433,16 @@ Burada `readData` sadece `SyntaxError` ile nasıl başa çıkacağını biliyor.
 
 ## try..catch..finally
 
-Wait, that's not all.
+Aslında tamamı bu kadar değil!
 
-The `try..catch` construct may have one more code clause: `finally`.
+`try..catch` bloğu son olarak `finally` ile bitebilir.
 
-If it exists, it runs in all cases:
+Eğer varsa aşağıdaki durumların hepsi için çalışır:
 
-- after `try`, if there were no errors,
-- after `catch`, if there were errors.
+- `try` sonrası bir hata yoksa.
+- `catch` sonrası bir hata yoksa.
 
-The extended syntax looks like this:
+Yazımı şu şekildedir:
 
 ```js
 *!*try*/!* {
@@ -454,7 +454,7 @@ The extended syntax looks like this:
 }
 ```
 
-Try running this code:
+Aşağıdaki kodu çalıştırmayı deneyiniz:
 
 ```js run
 try {
@@ -467,18 +467,18 @@ try {
 }
 ```
 
-The code has two ways of execution:
+Kod iki türlü çalışabilir:
 
-1. If you answer "Yes" to "Make an error?", then `try -> catch -> finally`.
-2. If you say "No", then `try -> finally`.
+1. Eğer "Make an error?"'a "Yes" cevabını verirseniz, `try -> catch -> finally` şeklinde sona erer.
+2. Eğer "No" derseniz `try-> finally` şeklinde sona erer.
 
-The `finally` clause is often used when we start doing something before `try..catch` and want to finalize it in any case of outcome.
+`finally` genelde `try..catch`'den önce birşey yapıp bunu sona erdirmek ( finally ) istediğiniz durumlarda kullanılır.
 
-For instance, we want to measure time that a Fibonacci numbers function `fib(n)` takes. Naturally, we can start measuring before it runs and finish afterwards. But what if there's an error during the function call? In particular, the implementation of `fib(n)` in the code below returns an error for negative or non-integer numbers.
+Örneğin Fibonacci sayılarını hesaplayan bir fonksiyonun ne kadar sürdüğünü ölçmek istediğinizde, doğal olarak işlem başlamadan süre başlar ve işlem bittikten sonra süre biter. Fakat diyelimki fonksiyonda bir hata var. Aşağıda uygulaması görünen `fib(n)`'e negatif bir sayı gönderdiğinizde veya integer olmayan bir sayı gönderdiğinizde hata döner.
 
-The `finally` clause is a great place to finish the measurements no matter what.
+`finally` ne olursa olsun süre ölçmeyi sonlandırmak için harika bir yerdir.
 
-Here `finally` guarantees that the time will be measured correctly in both situations -- in case of a successful execution of `fib` and in case of an error in it:
+Aşağıda `finally` düzgün veya yanlış çalışan `fib` fonksiyonunun ne kadar sürdüğünü doğru olarak hesaplamamızı sağlar. 
 
 ```js run
 let num = +prompt("Enter a positive integer number?", 35)
@@ -509,21 +509,23 @@ alert(result || "error occured");
 alert( `execution took ${diff}ms` );
 ```
 
-You can check by running the code with entering `35` into `prompt` -- it executes normally, `finally` after `try`. And then enter `-1` -- there will be an immediate error, an the execution will take `0ms`. Both measurements are done correctly.
+Kodu çalıştırdığınızda `35` değeri girerseniz normal olarak `try` sonrasında `finally` sırası ile çalışır. Sonrasında `-1` ile deneyin, anında hata alacaksınız. Çalışma süresi `0ms` gösterecek. İki çalışmada da süre doğru bir şekilde tutuldu.
 
-In other words, there may be two ways to exit a function: either a `return` or `throw`. The `finally` clause handles them both.
+Diğer bir deyişle, fonksiyondan çıkmanın iki yolu verdir. Bunlar `return` veya `throw` olabilir. `finally` ise bunların ikisini de idare edebilir.
 
 
-```smart header="Variables are local inside `try..catch..finally`"
-Please note that `result` and `diff` variables in the code above are declared *before* `try..catch`.
+```smart header="Değişkenler `try..catch..finally` içerisinde yereldir"
 
-Otherwise, if `let` were made inside the `{...}` block, it would only be visible inside of it.
+Dikkat ederseniz `result` ve `diff` değişkenleri `try..catch`'den *önce* tanımlanmışlardır.
+
+Diğer türlü `let` `{...}` bloğunun içerisinde olsaydı, sadece parantez içerisinde görünür olurdu.
 ```
 
-````smart header="`finally` and `return`"
-Finally clause works for *any* exit from `try..catch`. That includes an explicit `return`.
+````smart header="`finally` ve `return`"
 
-In the example below, there's a `return` in `try`. In this case, `finally` is executed just before the control returns to the outer code.
+Finally kelimesi `try..catch`'den her türlü çıkış ile çalışır. Bu doğrudan `return` için de geçerlidir.
+
+Aşağıdaki örnekte `try` içerisinde `return` bulunmaktadır. Bu durumda `finally` sonuç dış koda iletilmeden önce çalışır.
 
 ```js run
 function func() {
@@ -542,25 +544,25 @@ function func() {
   }
 }
 
-alert( func() ); // first works alert from finally, and then this one
+alert( func() ); // önce finally içerisindeki alert çalışır sonra bu.
 ```
 ````
 
 ````smart header="`try..finally`"
 
-The `try..finally` construct, without `catch` clause, is also useful. We apply it when we don't want to handle errors right here, but want to be sure that processes that we started are finalized.
+`catch` olmadan hazırlanan `try..finally` yapısı da kullışlıdır. Bunu henelde hatayı o anda idare etmek istemediğimizde kullanırız, bunun ile birlikte başladığımız işlemin bittiğini de garanti altına almak isteriz.
 
 ```js
 function func() {
-  // start doing something that needs completion (like measurements)
+  // tamamlanması gereken bir işlemi başlat. ( süre ölçme gibi )
   try {
     // ...
   } finally {
-    // complete that thing even if all dies
+    // ne olursa olsun bitir.
   }
 }
 ```
-In the code above, an error inside `try` always falls out, because there's no `catch`. But `finally` works before the execution flow jumps outside.
+Yukarıdaki kodda `try` içerisinde olacak herhangi bir hata doğrudan dışarı çıkacaktır. Akış dışarı sıçramadan önce `finally` çalışır.
 ````
 
 ## Global catch
