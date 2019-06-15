@@ -626,33 +626,32 @@ Aşağıdaki gibi çalışırlar:
 3. Hata meydana geldiğinde, bu servise ağ üzerinden bir istekte bulunur.
 3. Servise tekrar giriş yaptığınızda arayüzde bu hataları görürsünüz.
 
-## Summary
+## Özet
+`try..catch` yapısı çalışma zamanlı hataları idare eder. Tam olarak kodu çalıştırmaya çalışır ve hataları yakalar.
 
-The `try..catch` construct allows to handle runtime errors. It literally allows to try running the code and catch errors that may occur in it.
-
-The syntax is:
+Yazımı:
 
 ```js
 try {
-  // run this code
+  // bu kodu çalıştır
 } catch(err) {
-  // if an error happened, then jump here
-  // err is the error object
+  // eğer hata varsa, buraya atla
+  // err hata objesi
 } finally {
-  // do in any case after try/catch
+  // try/catch'den sonra her halükarda burayı çalıştır.
 }
 ```
+`catch` bölümü veya `finally` bölümü olmadan da çalışır. `try..catch`, `try..finally`'de doğru kullanımdır.
 
-There may be no `catch` section or no `finally`, so `try..catch` and `try..finally` are also valid.
+Hata objeleri şu özellikleri taşır:
 
-Error objects have following properties:
+- `message` -- insan tarafından okunabilir hata mesajı
+- `name` -- hatanın ismi 
+- `stack` ( standart değil ) - hatanın oluştuğu andaki yığın. Hatanın nedenini bulmak için yararlı bir özellik.
 
-- `message` -- the human-readable error message.
-- `name` -- the string with error name (error constructor name).
-- `stack` (non-standard) -- the stack at the moment of error creation.
 
-We can also generate our own errors using the `throw` operator. Technically, the argument of `throw` can be anything, but usually it's an error object inheriting from the built-in `Error` class. More on extending errors in the next chapter.
+`throw` kullanarak biz de kendi hatalarımızı oluşturabiliriz. Teknik olarak, `throw`'un argümanları herşey olabilir. Fakat genelde `Error` sınıfından türemesi ve özelliklerini alması iyi bir yoldur. Bunları nasıl genişleteceğinizi bir sonraki bölümde görebilirsiniz.
 
-Rethrowing is a basic pattern of error handling: a `catch` block usually expects and knows how to handle the particular error type, so it should rethrow errors it doesn't know.
+Tekrar atma hata idaresi için temel bir desendir: bir `catch` bloğu her zaman hangi hataların geleceğini ve buna göre ne yapması gerektiğini bilmeli, eğer bilmiyorsa bu hatayı tekrar atmalıdır.
 
-Even if we don't have `try..catch`, most environments allow to setup a "global" error handler to catch errors that "fall out". In-browser that's `window.onerror`.
+`try..catch` olmasa bile çoğu ortam "genel" bir hata idarecisi oluşturmamızı sağlar. Böylece gözden kaçan hatalar burada yakalanabilir. Tarayıcı için bu `window.onerror`'dur.
