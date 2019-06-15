@@ -565,19 +565,19 @@ function func() {
 Yukarıdaki kodda `try` içerisinde olacak herhangi bir hata doğrudan dışarı çıkacaktır. Akış dışarı sıçramadan önce `finally` çalışır.
 ````
 
-## Global catch
+## Genel Hataları Yakalama
 
-```warn header="Environment-specific"
-The information from this section is not a part of the core JavaScript.
+```warn header="Ortam-özel"
+Aşağıdaki bölüm aslında JavaScript çekirdeğinde bulunmamaktadır.
 ```
 
-Let's imagine we've got a fatal error outside of `try..catch`, and the script died. Like a programming error or something else terrible.
+Diyelim ki `try..catch`'in dışında bir hata ile karşılaştınız ve kodunuz sona erdi. Bu programlama hatası veya başka bir hata olabilir.
 
-Is there a way to react on such occurrences? We may want to log the error, show something to the user (normally he doesn't see error messages) etc.
+Böyle bir durumda ne yapmak lazım? Hataları loglayabilir, kullanıcıya bir hata gösterebiliriz.
 
-There is none in the specification, but environments usually provide it, because it's really useful. For instance, Node.JS has [process.on('uncaughtException')](https://nodejs.org/api/process.html#process_event_uncaughtexception) for that. And in the browser we can assign a function to special [window.onerror](mdn:api/GlobalEventHandlers/onerror) property. It will run in case of an uncaught error.
+Aslında şartnamede bunun ile ilgili bir belirti bulunmasa da çoğu ortam bunu temin eder. Örneğin Node.JS bunun için [process.on('uncaughtException')](https://nodejs.org/api/process.html#process_event_uncaughtexception)'i kullanır. Tarayıcıda [window.onerror](mdn:api/GlobalEventHandlers/onerror)' özelliğine bir fonksiyon tanımlanabilir. Bu yakalanmayan bir hata olduğunda çalışacaktır.
 
-The syntax:
+Yazımı:
 
 ```js
 window.onerror = function(message, url, line, col, error) {
@@ -586,18 +586,18 @@ window.onerror = function(message, url, line, col, error) {
 ```
 
 `message`
-: Error message.
+: Hata Mesajı
 
 `url`
-: URL of the script where error happened.
+: Hatanın hangi URL'de meydana geldiği.
 
 `line`, `col`
-: Line and column numbers where error happened.
+: Hangi satır ve sütunda hatanın meydana geldiği.
 
 `error`
-: Error object.
+: Hata objesi.
 
-For instance:
+Örneğin:
 
 ```html run untrusted refresh height=1
 <script>
@@ -608,23 +608,23 @@ For instance:
 */!*
 
   function readData() {
-    badFunc(); // Whoops, something went wrong!
+    badFunc(); // hata meydana geldi!
   }
 
   readData();
 </script>
 ```
 
-The role of the global handler `window.onerror` is usually not to recover the script execution -- that's probably impossible in case of programming errors, but to send the error message to developers.
+`window.onerror` genel hata işleyicisinin görevi aslında kodu kurtarmak değildir. Bu anda kodu kurtarmak imkansızdır, bunun yerine geliştiriciye mesaj gönderebilir.
 
-There are also web-services that provide error-logging for such cases, like <https://errorception.com> or <http://www.muscula.com>.
+Bu hataları izlemek için aslında bazı servisler mevcuttur. Bunlardan bazıları <https://errorception.com>, <http://www.muscula.com>'dır.
 
-They work like this:
+Aşağıdaki gibi çalışırlar:
 
-1. We register at the service and get a piece of JS (or a script URL) from them to insert on pages.
-2. That JS script has a custom `window.onerror` function.
-3. When an error occurs, it sends a network request about it to the service.
-4. We can log in to the service web interface and see errors.
+1. Servise kayıt olunur ve yazdığımız koda yerleştirmek için bir kod parçası alınır.
+2. Bu JS içerisinde bir çeşit `window.onerror` uygulaması mevcuttur.
+3. Hata meydana geldiğinde, bu servise ağ üzerinden bir istekte bulunur.
+3. Servise tekrar giriş yaptığınızda arayüzde bu hataları görürsünüz.
 
 ## Summary
 
