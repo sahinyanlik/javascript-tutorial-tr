@@ -1,6 +1,5 @@
-# The JavaScript language
+# JavaScript Dili
 
-Here we learn JavaScript, starting from scratch and go on to advanced concepts like OOP.
+Bu bölümde JavaScript'i öğrendik. Sıfırdan başladığımız bu işe ileri seviye nesne yönelimli programlama ile devam ettik.
 
-We concentrate on the language itself here, with the minimum of environment-specific notes.
-
+Dilin kendisi üzerine yoğunlaştık, bazen de ortam-özel bilgiler verdik.
