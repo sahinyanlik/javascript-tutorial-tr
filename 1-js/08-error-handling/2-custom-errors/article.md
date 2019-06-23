@@ -8,39 +8,37 @@ JavaScript `throw`'un argüman ile atılmasına izin verir. Teknik olarak hata s
 
 Uygulamanızı geliştirirken oluşturacağınız `HttpTimeoutError` gibi sınıflar `HttpError`'dan türetilebilir.
 
-## Extending Error
+## Hata sınıflarını genişletme
 
-As an example, let's consider a function `readUser(json)` that should read JSON with user data.
+Örnek olarak, `readUser(json)` adında bir fonksiyon olsun ve bu fonksiyon JSON okusun.
 
-Here's an example of how a valid `json` may look:
+Geçerli bir `json` şu şekildedir:
 ```js
 let json = `{ "name": "John", "age": 30 }`;
 ```
+Dahili olarak gelen `JSON.parse` kullanılacaktır. Eğer bozuk `json` gelirse bu durumda `SyntaxError` atar.
 
-Internally, we'll use `JSON.parse`. If it receives malformed `json`, then it throws `SyntaxError`.
+Fakat `json` yazım olarak doğru olsa bile geçerli sayılmayabilir, değil mi? Belki bizim ihtiyacımız veri bulumamaktadır. Örneğin, `name` ve `age` özellikleri bulunmaz ise bu durumda bizim için geçerli bir veri sayılmaz.
 
-But even if `json` is syntactically correct, that doesn't mean that it's a valid user, right? It may miss the necessary data. For instance, if may not have `name` and `age` properties that are essential for our users.
+`readUser(json)` fonksiyonu sadece JSON okumayacak, doğruluk kontrolü de yapacaktır. Eğer gerekli alanlar yok ise, format yanlışsa bu durumda bu bizim için hatadır. Ayrıca bu bir `SyntaxError` yani yazım hatası değildir. Çünkü yazım olarak doğru olsa da başka türde bir hatadır. Bu hatalara `ValidationError` diyeceğiz ve bunun için bir sınıf oluşturacağız. Bu tür hatalar ayrıca hatanın nedeni hakkında da bilgi içermelidir.
 
-Our function `readUser(json)` will not only read JSON, but check ("validate") the data. If there are no required fields, or the format is wrong, then that's an error. And that's not a `SyntaxError`, because the data is syntactically correct, but another kind of error. We'll call it `ValidationError` and create a class for it. An error of that kind should also carry the information about the offending field.
+Bizim yazacağımız `ValidationError` sınıfı dahili olarak bulunan `Error` sınıfından türemelidir.
 
-Our `ValidationError` class should inherit from the built-in `Error` class.
+`Error` sınıfı gömülü olarak gelmektedir. Genişletmeden önce neyi genişleteceğimizi bilmek iyi olacaktır:
 
-That class is built-in, but we should have its approximate code before our eyes, to understand what we're extending.
-
-So here you are:
+Şu şekilde:
 
 ```js
-// The "pseudocode" for the built-in Error class defined by JavaScript itself
+// Gömülü gelen error sınıfının basitleştirilmiş tanımı JavaScript kodu olarak gösterilmektedir.
 class Error {
   constructor(message) {
     this.message = message;
-    this.name = "Error"; // (different names for different built-in error classes)
-    this.stack = <nested calls>; // non-standard, but most environments support it
+    this.name = "Error"; // (farklı gömülü hata sınıfları için farklı isimler)
+    this.stack = <nested calls>; // standartlarda yok fakat çoğu ortam desteklemekte
   }
 }
 ```
-
-Now let's go on and inherit `ValidationError` from it:
+Şimdi `ValidationError` kalıtımını yapabiliriz:
 
 ```js run untrusted
 *!*
@@ -61,16 +59,15 @@ try {
 } catch(err) {
   alert(err.message); // Whoops!
   alert(err.name); // ValidationError
-  alert(err.stack); // a list of nested calls with line numbers for each
+  alert(err.stack); // İç içe çağrıların hangi satırlarda olduğunun listesi.
 }
 ```
+Yapıcıya bakarsanız:
 
-Please take a look at the constructor:
+1. `(1)` satırda üst sınıfın yapıcısı çağırılmakta. Javascript bizim kalıtılan sınıftan `super` ile üst sınıfı çağırmamız koşulunu koymaktadır. Böylece üst sınıftaki yapıcı `message`'ı doğru bir şekilde ayarlar.
+2. Üst sınıfın yapıcısı da `name` ve `"Error"` özelliğini ayarlar, bundan dolayı `(2)` satırda bunu doğru değere ayarlamış oluruz.
 
-1. In the line `(1)` we call the parent constructor. JavaScript requires us to call `super` in the child constructor, so that's obligatory. The parent constructor sets the `message` property.
-2. The parent constructor also sets the `name` property to `"Error"`, so in the line `(2)` we reset it to the right value.
-
-Let's try to use it in `readUser(json)`:
+`readUser(json)` kullanmayı deneyelim:
 
 ```js run
 class ValidationError extends Error {
@@ -85,48 +82,46 @@ function readUser(json) {
   let user = JSON.parse(json);
 
   if (!user.age) {
-    throw new ValidationError("No field: age");
+    throw new ValidationError("No field: age"); // age alanı bulunmamakta
   }
   if (!user.name) {
-    throw new ValidationError("No field: name");
+    throw new ValidationError("No field: name");// name alanı bulunmamakta
   }
 
   return user;
 }
 
-// Working example with try..catch
+// try..catch ile çalışan bir örnek.
 
 try {
   let user = readUser('{ "age": 25 }');
 } catch (err) {
   if (err instanceof ValidationError) {
 *!*
-    alert("Invalid data: " + err.message); // Invalid data: No field: name
+    alert("Invalid data: " + err.message); // Yanlış veri: No field: name
 */!*
   } else if (err instanceof SyntaxError) { // (*)
     alert("JSON Syntax Error: " + err.message);
   } else {
-    throw err; // unknown error, rethrow it (**)
+    throw err; // bilinmeyen bir hata, tekrar at(**)
   }
 }
 ```
+Yukarıdaki `try..catch` bloğu hem bizim yazdığımız `ValidationError` hem de gömülü olarak gelen `SyntaxError` hatalarını idare etmektedir.
 
-The `try..catch` block in the code above handles both our `ValidationError` and the built-in `SyntaxError` from `JSON.parse`.
+`instanceof` ile hataların tiplerinin nasıl kontrol edildiğine dikkat edin. `(*)`
 
-Please take a look at how we use `instanceof` to check for the specific error type in the line `(*)`.
-
-We could also look at `err.name`, like this:
+Ayrıca `err.name`'e şu şekilde bakabiliriz:
 
 ```js
 // ...
-// instead of (err instanceof SyntaxError)
+//  (err instanceof SyntaxError) kullanmak yerine
 } else if (err.name == "SyntaxError") { // (*)
 // ...
 ```  
+`instanceof` kullanmak daha iyidir. İleride `ValidationError`'u genişletir ve `PropertyRequiredError` gibi alt tipler oluşturursanız `instanceof` ile kalıtılan sınıfı da kontrol etmiş olursunuz. Bundan dolayı gelecekte olacak değişikliklere daha iyi tepki verir.
 
-The `instanceof` version is much better, because in the future we are going to extend `ValidationError`, make subtypes of it, like `PropertyRequiredError`. And `instanceof` check will continue to work for new inheriting classes. So that's future-proof.
-
-Also it's important that if `catch` meets an unknown error, then it rethrows it in the line `(**)`. The `catch`  only knows how to handle validation and syntax errors, other kinds (due to a typo in the code or such) should fall through.
+Ayrıca `catch` bilinmeyen bir hata olduğunda tekrardan bu hatayı atması `(**)` oldukça önemlidir. `catch` sadece veri kontrolü ve yazım hatalarını kontrol etmektedir. Diğer hatalar ise bilinmeyen hatalar bölümüne düşmektedir.
 
 ## Further inheritance
 
