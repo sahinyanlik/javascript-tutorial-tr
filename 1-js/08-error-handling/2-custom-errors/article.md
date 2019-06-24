@@ -293,8 +293,8 @@ Bundan dolayı dıştaki kod `instanceof ReadError`'u kontrol eder, hepsi bu! Di
 
 Bu yaklaşıma "İstisnaları kapsama" yaklaşımı denilir, "düşük seviye istisnalar"'ı alıp bunları "kapsayarak" `ReadError` haline getirdik. Böylece daha soyut, ve çağırması kolay bir kod yazmış olduk. Bu kullanım nesne tabanlı dillerde oldukça yaygındır.
 
-## Summary
+## Özet
 
-- We can inherit from `Error` and other built-in error classes normally, just need to take care of `name` property and don't forget to call `super`.
-- Most of the time, we should use `instanceof` to check for particular errors. It also works with inheritance. But sometimes we have an error object coming from the 3rd-party library and there's no easy way to get the class. Then `name` property can be used for such checks.
-- Wrapping exceptions is a widespread technique when a function handles low-level exceptions and makes a higher-level object to report about the errors. Low-level exceptions sometimes become properties of that object like `err.cause` in the examples above, but that's not strictly required.
+- Genelde `Error`'dan veya diğer gömülü hata sınıflarından yeni hata türetilir, yapmanız gereken `name` özelliğini ayarlamak ve `super`'i çağırmaktır.
+- Çoğu zaman `instanceof` ile belirli hataları kontrol edebilirsiniz. Bu kalıtım ile de çalışmaktadır. Fakat bazen 3. parti kütüphanelerden gelen hatalar olabilir, bunların sınıflarını almak çok da kolay olmaz. Bu durumda `name` özelliği ile konrol sağlanabilir.
+- Alt-seviye istisnaların idaresi ve üst seviye hataların raporlanması oldukça genel bir tekniktir. Alt seviye istisnalar bazen o objenin özelliği olur. Örneğin yukarıdaki `err.cause` buna iyi bir örnektir, fakat katı bir biçimde gereklidir diyemeyiz.
