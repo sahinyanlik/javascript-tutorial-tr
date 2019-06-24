@@ -210,17 +210,17 @@ alert( new PropertyRequiredError("field").name ); // PropertyRequiredError
 ```
 Böylece hata sınıfları kısalmış oldu, özellikle `"this.name=..."`'i attıktan sonra `ValidationError` daha da kısalmış oldu.
 
-## Wrapping exceptions
+## İstisnaları Kapsama
 
-The purpose of the function `readUser` in the code above is "to read the user data", right? There may occur different kinds of errors in the process. Right now we have `SyntaxError` and `ValidationError`, but in the future `readUser` function may grow: the new code will probably generate other kinds of errors.
+Hatırlarsanız yukarıdaki `readUser` "kullanıcıların verilerini okumak" amacıyla yazılmıştı, değil mi? Farklı hatalar olabileceğinden dolayı şimdilik `SyntaxError`, `ValidationError` gibi hata sınıflarına sahibiz. Fakat `readUser` ileride daha da büyüyebilir: yeni kod yeni hatalara neden olacaktır.
 
-The code which calls `readUser` should handle these errors. Right now it uses multiple `if` in the `catch` block to check for different error types and rethrow the unknown ones. But if `readUser` function generates several kinds of errors -- then we should ask ourselves: do we really want to check for all error types one-by-one in every code that calls `readUser`?
+Bundan dolayı `readUser`'ı çağıran fonksiyon hataları ile başa çıkmalıdır. Şu anda bir çok `if`, `catch` ile kontrol edilip eğer bunlar dahilinde değil ise tekrar hata atma işlemini yapmaktayız. Fakat `readUser` fonksiyonu daha fazla hataya neden olursa, kendimize: gerçekten de tüm hataları birer birer kontrol etmemiz gerekli mi sorusunu sormalıyız.
 
-Often the answer is "No": the outer code wants to be "one level above all that". It wants to have some kind of "data reading error". Why exactly it happened -- is often irrelevant (the error message describes it). Or, even better if there is a way to get error details, but only if we need to.
+Tabiki cevap "Hayır": Dıştaki kod her zaman "diğerlerinden bir üst seviyede" olmak ister. "veri okuma hatası" gibi bir hata olmak ister. Neden olduğu çok da önemli değildir. Tabi hataların detayları olsa iyi olur fakat sadece ihtiyaç olursa.
 
-So let's make a new class `ReadError` to represent such errors. If an error occurs inside `readUser`, we'll catch it there and generate `ReadError`. We'll also keep the reference to the original error in its `cause` property. Then the outer code will only have to check for `ReadError`.
+Bunlar ışığında `ReadError` sınıfını yeniden yazacak olursak. Eğer `readUser` içerisinde bir hata olursa bunu yakalayacak ve `ReadError` üreteceğiz. Ayrıca orjinal hatanın `cause` ( neden ) özelliğine referans vereceğiz. Bundan dolayı dıştaki kod sadece `ReadError`'u kontrol etmeli.
 
-Here's the code that defines `ReadError` and demonstrates its use in `readUser` and `try..catch`:
+Aşağıdaki kod `ReadError`'u tanımlamakta ve `readUser` ve `try..catch`'in nasıl kullanılacağını göstermektedir:
 
 ```js run
 class ReadError extends Error {
@@ -287,12 +287,11 @@ try {
   }
 }
 ```
+Yukarıdaki kodda `readUser` tam da tanımlandığı şekliyle çalışmaktadır -- yazım hatalarını yakalar, eğer doğrular ve bilinmeyen hatalar yerine `ReadError` hatası atar.
 
-In the code above, `readUser` works exactly as described -- catches syntax and validation errors and throws `ReadError` errors instead (unknown errors are rethrown as usual).
+Bundan dolayı dıştaki kod `instanceof ReadError`'u kontrol eder, hepsi bu! Diğer tüm muhtemel hataları listelemeye gerek yok.
 
-So the outer code checks `instanceof ReadError` and that's it. No need to list possible all error types.
-
-The approach is called "wrapping exceptions", because we take "low level exceptions" and "wrap" them into `ReadError` that is more abstract and more convenient to use for the calling code. It is widely used in object-oriented programming.
+Bu yaklaşıma "İstisnaları kapsama" yaklaşımı denilir, "düşük seviye istisnalar"'ı alıp bunları "kapsayarak" `ReadError` haline getirdik. Böylece daha soyut, ve çağırması kolay bir kod yazmış olduk. Bu kullanım nesne tabanlı dillerde oldukça yaygındır.
 
 ## Summary
 
