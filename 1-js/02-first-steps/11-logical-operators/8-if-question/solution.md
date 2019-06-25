@@ -1,6 +1,6 @@
 Cevap: Birinci ve üçüncü çalışacak.
 
-Details:
+Detaylar:
 
 ```js run
 // Çalışır.

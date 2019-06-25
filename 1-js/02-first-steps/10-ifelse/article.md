@@ -161,7 +161,7 @@ let girisIzni = yas > 18;
 ```
 ````
 
-## Birden fazla '?'
+## Çoklu '?'
 
 Birden fazla `"?"` işareti kullanarak birden fazla koşula göre değer döndürme işlemini sağlayabilirsiniz.
 

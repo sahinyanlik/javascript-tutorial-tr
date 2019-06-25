@@ -66,8 +66,6 @@ if (saat < 10 || saat > 18 || haftaSonu) {
 }
 ```
 
-## OR seeks the first truthy value
-
 ## VEYA ilk doğru değeri arar
 
 Yukarıda belirtilen mantık klasik mantıktır. JavaScript'in "ekstra" özelliklerine bakılacak olursa

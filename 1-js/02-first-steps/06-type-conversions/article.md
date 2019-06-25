@@ -1,5 +1,3 @@
-# Type Conversions
-
 # Tip Dönüştürme
 
 Çoğu zaman operatörler ve fonksiyonlar otomatik olarak değeri doğru tipe dönüştürürler. Buna "tip dönüştürme" denir.

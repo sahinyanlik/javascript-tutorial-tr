@@ -9,7 +9,7 @@ Fakat şu anda eğitimler tarayıcı üzerinde yapılmaktadır. Bundan dolayı e
 
 ## alert
 
-Syntax:
+Yazımı:
 
 ```js
 alert(mesaj);

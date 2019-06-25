@@ -1,24 +1,23 @@
-# Code structure
 # Kod yapısı
 
 Öğrenilmesi gereken ilk şey kod bloğunun nasıl oluşturulacağıdır.
 
 [cut]
 
-## Kod Cümleler
+## İfadeler
 
-Kod cümleleri komutları oluşturmak için yazdığımız cümlelerdir.
+İfadeler, komutları oluşturmak için yazdığımız cümlelerdir.
 
-Şu ana kadar `alert('Merhaba Dünya')` cümlesini gördük ve bunun uyarı mesajı verdiğini biliyorsunuz.
+Şu ana kadar `alert('Merhaba Dünya')` ifadesini gördük ve bunun uyarı mesajı verdiğini biliyorsunuz.
 
-Kodun içerisinde istediğiniz kadar cümleye yer verebilirsiniz. Diğer kod cümlesi bir birinden noktalı virgül ile ayrılır.
+Kodun içerisinde istediğiniz kadar ifadeye. Diğer kod cümlesi bir birinden noktalı virgül ile ayrılır.
 
 Örneğin burada mesaj ikiye ayrılmıştır.
 
 ```js run no-beautify
 alert('Merhaba'); alert('Dünya');
 ```
-Genelde cümleler farklı satırlarda yazılırlar. Böylece yazdığınız kod daha okunabilir olacaktır.
+Genelde ifadeler farklı satırlarda yazılırlar. Böylece yazdığınız kod daha okunabilir olacaktır.
 
 
 ```js run no-beautify
@@ -28,7 +27,7 @@ alert('Dünya');
 
 ## Noktalı Virgüller [#semicolon]
 
-Eğer kod cümlelerini satır bırakarak yazarsanız noktalı virgül kullanmanıza gerek yoktur.
+Eğer ifadeleri satır bırakarak yazarsanız noktalı virgül kullanmanıza gerek yoktur.
 
 Örneğin aşağıdaki kod bloğu da çalışacaktır
 
@@ -36,7 +35,7 @@ Eğer kod cümlelerini satır bırakarak yazarsanız noktalı virgül kullanman�
 alert('Merhaba')
 alert('Dünya')
 ```
-JavaScript dilinde bu şekilde satır bırakarak cümleyi bitirme olayına "üstü kapalı" noktalı virgül denilmektedir. Ayrıca [otomatik noktalı virgül koyma](https://tc39.github.io/ecma262/#sec-automatic-semicolon-insertion) da denir
+JavaScript dilinde bu şekilde satır bırakarak ifadeyi bitirme olayına "üstü kapalı" noktalı virgül denilmektedir. Ayrıca [otomatik noktalı virgül koyma](https://tc39.github.io/ecma262/#sec-automatic-semicolon-insertion) da denir
 
 **Çoğu durumda yeni satır noktalı virgül anlamına gelir. Unutulmamalı ki çoğu durum herzaman demek değildir.**
 
@@ -48,7 +47,7 @@ alert(3 +
 + 2);
 ```
 
-Yukarıdaki bloğun çıktısı `6` olacaktır çünkü JavaScript yeni satırda noktalı virgül eklememiştir. Buradan anlayabilirsiniz ki eğer satır `"+"` ile bitiyorsa cümle bitmiş sayılmaz ve noktalı virgül gereklidir. Bu durumda yukarıdaki kod beklendiği gibi çalışmaktadır.
+Yukarıdaki bloğun çıktısı `6` olacaktır çünkü JavaScript yeni satırda noktalı virgül eklememiştir. Buradan anlayabilirsiniz ki eğer satır `"+"` ile bitiyorsa ifade bitmiş sayılmaz ve noktalı virgül gereklidir. Bu durumda yukarıdaki kod beklendiği gibi çalışmaktadır.
 
 **Fakat bazı durumlarda noktalı virgülün otomatik olarak konulması gerekirken JavaScript bunu yapmakta sorun yaşar**
 
@@ -62,7 +61,7 @@ Eğer böyle bir hata görmek istiyorsanız, aşağıdaki koda bir bakın
 ```
 `[]` veya `forEach` in ne anlama geldiğini bilmenize şimdilik gerek yok daha sonra bu konuyu işleyeceğiz. Şu anda bilmeniz gereken önce 1 uyarısı alacaksınız sonra 2.
 
-Şimdi bu koddan önce noktalı virgül ile bitmeyen bir uyarı cümlesi yazın.
+Şimdi bu koddan önce noktalı virgül ile bitmeyen bir uyarı ifadesi yazın.
 
 ```js run no-beautify
 alert("Hata alacaksınız")
@@ -84,7 +83,7 @@ Now we have the "Şimdi ise beklendiği gibi hatasız" message and then `1` and 
 
 İlk yazdığımız kod bloğunda hata olmasının sebebi JavaScript'in `[...]` den önce noktalı virgül gelmeyeceğini varsaymasından dolayı olmaktadır.
 
-Bundan dolayı noktalı virgül koyulmaz, bu durumda ilk kod bloğunda tüm blok bir cümle olarak görülür. JavaScript motoru kodu aşağıdaki gibi görecektir.
+Bundan dolayı noktalı virgül koyulmaz, bu durumda ilk kod bloğunda tüm blok bir ifadesi olarak görülür. JavaScript motoru kodu aşağıdaki gibi görecektir.
 
 ```js run no-beautify
 alert("There will be an error")[1, 2].forEach(alert)
@@ -101,7 +100,7 @@ Zamanla yazdığınız programlar gittikçe karmaşıklaşır. Neyin ne için ya
 
 Yorum satırları kodun içerisinde herhangi bir yere koyulabilir. Kodun çalışmasını engellemez çünkü JavaScript motoru bu yorumları görmezden gelir.
 
-** Tek satır olarak yazmak istiyorsanız `//` kullanarak yorum yazabilirsiniz ** 
+**Tek satır olarak yazmak istiyorsanız `//` kullanarak yorum yazabilirsiniz** 
 
 Kesik çizgi işaretlerinden sonra istediğiniz yorumu yazabilirsiniz.
 
@@ -110,10 +109,10 @@ Kesik çizgi işaretlerinden sonra istediğiniz yorumu yazabilirsiniz.
 // Bu yorum kendi başına bir satırda yer alır
 alert('Merhaba');
 
-alert('Dünya'); // Bu yorum ise cümleyi takip eder
+alert('Dünya'); // Bu yorum ise ifadeyi takip eder
 ```
 
-*** Eğer birden çok satırda yorum yazmak istiyorsanız kesik çizgi + yıldız ile ( <code>/&#42;</code> ) yoruma başlayıp yıldız ve kesik çizgi ile bu kod bloğunu bitirebilirsiniz <code>&#42;/</code>. 
+**Eğer birden çok satırda yorum yazmak istiyorsanız kesik çizgi + yıldız ile ( <code>/&#42;</code> ) yoruma başlayıp yıldız ve kesik çizgi ile bu kod bloğunu bitirebilirsiniz <code>&#42;/</code>.**
 
 Örneğin:
 

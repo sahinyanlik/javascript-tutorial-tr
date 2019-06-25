@@ -1,7 +1,6 @@
-# Data types
 # Veri Tipleri
 
-Bir javascript değişkeni her türlü veriyi tutabilir. Önce karakter dizisi(String) atanabilir sonra sayısal değer alabilir.
+Bir javascript değişkeni her türlü veriyi tutabilir. Önce karakter dizisi(String) atansa da sonra sayısal değer alabilir:
 
 ```js
 // Hata yok
@@ -224,9 +223,8 @@ Son üç satır diğerlerinden farklıdır. Şu şekilde;
 2. `typeof null` sonucu `"object"` dir. Aslında yanlış. Bu `typeof` fonksiyonunun bilinen bir hatasıdır. Eski versiyonlara uygunluk açısından bu şekliyle bırakılmıştır. Yoksa `null` bir obje değildir. Kendine has bir tiptir. Tekrar söylemek gerekirse bu JavaScript dilinin bir hatasıdır.
 3. `typeof alert` fonksiyondur. Çünkü `alert` dilde doğrudan var olan bir fonksiyondur. `Math` ile farklı gördüğünüz gibi. Bir sonraki bölümde fonksiyonlar anlatılacaktır. Fonksiyonlar obje tipine dahildir. Fakat `typeof` bunları farklı yorumlar. Resmi olarak yanlış olsa da pratikte çokça kullanılan bir özelliktir.
 
-
-
 ## Özet
+
 Javascript dilinde 7 tane basit tip bulunmaktadır.
 
 

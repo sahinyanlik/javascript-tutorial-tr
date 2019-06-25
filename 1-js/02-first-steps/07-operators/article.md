@@ -2,7 +2,7 @@
 
 Çoğu operatörü okuldan hatırlarsınız. Toplama `+`, çarpma `*`, çıkarma `-` vs. 
 
-Bu bölümde okulda görülen aritmediği işleyeceğiz.
+Bu bölümde okulda görmediğiniz aritmediği işleyeceğiz.
 
 [cut]
 

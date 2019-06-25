@@ -18,4 +18,4 @@ Tekrardan bunu `kullaniciAdi` olarak tanımlamak mümkün fakat bu durumda bizim
 
 Modern kod düzenleyicilerin otomatik tamamlayıcıları oldukça gelişmiş olduğundan uzun değişken isimleri bile bir kaç harften sonra tamamlanabilmektedir. Bundan dolayı değişken isimlerinizi maksimum 3 kelime olacak şekilde ayarlarsanız yeterli olur.
 
-Eğer düzenleyiciniz değişkeniniz otomatik olarak tamamlamıyorsa bu durumda size önerim [yeni bir düzenleyiciye](/editors) geçmenizdir
+Eğer düzenleyiciniz değişkeniniz otomatik olarak tamamlamıyorsa bu durumda size önerim [yeni bir düzenleyiciye](/code-editors) geçmenizdir
