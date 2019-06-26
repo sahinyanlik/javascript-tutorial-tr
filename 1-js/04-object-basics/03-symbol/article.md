@@ -1,11 +1,9 @@
 
-# Symbol type
 # Sembol Tipi
+
 Tanım olarak objeler, karakter dizisi veya sembol tipinde olmalıdır. Sayı veya boolean olamaz.
 
 Şimdiye kadar sadece karakter dizisi işlendi. Bundan sonra semboller nasıl kullanılır ve ne gibi artısı var bunların üzerinden geçilecektir.
-
-[cut]
 
 ## Semboller
 

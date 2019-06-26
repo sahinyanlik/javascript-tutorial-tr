@@ -81,7 +81,11 @@ let kullanici = new function() {
 Yapıcı fonksiyon tekrar çağırılamaz çünkü hiç bir yere kayıt edilmemiştir, sadece yaratılır ve çağırılır. Böylece yapıcı metod ilerde tekrar kullanılmayacağına garanti verir.
 ````
 
-## Çift-yazım yapıcıları: new.target
+## Yapıcı modu testi: new.target
+
+```smart header="Advanced stuff"
+The syntax from this section is rarely used, skip it unless you want to know everything.
+```
 
 Fonksiyon içinde, bu fonksiyon `new` ile mi yoksa `new` olmadan mı çağırılmış bu `new.target` özelliği kullanılarak anlaşılabilir.
 

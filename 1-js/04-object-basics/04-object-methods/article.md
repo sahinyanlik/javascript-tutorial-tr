@@ -217,7 +217,7 @@ Normal modda ise ( `use strict` unutulursa) `this` değeri *global obje* olur. T
 
 
 Obje olmadan `this` çağırmak normal değildir, bir programlama hatasıdır. Eğer fonksiyon `this` içeriyorsa, o objenin dahilinde çağırılabileceği anlamı çıkar.
-
+````
 
 ```smart header="Sınırsız `this` kullanmanın yan etkileri"
 

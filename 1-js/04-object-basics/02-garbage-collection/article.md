@@ -1,4 +1,4 @@
-# Çöp Toplama
+# Çöp Toplama ( Garbage collection )
 
 JavaScript dilinde hafıza yönetimi otomatik olarak gerçekleşir. Objeler, fonksiyonlar, değişkenler vs. hepsi hafızada yer alır.
 
@@ -52,7 +52,7 @@ kullanici = null;
 
 Şu anda `İhsan` ulaşılamaz oldu. Buna erişmenin bir yolu yok çünkü ona referans olan bir değişken yok. Bu durumda Çöp Toplama bunları hafızadan siler.
 
-## Çift referans
+## İki referans
 
 Diyelim ki `kullanici` değişkeni kopyalandı yani referans kopyalandı.
 

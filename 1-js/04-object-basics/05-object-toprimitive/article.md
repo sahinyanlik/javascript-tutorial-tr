@@ -160,7 +160,8 @@ alert(kullanici + 500); // toString -> İhsan500
 Eğer `Symbol.toPrimitive` ve `valueOf` yoksa `toString` metodu objeleri ilkel tiplere çevirmeye çalışır.
 
 
-## ToPrimitive ve ToString/ToNumber
+## Dönüş Tipleri
+
 İlkel tip çevrilerinde bilinmesi gereken en önemli olay bu metodların illa da ipucunda alınan tiplere dönüştürmesine gerek yoktur.
 
 `toString()` illa karakter döndürecek diye veya `Symbol.toPrimitive` içerisinde eğer ipucu sayı ise sayı döndürecek diye bir kural yoktur.
