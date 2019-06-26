@@ -190,7 +190,7 @@ function yaz() {
 Sonrasında dışta bulunan `kullanici` değişkenine bakacak ve `kullaniciBilgisi` fonksiyonunda bir yanlış olduğu kanaatine varacak. Ver elini hata ayıklama!
 
 
-## Her yerde yan etki olsun!
+## Her yerde yan etki!
 
 Bazı fonksiyonlar hiç birşey değiştirmiyormuş gibi görünür. Örneğin `hazirMi()`, `izinKontrol()`, `tagbul()` gibi. Hesaplamaları yapıp veriyi geri döndürdüğü ve bunun dışında bir değişiklik yapılmadığı tahmin edilsin. Diğer bir deyişle "yan etkisi" olmadığı.
 

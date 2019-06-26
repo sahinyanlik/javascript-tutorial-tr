@@ -55,5 +55,3 @@ Buradaki örnekler sadece browser desteler ise çalışır.
 [Chrome Canary](https://www.google.com/chrome/browser/canary.html) üzerinde tüm örnekler çalıştırılabilir fakat diğer modern tarayıcılarda da çalışması lazım.
 
 Kodu canlı sistemde çalıştırırken, Babel kullanarak eski tarayıcılara da destek verebilirsiniz, kod bu şekilde her yerde çalışmış olacaktır.
-
-Note that on production we can use Babel to translate the code into suitable for less recent browsers, so there will be no such limitation, the code will run everywhere.
