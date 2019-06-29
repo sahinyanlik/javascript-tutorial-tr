@@ -2,7 +2,6 @@
 
 ---
 
-# Map to objects
 # Objelerin harita(Map)'lenmesi
 
 `kullanici` dizindeki elemanlar `adi`, `soyadi` ve `id` özelliklerine sahiptirler.

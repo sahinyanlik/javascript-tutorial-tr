@@ -6,7 +6,7 @@ Fakat bazı durumlarda *sıralı koleksiyon* tutmak gerekebilir, 1., 2. ve 3. el
 
 Obje kullanmak mantıklı değildir, çünkü elemanların sırasını tutmaz bu objeler. Var olanların "arasına" yeni bir özellik girilemez. Objeler böyle kullanımlara uygun değildir.
 
-Bunun için özel bir veri yapısı vardır. 'Array' sıralı koleksiyonları tutar.
+Bunun için özel bir veri yapısı vardır. `Array` sıralı koleksiyonları tutar.
 
 [cut]
 

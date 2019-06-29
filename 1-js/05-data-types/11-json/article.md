@@ -502,8 +502,6 @@ alert( program.tanismalar[1].tarih.getDate() ); // çalışır!
 */!*
 ```
 
-
-
 ## Özet
 
 - JSON kendine ait standardı olan ve birçok programlama dilinde kütüphanesi olan bir veri formatıdır.

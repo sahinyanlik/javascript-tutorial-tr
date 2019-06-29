@@ -16,4 +16,5 @@ alert( ozellikSayisi(kullanici) ); // 2
 ```
 
 Kodu olabildiğince kısa yazınız.
+
 Not: Sembolik özellikleri pas geçin, sadece "gerçek" olanları hesaba katın.

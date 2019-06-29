@@ -24,5 +24,5 @@ Bazı tarayıcılar ilkel tiplere yeni özellik tanımlanmasına izin vermezler.
 
 **Bu örnekten de gördüğünüz gibi ilkel tipler kesinlikle obje değillerdir.**
 
-Geçici metodlar oluşturarak obje gibi davranırlar. Fakat bunları tutamazlar. Yukarıdaki örnekte olduğu gibi.
+Geçici metodlar oluşturarak obje gibi davranırlar. Yukarıdaki örnekte olduğu gibi bunları fazla tutamazlar.
 

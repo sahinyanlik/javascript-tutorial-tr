@@ -64,8 +64,9 @@ for(let deger of Object.values(kullanici)) {
 }
 ```
 
-## Object.keys/values/entries symbol özelliklerini görmezden gelir.
+```warn header="Object.keys/values/entries symbol özelliklerini görmezden gelir"
 
 `for..in` döngüsünde olduğu gibi, bu metodlar `Symbol(...)`'ü anahtar olarak kullanan özellikleri pas geçerler.
 
 Bu baya işe yarar bir özelliktir. Fakat symbol özelliklerini almak istiyorsanız [Object.getOwnPropertySymbols](mdn:js/Object/getOwnPropertySymbols) metodunu kullanabilirsiniz. Ayrıca [Reflect.ownKeys(obj)](mdn:js/Reflect/ownKeys) *tüm* anahtarları döner.
+```

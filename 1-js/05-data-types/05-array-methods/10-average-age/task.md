@@ -2,7 +2,6 @@
 
 ---
 
-# Get average age
 # Ortalama yaşın alınması
 
 `ortalamaYasAl(kullanicilar)` adında bir fonksiyon alınız. Bu fonksiyon `yas` ozelliğine sahip objelerden oluşan bir dizi alsın ve bunların ortalamasını hesaplasın.
