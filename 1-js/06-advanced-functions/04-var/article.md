@@ -28,7 +28,7 @@ alert(terim); // Hata! terim tanımlı değil.
 
 ...Fakat farklılık tam da burada ortaya çıkar.
 
-## "var" has no block scope
+## "var"'ın blok kapsamı yoktur
 
 `var` ya fonksiyon içinde yada globalde tanımlanır, diğer türlü tüm bloklar içerisinden erişilebilir.
 

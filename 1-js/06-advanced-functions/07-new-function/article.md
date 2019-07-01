@@ -47,6 +47,7 @@ func();
 Tabi bunlar çok özel haller, örneğin sunucudan bir metini alıp çalıştırmak, veya temadan dinamik olarak derleme. Bunun gibi ihtiyaçlar genelde geliştirmenin ileriki safhalarında karşılaşılır.
 
 ## Closure
+
 Fonksiyon genelde doğduğu yeri hatırlar `[[Ortam]]`. Bulunduğu Sözcüksel Ortama yaratıldığı yerden referans verir.
 
 Bir fonksiyon `new Function` ile yaratıldığında `[[Ortam]]` referansı o anki bulunduğu ortamı değil de evrensel ortama referans verir.

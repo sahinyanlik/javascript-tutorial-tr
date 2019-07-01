@@ -11,7 +11,7 @@ Aniden, `this` kaybolur. Bu problem başlangıç seviyesi geliştiriciler için 
 
 [cut]
 
-## "this"'in kaybolması
+## "this"'in kaybetme
 
 JavaScript'te `this` in ne kadar kolay bir şekilde kaybolduğunu zaten biliyorsunuz. Eğer bir metod objeden farklı bir yere iletilirse `this` kaybolur.
 

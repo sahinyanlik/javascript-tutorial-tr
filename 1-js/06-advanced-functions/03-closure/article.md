@@ -526,6 +526,7 @@ JavaScript'e başka yollarla da Fonksiyon İfadesini belirtmek mümkündür.
 ```
 
 Yukarıdaki tüm durumlarda Fonksiyon İfadesi tanımlanır ve doğrudan çalıştırılır.
+
 ## Garbage Koleksiyonu
 
 Sözcüksel Ortam objeleri aynı normal değerler gibi hafıza yönetimine konu olurlar.
