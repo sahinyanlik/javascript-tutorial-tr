@@ -133,7 +133,7 @@ Aslında iki tane kısıtlama bulunmaktadır:
 ## Kuralların Okuması/Yazılması.
 
 
-Prototip sadece özelliklerin okunması için kullanılır.
+Prototip sadece özelliklerin *okunması* için kullanılır.
 
 Veri özelliklerinin yazılma/silinme ( alıcı/ayarlayıcı değil) işi doğrudan obje üzerinden yapılır.
 

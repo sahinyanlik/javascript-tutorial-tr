@@ -148,7 +148,7 @@ Object.defineProperty({}, 'prop', {
 });
 ```
 
-## Akıllı getters/setters
+## Akıllıca getters/setters kullanmak
 
 Getter/Setter "gerçek" özelliklerin üzerinde daha iyi kontrol amacıyla kurulabilir.
 
