@@ -627,6 +627,7 @@ Aşağıdaki gibi çalışırlar:
 3. Servise tekrar giriş yaptığınızda arayüzde bu hataları görürsünüz.
 
 ## Özet
+
 `try..catch` yapısı çalışma zamanlı hataları idare eder. Tam olarak kodu çalıştırmaya çalışır ve hataları yakalar.
 
 Yazımı:
