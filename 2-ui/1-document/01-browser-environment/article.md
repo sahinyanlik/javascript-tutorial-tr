@@ -1,40 +1,42 @@
-# Browser environment, specs
+# Tarayıcı Ortamı, Özellikleri
 
-The JavaScript language was initially created for web browsers. Since then, it evolved and became a language with many uses and platforms.
+Javascript dili başlangıçta internet tarayıcıları için oluşturuldu. O zamandan beri geliştirildi ve bir çok kullanımı ve platformu ile bir dil haline geldi.
 
-A platform may be either a browser or a web-server or a washing machine or another *host*. Each of them provides platform-specific functionality. The JavaScript specification calls that a *host environment*.
 
-A host environment provides platform-specific objects and functions additionally to the language core. Web browsers give means to control web pages. Node.JS provides server-side features, and so on.
+Bir platform tarayıcı veya bir web sunucusu veya bir çamaşır makinesi veya başka bir sunucu olabilir. Bunların her biri platforma özgü fonksiyonlar sağlar. Javascript özelliği bunu bir sunucu ortamı olarak adlandırılır.
 
-[cut]
+Bir sunucu ortamı dil çekirdeğine ek olarak platforma özgü nesneler ve fonksiyonlar sağlar. İnternet tarayıcıları internet sayfalarını kontrol etmek için bir yol sunar. Node.js sunucu tarafı özellikleri vb. 
+
+
 
 Here's a bird-eye view of what we have when JavaScript runs in a web-browser:
+İşte javascriptin internet tarayıcısında çalıştığında elimizde ne olduğunu gösteren bir kuş bakışı.
 
 ![](windowObjects.png)
 
-There's a "root" object called `window`. It has two roles:
+`window` denilen bir "kök" nesnesi var. İki rolü vardır.
 
-1. First, it is a global object for JavaScript code, as described in the chapter <info:global-object>.
-2. Second, it represents the "browser window" and provides methods to control it.
+1. Birincisi, Javascript kodu için evrensel bir nesnedir. bölümde açıklandığı gibi [Evrensel nesneler](https://github.com/sahinyanlik/javascript-tutorial-tr/blob/master/1-js/06-advanced-functions/05-global-object/article.md)
+2. İkincisi, "tarayıcı penceresini" temsil eder ve kontrol etmek için yöntemler sağlar. 
 
-For instance, here we use it as a global object:
+Örneğin, burada `window`u evrensel bir nesne olarak kullandık.
 
 ```js run
-function sayHi() {
-  alert("Hello");
+function selamSoyle() {
+  alert("Selam");
 }
 
-// global functions are accessible as properties of window
-window.sayHi();
+// evrensel değişkenler `window` özellikleri olarak erişilebilir.
+window.selamSoyle();
 ```
 
-And here we use it as a browser window, to see the window height:
+Ve burada `window`u pencerenin yüksekliğini görmek için tarayıcı penceresi olarak kullandık: 
 
 ```js run
-alert(window.innerHeight); // inner window height
+alert(window.innerHeight); // İç pencere yüksekliği
 ```
 
-There are more window-specific methods and properties, we'll cover them later.
+Daha fazla `window`a özgü yöntemler ve özellikler var, bunlardan daha sonra bahsedeceğiz.
 
 ## Document Object Model (DOM)
 
