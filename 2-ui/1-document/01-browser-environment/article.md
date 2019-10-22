@@ -8,8 +8,6 @@ Bir platform tarayıcı veya bir web sunucusu veya bir çamaşır makinesi veya 
 Bir sunucu ortamı dil çekirdeğine ek olarak platforma özgü nesneler ve fonksiyonlar sağlar. İnternet tarayıcıları internet sayfalarını kontrol etmek için bir yol sunar. Node.js sunucu tarafı özellikleri vb. 
 
 
-
-Here's a bird-eye view of what we have when JavaScript runs in a web-browser:
 İşte javascriptin internet tarayıcısında çalıştığında elimizde ne olduğunu gösteren bir kuş bakışı.
 
 ![](windowObjects.png)
