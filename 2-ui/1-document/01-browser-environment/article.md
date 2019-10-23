@@ -38,42 +38,42 @@ Daha fazla `window`a özgü yöntemler ve özellikler var, bunlardan daha sonra 
 
 ## Document Object Model (DOM)
 
-The `document` object gives access to the page content. We can change or create anything on the page using it.
+`document` nesnesi sayfa içeriğine erişimi sağlar. Sayfada herhangi bir şeyi değiştirebilir ya da oluşturabiliriz.
 
-For instance:
+Örneğin:
 ```js run
-// change the background color to red
+// arka plan rengini kırmızı olarak değiştirelim.
 document.body.style.background = 'red';
 
-// change it back after 1 second
+// 1 saniye sonra tekrar değiştirelim
 setTimeout(() => document.body.style.background = '', 1000);
 ```
 
-Here we used `document.body.style`, but there's much, much more. Properties and methods are described in the specification. By chance, there are two working groups who develop it:
+Burada `document.body.style` kullandık but daha fazla parametreler var. Özellikleri ve yöntemleri tanımlamada açıklanmıştır. Tesadüf ki, bunu geliştiren iki grup vardır. 
 
-1. [W3C](https://en.wikipedia.org/wiki/World_Wide_Web_Consortium) -- the documentation is at <https://www.w3.org/TR/dom>.
-2. [WhatWG](https://en.wikipedia.org/wiki/WHATWG), publishing at <https://dom.spec.whatwg.org>.
+1. [W3C](https://en.wikipedia.org/wiki/World_Wide_Web_Consortium) -- belgesi <https://www.w3.org/TR/dom> linktedir.
+2. [WhatWG](https://en.wikipedia.org/wiki/WHATWG), <https://dom.spec.whatwg.org> 'da yayınlanır..
 
-As it happens, the two groups don't always agree, so we have like 2 sets of standards. But they are in the tight contact and eventually things merge. So the documentation that you can find on the given resources is very similar, there's like 99% match. There are very minor differences, you probably won't notice them.
+Burada olduğu gibi, 2 grup her zaman aynı fikirde değil. Bu yüzden 2 standartımız var fakat birbirileri ile temasta ve sonuç olarak bir noktada birleşiyorlar. Yani bu kaynaklardan bulabileceğiniz bilgiler birbirlerine çok yakın, 99% gibi bir eşleşme var. Farklılıklar var ama büyük ihtimal bunu fark etmeyeceksiniz.
 
-Personally, I find <https://dom.spec.whatwg.org> more pleasant to use.
+Şahsen <https://dom.spec.whatwg.org> kullanmayı daha keyifli buluyorum.
 
-In the ancient past, there was no standard at all -- each browser implemented whatever it wanted. So different browsers had different sets methods and properties for the same thing, and developers had to write different code for each of them. Dark, messy times.
+Eskiden hiç bir standart yoktu. -- her tarayıcı her ne istiyorsa onu uyguladı. Bu yüzden farklı tarayıcıların aynı şeyler için farklı metotları ve özellikleri vardı ve geliştiriciler her bir tarayıcı için farklı kodlar yazmak zorunda kalıyordu. Karanlık ve dağaınık zamanlar.
 
-Even now we can sometimes meet old code that uses browser-specific properties and works around incompatibilities. But in this tutorial we'll use modern stuff: there's no need to learn old things until you really need those (chances are high you won't).
+Şimdi bile bazen tarayıcıları özgü özellikleri kullanan ve uyumsuzluklar etrafında çalışan eski kodlarla çalışabiliriz ama bu derste modern şeyler kullanacağız: Onlara ihtiyacın olana kadar eski şeyler öğrenmeye gerek yok (şansın yüksek değil). 
 
-Then the DOM standard appeared, in an attempt to bring everyone to an agreement. The first version was "DOM Level 1", then it was extended by DOM Level 2, then DOM Level 3, and now it's DOM Level 4. People from WhatWG group got tired of version and are calling that just "DOM", without a number. So will do we.
+Daha sonra herkesi ortak noktada toplamak için DOM standartı belirlendi. İlk versiyon "DOM Level 1" idi, sonra DOM Level 2 tarafından genişletildi, sonra DOM Level 3 ve şimdi DOM Level 4. WhatWG grubundan insanlar sürümden sıkıldılar ve numara olmadan sadece DOM olarak adlandırdılar. Öyleyse biz yapacağız.
 
-```smart header="DOM is not only for browsers"
-The DOM specification explains the structure of a document and provides objects to manipulate it. There are non-browser instruments that use it too.
+```smart header="DOM yalnızca tarayıcı için değildir."
+DOM özelliği bir belgenin yapısını açıklar ve onu işlemek için nesne sağlar. Onu kullanan tarayıcı olmayan araçlarda var.
 
-For instance, server-side tools that download HTML pages and process them. They may support only a part of the DOM specification though.
+Örneğin, HTML sayfalarını indiren ve işleyen sunucu-taraflı araçlar. Ancak DOM spesifikasyonunun sadece bir bölümü destekleyebilir.
 ```
 
-```smart header="CSSOM for styling"
-CSS rules and stylesheets are structured not like HTML. So there's a separate specification [CSSOM](https://www.w3.org/TR/cssom-1/) that explains how they are represented as objects, how to read and write them.
+```smart header="Stil için CSSOM"
+CSS kuralları ve stil sayfaları HTML yapısına benzemez. Bu yüzden nesneler olarak nasıl temsil edildiklerini ve nasıl okunup yazılacağını açıklayan bir tanımlama vardır. [CSSOM](https://www.w3.org/TR/cssom-1/)
 
-CSSOM is used together with DOM when we modify style rules for the document. In practice though, CSSOM is rarely required, because usually CSS rules are static. We rarely need to add/remove CSS rules from JavaScript, so we won't cover it right now.
+CSSOM, belgi için stil kurallarını değiştirdiğimizde DOM ile birlikte kullanılıyor. Pratikte olsa CSSOM nadiren gereklidir. Çünkü genelde CSS kuralları statiktir. Javascript'e CSS kuralları ekleme/çıkarma nadiren ihtiyacımız var. Bu yüzden onu kapatmayız.
 ```
 
 ## BOM (part of HTML spec)
