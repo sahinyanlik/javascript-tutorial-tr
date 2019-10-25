@@ -36,7 +36,7 @@ alert(window.innerHeight); // İç pencere yüksekliği
 
 Daha fazla `window`a özgü yöntemler ve özellikler var, bunlardan daha sonra bahsedeceğiz.
 
-## Document Object Model (DOM)
+## Document Object Model (DOM) (Belge Nesneli Modeli)
 
 `document` nesnesi sayfa içeriğine erişimi sağlar. Sayfada herhangi bir şeyi değiştirebilir ya da oluşturabiliriz.
 
@@ -76,48 +76,47 @@ CSS kuralları ve stil sayfaları HTML yapısına benzemez. Bu yüzden nesneler 
 CSSOM, belgi için stil kurallarını değiştirdiğimizde DOM ile birlikte kullanılıyor. Pratikte olsa CSSOM nadiren gereklidir. Çünkü genelde CSS kuralları statiktir. Javascript'e CSS kuralları ekleme/çıkarma nadiren ihtiyacımız var. Bu yüzden onu kapatmayız.
 ```
 
-## BOM (part of HTML spec)
+## BOM (HTML'in bir parçası) 
 
-Browser Object Model (BOM) are additional objects provided by the browser (host environment) to work with everything except the document.
+HTML'in bir parçası (BOM), belge dışında her şey ile çalışmak için tarayıcı (sunucu ortamı) tarafından sağlanan ek nesnelerdir.
 
-For instance:
+Örneğin:
 
-- [navigator](mdn:api/Window/navigator) object provides background information about the browser and the operation system. There are many properties, but two most widely known are: `navigator.userAgent` -- about the current browser, and `navigator.platform` -- about the platform (can help to differ between Windows/Linux/Mac etc).
-- [location](mdn:api/Window/location) object allows to read the current URL and redirect the browser to a new one.
+- [navigator](mdn:api/Window/navigator) nesnesi tarayıcı ve işletim sistemi hakkında arkaplan bilgisi sağlar. Bir çok özelliği var, fakat en çok bilinen ikisi şunlardır: `navigator.userAgent` -- mevcut tarayıcı hakkında, ve `navigator.platform` -- platform hakkımda (Windows/Linux/Mac arasında farklılık olacağından yardım gerekebilir). 
+- [location](mdn:api/Window/location) nesnesi geçerli adresi okumayı ve tarayıcıyı yenisine yönlendirmeyi sağlar
 
-Here's how we can use the `location` object:
+`location` nesnesini bu şekilde kullanabiliriz: 
 
 ```js run
-alert(location.href); // shows current URL
-if (confirm("Go to wikipedia?")) {
-  location.href = 'https://wikipedia.org'; // redirect the browser to another URL
+alert(location.href); // Geçerli URL'yi gösterir
+if (confirm("wikipedia'ya git?")) {
+  location.href = 'https://tr.wikipedia.org'; // Tarayıcı başka bir URL'ye yönlendirir.
 }
 ```
 
-Functions `alert/confirm/prompt` are also a part of BOM: they are directly not related to the document, but represent pure browser methods of communicating with the user.
-
+`alert/confirm/prompt` fonksiyonları da BOM'un bir parçasıdır: Bunlar doğrudan belge ile ilgili değildir ancak kullanıcı ile tarayıcının saf iletişim kurmasını temsil eder. 
 
 ```smart header="HTML specification"
-BOM is the part of the general [HTML specification](https://html.spec.whatwg.org).
+BOM genel kısmıdır[HTML specification](https://html.spec.whatwg.org).
 
-Yes, you heard that right. The HTML spec at <https://html.spec.whatwg.org> is not only about the "HTML language" (tags, attributes), but also covers a bunch of objects, methods and browser-specific DOM extensions. That's "HTML in broad terms".
+Evet, doğru duydun. <https://html.spec.whatwg.org>'deki HTML özelliği yalnızca "HTML dili" (etiketler, nitelikler) ile ilgili değil, aynı zamanda birçok nesne, yöntem ve tarayıca özgü DOM uzantılarını da kapsar. Bu "geniş anlamda HTML"dir.
 ```
 
-## Summary
+## Özet
 
-Talking about standards, we have:
+Standar hakkında konuşurken:
 
-DOM specification
-: Describes the document structure, manipulations and events, see <https://dom.spec.whatwg.org>.
+DOM tanımlaması
+: belge yapısını, manipülasyonları, olayları açıklar, Bkz <https://dom.spec.whatwg.org>.
 
-CSSOM specification
-: Describes stylesheets and style rules, manipulations with them and their binding to documents, see <https://www.w3.org/TR/cssom-1/>.
+CSSOM tanımlaması
+: stil sayfaları ve stil kurallarını açıklar, bunlarla yapılan manipülasyonları ve belge bağlanmalarını sağlar, Bkz <https://www.w3.org/TR/cssom-1/>.
 
-HTML specification
-: Describes HTML language (tags etc) and also BOM (browser object model) -- various browser functions: `setTimeout`, `alert`, `location` and so on, see <https://html.spec.whatwg.org>. It takes DOM specification and extends it with many additional properties and methods.
+HTML tanımlaması
+: HTML dilini (etiketler vs.) ve ayrıca BOM (tarayıcı nesne modeli) -- çeşitli tarayıcı fonksiyonlar: `setTimeout`, `alert`, `location` vb açıklar, Bkz <https://html.spec.whatwg.org>. DOM özelliğini alır ve bir çok ek özellik ve yöntemle geliştirir.
 
-Now we'll get down to learning DOM, because the document plays the central role in the UI, and working with it is the most complex part.
+Şimdi DOM öğrenmeye başlayacağız. Çünkü belge, kullanıcı arayüzünde önemli bir rol oynuyor, ayrıca onunla çalışmak en karmaşık kısımdır.
 
-Please note the links above, because there's so many stuff to learn, it's impossible to cover and remember everything.
+Lütfen yukarıdaki bağlantıları kontrol edin. Çünkü öğrenecek bir çok şey var. Her şeyi hatırlamak imkansızdır.
 
-When you'd like to read about a property or a method -- the Mozilla manual at <https://developer.mozilla.org/en-US/search> is a nice one, but reading the corresponding spec may be better: more complex and longer to read, but will make your fundamental knowledge sound and complete.
+Bir özellik ve yöntem hakkında okumak istediğinizde -- Mozilla kılavuzu <https://developer.mozilla.org/en-US/search> güzel klavuzlardan bir tanesidir, ancak ilgili spesifikasyonun okunması daha iyi olabilir: daha karmaşık ve okunması uzun fakat temel bilginiz eksiksiz ve sağlam hale gelecektir.
